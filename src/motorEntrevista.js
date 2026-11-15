@@ -1,193 +1,219 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor gratuito de entrevistas clínicas
+ * Motor gratuito de entrevistas - Versión 2
  *
- * Versión 1: Elena Martínez
- * Sin API, sin servicios externos.
+ * Caso inicial: Elena Martínez
+ * Funciona localmente, sin servicios externos.
  */
 
-const normalizar = (texto) =>
-  String(texto || '')
+function normalizar(texto) {
+  return String(texto || '')
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[¿?¡!.,;:()]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
 
 const temasElena = [
   {
-    id: 'inicio',
-    patrones: [
-      /\b(que le trae|motivo de consulta|por que viene|que le pasa|en que puedo ayudar)\b/
-    ],
-    paciente:
-      'Pues últimamente he notado que se me olvidan algunas cosas. No es que no pueda hacer mis actividades, pero sí me preocupa que mi memoria ya no sea como antes.',
-    familiar:
-      'Ella empezó a preocuparse porque a veces olvida citas o dónde deja las cosas. Por lo demás, sigue haciendo sus actividades habituales.'
-  },
-  {
     id: 'cronologia',
+    prioridad: 100,
     patrones: [
-      /\b(desde cuando|hace cuanto|cuando empezo|cuanto tiempo|cuando inicio)\b/,
-      /\b(inicio|comenzo|empezo)\b.*\b(olvido|memoria|problema)\b/
+      /\b(desde cuando|hace cuanto|cuanto tiempo|cuando empezo|cuando inicio|cuando comenzaron|cuando comenzaron los|cuando noto por primera vez)\b/,
+      /\b(hace cuantos|desde hace cuanto)\b/,
+      /\b(inicio|comenzo|empezo)\b.*\b(olvidos?|memoria|problemas?)\b/
     ],
     paciente:
-      'Yo diría que desde hace unos catorce meses. Primero eran pequeños olvidos y después empecé a notarlos con más frecuencia.',
+      'Comencé a notar los olvidos hace aproximadamente catorce meses. Al principio eran cosas pequeñas y después los empecé a notar un poco más.',
     familiar:
-      'Hace poco más de un año comenzó a comentar esos olvidos. El cambio ha sido gradual, sin un deterioro brusco.'
-  },
-  {
-    id: 'memoria',
-    patrones: [
-      /\b(memoria|olvid|record|recuerd|extravi|perdido|pierde|objetos|citas)\w*\b/
-    ],
-    paciente:
-      'A veces olvido dónde dejé las llaves o alguna cita. Cuando anoto las cosas en mi agenda me organizo mucho mejor.',
-    familiar:
-      'Tiene algunos olvidos de cosas recientes, pero suele acordarse con pistas o cuando revisa sus notas.'
+      'Los primeros olvidos aparecieron hace aproximadamente catorce meses. El cambio ha sido gradual, sin un episodio de deterioro brusco.'
   },
   {
     id: 'funcionalidad',
+    prioridad: 95,
     patrones: [
-      /\b(actividades|independiente|dependiente|vida diaria|aseo|banar|vestir|comer sola|cocinar|compras|quehaceres)\b/
+      /\b(actividades de la vida diaria|actividades cotidianas|actividades habituales)\b/,
+      /\b(independiente|dependiente|necesita ayuda|requiere ayuda|puede hacer sola|puede hacerlo sola)\b/,
+      /\b(banarse|vestirse|asearse|cocinar|preparar comida|hacer compras|hacer sus compras|limpiar la casa|quehaceres)\b/
     ],
     paciente:
-      'Me baño, me visto, cocino y hago mis compras sin ayuda. Todavía llevo mi casa como siempre.',
+      'Sigo haciendo mis actividades por mi cuenta. Me baño, me visto, cocino y hago mis compras sin necesitar ayuda.',
     familiar:
-      'Sigue siendo independiente para sus actividades básicas y para organizar su hogar.'
+      'Ella mantiene su independencia. Se encarga de sus actividades personales y de las tareas del hogar.'
   },
   {
     id: 'finanzas',
+    prioridad: 95,
     patrones: [
-      /\b(dinero|finanzas|cuentas|banco|pagos|administrar|manejar dinero)\b/
+      /\b(dinero|finanzas|cuentas|banco|pagos|pagar|administrar|administra|economia|gastos)\b/
     ],
     paciente:
-      'Yo sigo pagando mis cuentas y administrando mi dinero. No he necesitado que alguien lo haga por mí.',
+      'Yo misma manejo mi dinero y pago mis cuentas. Hasta ahora no he necesitado ayuda para hacerlo.',
     familiar:
-      'Hasta ahora no hemos tenido que intervenir en sus finanzas.'
-  },
-  {
-    id: 'medicamentos',
-    patrones: [
-      /\b(medicament|medicina|pastilla|tratamiento|farmaco|toma algo)\w*\b/
-    ],
-    paciente:
-      'Tomo tratamiento para la presión arterial. Yo misma organizo mis medicamentos y procuro no saltarme las dosis.',
-    familiar:
-      'Ella sigue encargándose de sus medicamentos. No hemos detectado problemas importantes con eso.'
-  },
-  {
-    id: 'antecedentes',
-    patrones: [
-      /\b(enfermedad|antecedente|hipertension|diabetes|presion arterial|padecimiento)\w*\b/
-    ],
-    paciente:
-      'Tengo presión alta, pero está controlada con mi tratamiento. No recuerdo que me hayan diagnosticado otra enfermedad importante.',
-    familiar:
-      'Sabemos que tiene hipertensión controlada. No tengo conocimiento de otros antecedentes relevantes.'
-  },
-  {
-    id: 'audicion',
-    patrones: [
-      /\b(oido|oir|escuchar|audicion|sordera|aparato auditivo)\b/
-    ],
-    paciente:
-      'Últimamente me cuesta un poco escuchar cuando hay mucho ruido. Si me hablan claramente, entiendo bien.',
-    familiar:
-      'Tiene cierta dificultad para escuchar, especialmente cuando hay varias personas hablando.'
-  },
-  {
-    id: 'animo',
-    patrones: [
-      /\b(animo|triste|deprim|ansiedad|preocup|angust|emocion|sentir)\w*\b/
-    ],
-    paciente:
-      'En general me siento bien, aunque estos olvidos sí me preocupan. Me da miedo que con el tiempo empeoren.',
-    familiar:
-      'La noto preocupada por su memoria, pero continúa participando en sus actividades habituales.'
+      'Ella sigue administrando sus finanzas y no hemos tenido que asumir esa responsabilidad.'
   },
   {
     id: 'orientacion',
+    prioridad: 95,
     patrones: [
-      /\b(orientad|perdid|desorient|camino|ubicacion|lugar|fecha)\w*\b/
+      /\b(perdido|perderse|pierde en la calle|desorient|ubicarse|encontrar el camino|regresar a casa)\w*\b/,
+      /\b(sabe donde esta|sabe que dia es|reconoce los lugares)\b/
     ],
     paciente:
-      'No, no me he perdido. Sé llegar a los lugares que frecuento y normalmente sé qué día es.',
+      'No me he perdido. Puedo salir y regresar a casa sin problemas, y reconozco los lugares que frecuento.',
     familiar:
-      'No hemos observado que se pierda en lugares conocidos.'
+      'No hemos observado episodios en los que se pierda o se desoriente en lugares conocidos.'
+  },
+  {
+    id: 'medicamentos',
+    prioridad: 90,
+    patrones: [
+      /\b(medicamentos?|medicinas?|pastillas?|farmacos?|tratamientos?|dosis|receta)\b/,
+      /\b(que toma|como se toma|olvida tomar)\b/
+    ],
+    paciente:
+      'Tomo medicamento para controlar la presión arterial. Yo misma organizo mis tomas.',
+    familiar:
+      'Ella se encarga de sus medicamentos. Hasta ahora no hemos detectado problemas importantes con las tomas.'
+  },
+  {
+    id: 'animo',
+    prioridad: 90,
+    patrones: [
+      /\b(animo|tristeza|triste|depresion|deprimida|ansiedad|angustia|preocupacion|preocupada)\b/,
+      /\b(disfrutar|disfruta|interes por sus actividades|ha perdido el interes|se siente sola)\b/
+    ],
+    paciente:
+      'En general me siento bien y sigo disfrutando mis actividades. Lo que sí me preocupa son estos olvidos.',
+    familiar:
+      'Sigue participando en sus actividades habituales. La noto preocupada por su memoria, pero no hemos observado un cambio importante en su ánimo.'
+  },
+  {
+    id: 'memoria',
+    prioridad: 85,
+    patrones: [
+      /\b(memoria|olvidos?|olvidar|olvida|olvidan|recordar|recuerda|recuerdos?|extraviar|extravia)\b/,
+      /\b(llaves|citas|compromisos|cosas recientes|repite preguntas|repetir preguntas)\b/
+    ],
+    paciente:
+      'A veces olvido dónde dejé mis llaves o alguna cita. Por eso utilizo una agenda y anoto las cosas importantes.',
+    familiar:
+      'Tiene algunos olvidos recientes, pero suele recordar con pistas o al consultar sus anotaciones.'
+  },
+  {
+    id: 'antecedentes',
+    prioridad: 80,
+    patrones: [
+      /\b(antecedentes?|enfermedades?|padecimientos?|hipertension|diabetes|presion alta|presion arterial)\b/
+    ],
+    paciente:
+      'Tengo hipertensión arterial y tomo tratamiento. No recuerdo que me hayan diagnosticado otra enfermedad importante.',
+    familiar:
+      'Sabemos que tiene hipertensión arterial controlada. No conozco otros antecedentes médicos relevantes.'
+  },
+  {
+    id: 'audicion',
+    prioridad: 80,
+    patrones: [
+      /\b(audicion|escuchar|escucha|oir|oye|oidos?|sordera|auditivos?)\b/
+    ],
+    paciente:
+      'Cuando hay mucho ruido me cuesta un poco escuchar, pero si me hablan claramente entiendo bien.',
+    familiar:
+      'Hemos notado cierta dificultad para escuchar cuando hay varias personas hablando.'
   },
   {
     id: 'lenguaje',
+    prioridad: 80,
     patrones: [
-      /\b(palabras|lenguaje|hablar|nombrar|expresarse|conversacion)\b/
+      /\b(lenguaje|palabras|hablar|habla|nombrar|expresarse|conversar|comprender lo que dicen)\b/
     ],
     paciente:
-      'No he notado problemas importantes para hablar o entender lo que me dicen.',
+      'No he notado problemas importantes para hablar, encontrar palabras o entender conversaciones.',
     familiar:
-      'Conversa con normalidad. No hemos observado cambios importantes en su lenguaje.'
+      'Su lenguaje se mantiene como siempre. No hemos observado dificultades importantes para expresarse.'
   },
   {
     id: 'escolaridad',
+    prioridad: 80,
     patrones: [
-      /\b(estudio|estudios|escuela|escolaridad|educacion|universidad|profesion|trabajo)\w*\b/
+      /\b(escolaridad|escuela|estudios|estudio|educacion|universidad|profesion|ocupacion|jubilacion|jubilada|trabajaba)\b/
     ],
     paciente:
-      'Estudié dieciséis años en total. Ahora estoy jubilada.',
+      'Estudié dieciséis años y actualmente estoy jubilada.',
     familiar:
-      'Tiene dieciséis años de escolaridad y actualmente está jubilada.'
+      'Tiene dieciséis años de escolaridad y está jubilada.'
   },
   {
     id: 'sueno',
+    prioridad: 80,
     patrones: [
-      /\b(sueno|dormir|duerme|insomnio|pesadilla)\w*\b/
+      /\b(sueno|dormir|duerme|dormido|insomnio|pesadillas|descanso)\b/
     ],
     paciente:
-      'No he notado cambios importantes en mi sueño, aunque no sabría decirle cuántas horas duermo cada noche.',
+      'No he notado cambios importantes en mi sueño, aunque no sabría decirle exactamente cuántas horas duermo cada noche.',
     familiar:
-      'No conozco problemas importantes de sueño, pero habría que preguntarle a ella.'
+      'No conozco problemas importantes relacionados con el sueño.'
   },
   {
     id: 'caidas',
+    prioridad: 80,
     patrones: [
-      /\b(caida|caido|tropiez|equilibrio|marcha|caminar)\w*\b/
+      /\b(caidas?|caido|tropezones?|equilibrio|marcha|caminar|camina)\b/
     ],
     paciente:
-      'No recuerdo haber tenido alguna caída reciente. Sigo caminando y haciendo mis actividades.',
+      'No recuerdo haber sufrido caídas recientemente. Sigo caminando y realizando mis actividades.',
     familiar:
-      'No tengo conocimiento de caídas recientes.'
+      'No tenemos conocimiento de caídas recientes.'
+  },
+  {
+    id: 'motivo',
+    prioridad: 70,
+    patrones: [
+      /\b(que le trae|motivo de consulta|por que viene|que le pasa|en que puedo ayudar|que la preocupa|cual es su problema)\b/
+    ],
+    paciente:
+      'Vengo porque he notado algunos problemas de memoria y me preocupa que puedan empeorar. Por lo demás, sigo haciendo mis actividades.',
+    familiar:
+      'La acompañé porque le preocupan sus olvidos recientes. Sigue siendo independiente, pero queríamos que la valoraran.'
   }
 ];
 
-const respuestasGenerales = {
-  paciente: [
-    '¿Podría preguntármelo de otra manera? Quiero asegurarme de entenderle bien.',
-    'No estoy muy segura de qué información necesita. ¿Me lo puede explicar un poco más?',
-    'Sobre eso no sabría decirle con certeza. ¿Podría hacerme una pregunta más específica?'
-  ],
-  familiar: [
-    'No tengo información suficiente sobre eso. ¿Podría hacerme una pregunta más concreta?',
-    'No sabría responderle con seguridad. ¿Qué aspecto le interesa conocer?',
-    'Quizá sería mejor precisar la pregunta para poder ayudarle.'
-  ]
-};
+temasElena.sort((a, b) => b.prioridad - a.prioridad);
 
-const contadorRespuestas = {};
+const saludos = [
+  /\b(hola|buenos dias|buenas tardes|buenas noches|mucho gusto)\b/
+];
+
+const despedidas = [
+  /\b(adios|hasta luego|nos vemos|muchas gracias|gracias por su tiempo)\b/
+];
+
+function identificarTema(pregunta) {
+  for (const tema of temasElena) {
+    if (tema.patrones.some((patron) => patron.test(pregunta))) {
+      return tema;
+    }
+  }
+
+  return null;
+}
 
 export function responderEntrevista({
   pacienteId,
   interlocutor,
   mensaje
 }) {
-  const canal = interlocutor === 'familiar'
-    ? 'familiar'
-    : 'paciente';
+  const canal =
+    interlocutor === 'familiar' ? 'familiar' : 'paciente';
 
   if (pacienteId !== 'caso-01') {
     return {
       respuesta:
-        'Este caso todavía está en preparación. Pronto estará disponible su entrevista clínica.',
+        'La entrevista de este caso todavía está en preparación.',
       tema: null,
       reconocido: false
     };
@@ -203,24 +229,43 @@ export function responderEntrevista({
     };
   }
 
-  for (const tema of temasElena) {
-    if (tema.patrones.some((patron) => patron.test(pregunta))) {
-      return {
-        respuesta: tema[canal],
-        tema: tema.id,
-        reconocido: true
-      };
-    }
+  if (despedidas.some((p) => p.test(pregunta))) {
+    return {
+      respuesta:
+        canal === 'paciente'
+          ? 'Muchas gracias, doctor. Que tenga buen día.'
+          : 'Muchas gracias por atendernos.',
+      tema: 'despedida',
+      reconocido: true
+    };
   }
 
-  const clave = `${pacienteId}-${canal}`;
-  const indice = contadorRespuestas[clave] || 0;
-  const opciones = respuestasGenerales[canal];
+  const tema = identificarTema(pregunta);
 
-  contadorRespuestas[clave] = indice + 1;
+  if (tema) {
+    return {
+      respuesta: tema[canal],
+      tema: tema.id,
+      reconocido: true
+    };
+  }
+
+  if (saludos.some((p) => p.test(pregunta))) {
+    return {
+      respuesta:
+        canal === 'paciente'
+          ? 'Buenos días, doctor. Mucho gusto.'
+          : 'Buenos días, doctor. Gracias por recibirnos.',
+      tema: 'saludo',
+      reconocido: true
+    };
+  }
 
   return {
-    respuesta: opciones[indice % opciones.length],
+    respuesta:
+      canal === 'paciente'
+        ? '¿Podría hacerme la pregunta de otra manera? Quiero asegurarme de entenderle.'
+        : 'No estoy seguro de entender la pregunta. ¿Podría ser un poco más específico?',
     tema: null,
     reconocido: false
   };
