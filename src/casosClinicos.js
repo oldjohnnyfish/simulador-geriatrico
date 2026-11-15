@@ -1,11 +1,12 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Casos clínicos ficticios - Versión 2
+ * Fichas clínicas ficticias - Versión 3
  *
- * Datos para simulación educativa.
- * La información clínica debe revelarse
- * progresivamente durante la entrevista.
+ * Información progresiva para entrevistas clínicas.
+ * Incluye respuestas de seguimiento estructuradas.
+ *
+ * Uso exclusivamente educativo.
  */
 
 export const casosClinicos = {
@@ -210,6 +211,129 @@ export const casosClinicos = {
           'Mi madre tuvo problemas de memoria cuando era muy mayor, pero no sé qué diagnóstico tenía.',
         familiar:
           'La abuela materna tuvo dificultades de memoria a edad avanzada, sin un diagnóstico confirmado.'
+      }
+    },
+
+    /*
+     * Respuestas de seguimiento.
+     *
+     * Cada dominio puede tener:
+     * - ejemplo
+     * - solucion
+     * - frecuencia
+     * - evolucion
+     * - repercusion
+     *
+     * Si un dato no está definido, el motor
+     * deberá reconocer que no está disponible.
+     */
+    seguimientos: {
+      memoria: {
+        ejemplo: {
+          paciente:
+            'Por ejemplo, a veces no recuerdo dónde dejé las llaves o se me pasa alguna cita.',
+          familiar:
+            'En ocasiones no recuerda dónde dejó sus cosas o algún compromiso.'
+        },
+
+        solucion: {
+          paciente:
+            'Empecé a utilizar una agenda para anotar mis compromisos y eso me ayuda bastante.',
+          familiar:
+            'Utiliza una agenda y notas para organizarse.'
+        },
+
+        frecuencia: {
+          paciente:
+            'No llevo la cuenta exacta. Me sucede de vez en cuando, pero no todos los días.',
+          familiar:
+            'No sabría darle una frecuencia exacta. Son olvidos ocasionales.'
+        },
+
+        evolucion: {
+          paciente:
+            'Comenzó hace poco más de un año. Los olvidos se han hecho un poco más notorios, pero no he tenido cambios repentinos.',
+          familiar:
+            'Ha sido algo gradual durante aproximadamente catorce meses. No hemos observado un deterioro brusco.'
+        },
+
+        repercusion: {
+          paciente:
+            'Hasta ahora puedo hacer mis actividades sola. La agenda me ayuda a no olvidar mis compromisos.',
+          familiar:
+            'Sigue siendo independiente. No hemos tenido que asumir sus actividades por estos olvidos.'
+        }
+      },
+
+      funcionesEjecutivas: {
+        ejemplo: {
+          paciente:
+            'Cuando tengo que organizar varias cosas nuevas, a veces necesito más tiempo para decidir por dónde empezar.',
+          familiar:
+            'Cuando tiene que organizar algo complicado, suele tardar un poco más, pero lo resuelve sola.'
+        },
+
+        frecuencia: {
+          paciente:
+            'Lo noto principalmente cuando tengo que organizar varias cosas complicadas al mismo tiempo.',
+          familiar:
+            'No ocurre en todas las actividades. Se nota más cuando tiene que planificar algo nuevo.'
+        },
+
+        repercusion: {
+          paciente:
+            'Me toma más tiempo, pero puedo terminar lo que necesito hacer.',
+          familiar:
+            'Hasta ahora no ha necesitado que otra persona se encargue de esas tareas.'
+        }
+      },
+
+      audicion: {
+        ejemplo: {
+          paciente:
+            'Cuando estoy en una reunión y todos hablan al mismo tiempo, me cuesta seguir la conversación.',
+          familiar:
+            'En reuniones familiares a veces necesita que le repitamos lo que dijimos.'
+        },
+
+        frecuencia: {
+          paciente:
+            'Principalmente cuando hay mucho ruido alrededor.',
+          familiar:
+            'Lo notamos sobre todo en reuniones o ambientes ruidosos.'
+        },
+
+        repercusion: {
+          paciente:
+            'A veces tengo que pedir que me repitan las cosas, pero puedo conversar.',
+          familiar:
+            'En ocasiones necesita que le hablemos más claramente.'
+        }
+      },
+
+      animo: {
+        ejemplo: {
+          paciente:
+            'Me preocupa que los olvidos empeoren, aunque sigo disfrutando mis actividades.',
+          familiar:
+            'A veces expresa preocupación por su memoria, pero mantiene sus actividades habituales.'
+        },
+
+        repercusion: {
+          paciente:
+            'La preocupación no me ha impedido seguir haciendo mis actividades.',
+          familiar:
+            'No hemos observado que haya abandonado actividades por su preocupación.'
+        }
+      },
+
+      movilidad: {
+        repercusion: {
+          paciente:
+            'Puedo salir a caminar y desplazarme sin ayuda.',
+          familiar:
+            'Continúa caminando de forma independiente.'
+        }
       }
     },
 
