@@ -13,43 +13,22 @@ import { responderEntrevista } from './motorEntrevista.js';
 import { obtenerCasoClinico } from './casosClinicos.js';
 
 const exploraciones = [
-  {
-    id: 'signosVitales',
-    nombre: 'Signos vitales'
-  },
-  {
-    id: 'neurologica',
-    nombre: 'Exploración neurológica'
-  },
-  {
-    id: 'marcha',
-    nombre: 'Marcha y equilibrio'
-  },
-  {
-    id: 'orientacion',
-    nombre: 'Orientación'
-  },
-  {
-    id: 'memoriaInmediata',
-    nombre: 'Memoria inmediata'
-  },
-  {
-    id: 'memoriaDiferida',
-    nombre: 'Memoria diferida'
-  },
-  {
-    id: 'moca',
-    nombre: 'MoCA'
-  }
+  { id: 'signosVitales', nombre: 'Signos vitales' },
+  { id: 'neurologica', nombre: 'Exploración neurológica' },
+  { id: 'marcha', nombre: 'Marcha y equilibrio' },
+  { id: 'orientacion', nombre: 'Orientación' },
+  { id: 'memoriaInmediata', nombre: 'Memoria inmediata' },
+  { id: 'memoriaDiferida', nombre: 'Memoria diferida' },
+  { id: 'moca', nombre: 'MoCA' }
 ];
 
 const estudios = [
-  'Biometría hemática',
-  'Química sanguínea',
-  'TSH',
-  'Vitamina B12',
-  'Resonancia magnética cerebral',
-  'Electroencefalograma'
+  { id: 'biometriaHematica', nombre: 'Biometría hemática' },
+  { id: 'quimicaSanguinea', nombre: 'Química sanguínea' },
+  { id: 'tsh', nombre: 'TSH' },
+  { id: 'vitaminaB12', nombre: 'Vitamina B12' },
+  { id: 'resonancia', nombre: 'Resonancia magnética cerebral' },
+  { id: 'electroencefalograma', nombre: 'Electroencefalograma' }
 ];
 
 const estiloBoton = {
@@ -67,13 +46,10 @@ const estiloBoton = {
 function obtenerResultadoExploracion(caso, id) {
   const exploracion = caso?.exploracion;
 
-  if (!exploracion) {
-    return null;
-  }
+  if (!exploracion) return null;
 
   if (id === 'signosVitales') {
     const signos = exploracion.signosVitales;
-
     if (!signos) return null;
 
     return [
@@ -94,13 +70,22 @@ function obtenerResultadoExploracion(caso, id) {
 
   if (id === 'moca') {
     const moca = exploracion.pruebasCognitivas?.moca;
-
     if (!moca) return null;
 
     return [
       `Puntuación: ${moca.puntuacion}/${moca.maximo}`,
       moca.observacion
-    ].join('\n');
+    ].filter(Boolean).join('\n');
+  }
+
+  return null;
+}
+
+function obtenerResultadoEstudio(caso, id) {
+  const resultado = caso?.estudios?.[id];
+
+  if (typeof resultado === 'string' && resultado.trim()) {
+    return resultado;
   }
 
   return null;
@@ -144,14 +129,8 @@ export default function Consulta({ paciente, volver }) {
       ...prev,
       [canal]: [
         ...prev[canal],
-        {
-          autor: 'estudiante',
-          texto
-        },
-        {
-          autor: 'sistema',
-          texto: resultado.respuesta
-        }
+        { autor: 'estudiante', texto },
+        { autor: 'sistema', texto: resultado.respuesta }
       ]
     }));
 
@@ -176,33 +155,77 @@ export default function Consulta({ paciente, volver }) {
   };
 
   const solicitar = (id) => {
-    if (solicitudes.includes(id)) return;
-
-    setSolicitudes((prev) => [...prev, id]);
+    setSolicitudes((prev) =>
+      prev.includes(id) ? prev : [...prev, id]
+    );
   };
 
   const pestanas = [
-    {
-      id: 'paciente',
-      nombre: 'Paciente',
-      Icono: UserRound
-    },
-    {
-      id: 'familiar',
-      nombre: 'Familiar',
-      Icono: Users
-    },
-    {
-      id: 'exploracion',
-      nombre: 'Exploración',
-      Icono: Stethoscope
-    },
-    {
-      id: 'estudios',
-      nombre: 'Estudios',
-      Icono: ClipboardList
-    }
+    { id: 'paciente', nombre: 'Paciente', Icono: UserRound },
+    { id: 'familiar', nombre: 'Familiar', Icono: Users },
+    { id: 'exploracion', nombre: 'Exploración', Icono: Stethoscope },
+    { id: 'estudios', nombre: 'Estudios', Icono: ClipboardList }
   ];
+
+  const renderSolicitud = (item, tipo) => {
+    const clave = `${tipo}-${item.id}`;
+    const solicitado = solicitudes.includes(clave);
+
+    const resultado =
+      tipo === 'exploracion'
+        ? obtenerResultadoExploracion(caso, item.id)
+        : obtenerResultadoEstudio(caso, item.id);
+
+    return (
+      <div
+        key={clave}
+        style={{
+          padding: '16px 0',
+          borderBottom: '1px solid #e2e8f0'
+        }}
+      >
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <strong>{item.nombre}</strong>
+
+          <button
+            style={{
+              ...estiloBoton,
+              background: solicitado ? '#e2e8f0' : '#2563eb',
+              color: solicitado ? '#475569' : '#fff'
+            }}
+            disabled={solicitado}
+            onClick={() => solicitar(clave)}
+          >
+            {solicitado
+              ? tipo === 'exploracion' ? 'Realizada' : 'Solicitado'
+              : tipo === 'exploracion' ? 'Realizar' : 'Solicitar'}
+          </button>
+        </div>
+
+        {solicitado && (
+          <div style={{
+            marginTop: '12px',
+            background: '#f1f5f9',
+            borderRadius: '10px',
+            padding: '14px',
+            whiteSpace: 'pre-line'
+          }}>
+            {resultado || (
+              <span style={{ color: '#64748b' }}>
+                Resultado detallado todavía no disponible
+                para este caso.
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div style={{
@@ -247,10 +270,8 @@ export default function Consulta({ paciente, volver }) {
             }}
             style={{
               ...estiloBoton,
-              background:
-                pestana === id ? '#2563eb' : '#f1f5f9',
-              color:
-                pestana === id ? '#fff' : '#334155'
+              background: pestana === id ? '#2563eb' : '#f1f5f9',
+              color: pestana === id ? '#fff' : '#334155'
             }}
           >
             <Icono size={17} />
@@ -259,8 +280,7 @@ export default function Consulta({ paciente, volver }) {
         ))}
       </div>
 
-      {(pestana === 'paciente' ||
-        pestana === 'familiar') && (
+      {(pestana === 'paciente' || pestana === 'familiar') && (
         <>
           <div style={{
             background: '#f8fafc',
@@ -288,9 +308,7 @@ export default function Consulta({ paciente, volver }) {
                 key={i}
                 style={{
                   background:
-                    item.autor === 'estudiante'
-                      ? '#dbeafe'
-                      : '#fff',
+                    item.autor === 'estudiante' ? '#dbeafe' : '#fff',
                   padding: '12px',
                   borderRadius: '10px',
                   marginBottom: '10px'
@@ -313,10 +331,7 @@ export default function Consulta({ paciente, volver }) {
 
           <form
             onSubmit={enviar}
-            style={{
-              display: 'flex',
-              gap: '10px'
-            }}
+            style={{ display: 'flex', gap: '10px' }}
           >
             <input
               value={mensaje}
@@ -355,63 +370,9 @@ export default function Consulta({ paciente, volver }) {
             Selecciona la exploración que deseas realizar.
           </p>
 
-          {exploraciones.map((item) => {
-            const resultado =
-              obtenerResultadoExploracion(caso, item.id);
-
-            const solicitado =
-              solicitudes.includes(item.id);
-
-            return (
-              <div
-                key={item.id}
-                style={{
-                  padding: '16px 0',
-                  borderBottom: '1px solid #e2e8f0'
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '12px'
-                }}>
-                  <strong>{item.nombre}</strong>
-
-                  <button
-                    style={{
-                      ...estiloBoton,
-                      background: solicitado
-                        ? '#e2e8f0'
-                        : '#2563eb',
-                      color: solicitado
-                        ? '#475569'
-                        : '#fff'
-                    }}
-                    disabled={solicitado}
-                    onClick={() => solicitar(item.id)}
-                  >
-                    {solicitado
-                      ? 'Realizada'
-                      : 'Realizar'}
-                  </button>
-                </div>
-
-                {solicitado && (
-                  <div style={{
-                    marginTop: '12px',
-                    background: '#f1f5f9',
-                    borderRadius: '10px',
-                    padding: '14px',
-                    whiteSpace: 'pre-line'
-                  }}>
-                    {resultado ||
-                      'Resultado detallado todavía no disponible para este caso.'}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          {exploraciones.map((item) =>
+            renderSolicitud(item, 'exploracion')
+          )}
         </div>
       )}
 
@@ -423,53 +384,9 @@ export default function Consulta({ paciente, volver }) {
             Selecciona los estudios que deseas solicitar.
           </p>
 
-          {estudios.map((nombre) => {
-            const id = `estudio-${nombre}`;
-            const solicitado = solicitudes.includes(id);
-
-            return (
-              <div
-                key={nombre}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '14px 0',
-                  borderBottom: '1px solid #e2e8f0'
-                }}
-              >
-                <span>{nombre}</span>
-
-                <button
-                  style={{
-                    ...estiloBoton,
-                    background: solicitado
-                      ? '#e2e8f0'
-                      : '#2563eb',
-                    color: solicitado
-                      ? '#475569'
-                      : '#fff'
-                  }}
-                  disabled={solicitado}
-                  onClick={() => solicitar(id)}
-                >
-                  {solicitado
-                    ? 'Solicitado'
-                    : 'Solicitar'}
-                </button>
-              </div>
-            );
-          })}
-
-          <p style={{
-            marginTop: '20px',
-            color: '#64748b',
-            fontSize: '14px'
-          }}>
-            Los resultados de laboratorio y gabinete
-            se incorporarán en el siguiente paso.
-          </p>
+          {estudios.map((item) =>
+            renderSolicitud(item, 'estudio')
+          )}
         </div>
       )}
     </div>
