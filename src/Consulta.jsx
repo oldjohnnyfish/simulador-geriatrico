@@ -10,15 +10,37 @@ import {
 } from 'lucide-react';
 
 import { responderEntrevista } from './motorEntrevista.js';
+import { obtenerCasoClinico } from './casosClinicos.js';
 
 const exploraciones = [
-  'Signos vitales',
-  'Exploración neurológica',
-  'Marcha y equilibrio',
-  'Orientación',
-  'Memoria inmediata',
-  'Memoria diferida',
-  'MoCA (resultado predefinido)'
+  {
+    id: 'signosVitales',
+    nombre: 'Signos vitales'
+  },
+  {
+    id: 'neurologica',
+    nombre: 'Exploración neurológica'
+  },
+  {
+    id: 'marcha',
+    nombre: 'Marcha y equilibrio'
+  },
+  {
+    id: 'orientacion',
+    nombre: 'Orientación'
+  },
+  {
+    id: 'memoriaInmediata',
+    nombre: 'Memoria inmediata'
+  },
+  {
+    id: 'memoriaDiferida',
+    nombre: 'Memoria diferida'
+  },
+  {
+    id: 'moca',
+    nombre: 'MoCA'
+  }
 ];
 
 const estudios = [
@@ -42,6 +64,48 @@ const estiloBoton = {
   gap: '8px'
 };
 
+function obtenerResultadoExploracion(caso, id) {
+  const exploracion = caso?.exploracion;
+
+  if (!exploracion) {
+    return null;
+  }
+
+  if (id === 'signosVitales') {
+    const signos = exploracion.signosVitales;
+
+    if (!signos) return null;
+
+    return [
+      `Presión arterial: ${signos.presionArterial}`,
+      `Frecuencia cardiaca: ${signos.frecuenciaCardiaca}`,
+      `Temperatura: ${signos.temperatura}`,
+      `Saturación de oxígeno: ${signos.saturacionOxigeno}`
+    ].join('\n');
+  }
+
+  if (id === 'neurologica') {
+    return exploracion.neurologica || null;
+  }
+
+  if (id === 'marcha') {
+    return exploracion.marcha || null;
+  }
+
+  if (id === 'moca') {
+    const moca = exploracion.pruebasCognitivas?.moca;
+
+    if (!moca) return null;
+
+    return [
+      `Puntuación: ${moca.puntuacion}/${moca.maximo}`,
+      moca.observacion
+    ].join('\n');
+  }
+
+  return null;
+}
+
 export default function Consulta({ paciente, volver }) {
   const [pestana, setPestana] = useState('paciente');
   const [mensaje, setMensaje] = useState('');
@@ -51,7 +115,6 @@ export default function Consulta({ paciente, volver }) {
     familiar: []
   });
 
-  // Memoria conversacional independiente para cada interlocutor
   const [ultimosTemas, setUltimosTemas] = useState({
     paciente: null,
     familiar: null
@@ -60,11 +123,12 @@ export default function Consulta({ paciente, volver }) {
   const [solicitudes, setSolicitudes] = useState([]);
   const [temasExplorados, setTemasExplorados] = useState([]);
 
+  const caso = obtenerCasoClinico(paciente.id);
+
   const enviar = (e) => {
     e.preventDefault();
 
     const texto = mensaje.trim();
-
     if (!texto) return;
 
     const canal = pestana;
@@ -76,7 +140,6 @@ export default function Consulta({ paciente, volver }) {
       ultimoTema: ultimosTemas[canal]
     });
 
-    // Guardar pregunta y respuesta
     setConversaciones((prev) => ({
       ...prev,
       [canal]: [
@@ -92,7 +155,6 @@ export default function Consulta({ paciente, volver }) {
       ]
     }));
 
-    // Actualizar el tema solamente cuando es clínico
     if (
       resultado.reconocido &&
       resultado.tema &&
@@ -113,10 +175,10 @@ export default function Consulta({ paciente, volver }) {
     setMensaje('');
   };
 
-  const solicitar = (nombre) => {
-    if (solicitudes.includes(nombre)) return;
+  const solicitar = (id) => {
+    if (solicitudes.includes(id)) return;
 
-    setSolicitudes((prev) => [...prev, nombre]);
+    setSolicitudes((prev) => [...prev, id]);
   };
 
   const pestanas = [
@@ -285,77 +347,129 @@ export default function Consulta({ paciente, volver }) {
         </>
       )}
 
-      {(pestana === 'exploracion' ||
-        pestana === 'estudios') && (
+      {pestana === 'exploracion' && (
         <div>
-          <h2>
-            {pestana === 'exploracion'
-              ? 'Exploración clínica'
-              : 'Estudios complementarios'}
-          </h2>
+          <h2>Exploración clínica</h2>
 
           <p style={{ color: '#64748b' }}>
-            Selecciona lo que deseas solicitar.
+            Selecciona la exploración que deseas realizar.
           </p>
 
-          {(pestana === 'exploracion'
-            ? exploraciones
-            : estudios
-          ).map((nombre) => (
-            <div
-              key={nombre}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '14px 0',
-                borderBottom: '1px solid #e2e8f0'
-              }}
-            >
-              <span>{nombre}</span>
+          {exploraciones.map((item) => {
+            const resultado =
+              obtenerResultadoExploracion(caso, item.id);
 
-              <button
+            const solicitado =
+              solicitudes.includes(item.id);
+
+            return (
+              <div
+                key={item.id}
                 style={{
-                  ...estiloBoton,
-                  background: solicitudes.includes(nombre)
-                    ? '#e2e8f0'
-                    : '#2563eb',
-                  color: solicitudes.includes(nombre)
-                    ? '#475569'
-                    : '#fff'
+                  padding: '16px 0',
+                  borderBottom: '1px solid #e2e8f0'
                 }}
-                disabled={solicitudes.includes(nombre)}
-                onClick={() => solicitar(nombre)}
               >
-                {solicitudes.includes(nombre)
-                  ? 'Solicitado'
-                  : 'Solicitar'}
-              </button>
-            </div>
-          ))}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <strong>{item.nombre}</strong>
 
-          {solicitudes.length > 0 && (
-            <div style={{
-              marginTop: '22px',
-              padding: '14px',
-              background: '#eff6ff',
-              borderRadius: '10px'
-            }}>
-              <strong>Solicitudes registradas:</strong>
+                  <button
+                    style={{
+                      ...estiloBoton,
+                      background: solicitado
+                        ? '#e2e8f0'
+                        : '#2563eb',
+                      color: solicitado
+                        ? '#475569'
+                        : '#fff'
+                    }}
+                    disabled={solicitado}
+                    onClick={() => solicitar(item.id)}
+                  >
+                    {solicitado
+                      ? 'Realizada'
+                      : 'Realizar'}
+                  </button>
+                </div>
 
-              <ul>
-                {solicitudes.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
+                {solicitado && (
+                  <div style={{
+                    marginTop: '12px',
+                    background: '#f1f5f9',
+                    borderRadius: '10px',
+                    padding: '14px',
+                    whiteSpace: 'pre-line'
+                  }}>
+                    {resultado ||
+                      'Resultado detallado todavía no disponible para este caso.'}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
-              <p style={{ fontSize: '13px' }}>
-                Los resultados específicos de cada caso
-                se incorporarán posteriormente.
-              </p>
-            </div>
-          )}
+      {pestana === 'estudios' && (
+        <div>
+          <h2>Estudios complementarios</h2>
+
+          <p style={{ color: '#64748b' }}>
+            Selecciona los estudios que deseas solicitar.
+          </p>
+
+          {estudios.map((nombre) => {
+            const id = `estudio-${nombre}`;
+            const solicitado = solicitudes.includes(id);
+
+            return (
+              <div
+                key={nombre}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '14px 0',
+                  borderBottom: '1px solid #e2e8f0'
+                }}
+              >
+                <span>{nombre}</span>
+
+                <button
+                  style={{
+                    ...estiloBoton,
+                    background: solicitado
+                      ? '#e2e8f0'
+                      : '#2563eb',
+                    color: solicitado
+                      ? '#475569'
+                      : '#fff'
+                  }}
+                  disabled={solicitado}
+                  onClick={() => solicitar(id)}
+                >
+                  {solicitado
+                    ? 'Solicitado'
+                    : 'Solicitar'}
+                </button>
+              </div>
+            );
+          })}
+
+          <p style={{
+            marginTop: '20px',
+            color: '#64748b',
+            fontSize: '14px'
+          }}>
+            Los resultados de laboratorio y gabinete
+            se incorporarán en el siguiente paso.
+          </p>
         </div>
       )}
     </div>
