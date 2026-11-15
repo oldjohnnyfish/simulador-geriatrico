@@ -1,10 +1,12 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor gratuito de entrevistas - Versión 4
+ * Motor gratuito de entrevistas - Versión 4.1
  *
  * Reconocimiento de preguntas clínicas en texto libre.
- * Respuestas tomadas de casosClinicos.js.
+ * Respuestas obtenidas de casosClinicos.js.
+ *
+ * No requiere Gemini ni servicios externos.
  */
 
 import { obtenerCasoClinico } from './casosClinicos.js';
@@ -71,7 +73,11 @@ const temas = [
   {
     id: 'alucinaciones',
     patrones: [
-      /\b(alucinaciones?|ver cosas que no existen|escuchar voces|oye voces|ve personas que no estan)\b/
+      /\b(alucinaciones?|alucina|alucinado)\b/,
+      /\b(ver|ve|visto|mirar|mira)\b.*\b(cosas|personas|figuras|sombras)\b.*\b(no ven|no ve|no existen|no estan|nadie mas)\b/,
+      /\b(escuchar|escucha|oye|oir)\b.*\b(voces|sonidos)\b/,
+      /\b(ve cosas|ha visto cosas|ver cosas|ve personas que no estan)\b/,
+      /\b(cosas que otras personas no ven|cosas que los demas no ven)\b/
     ]
   },
   {
@@ -222,6 +228,7 @@ export function responderEntrevista({
     };
   }
 
+  // Saludos
   if (
     /^(hola|buenos dias|buenas tardes|buenas noches)\b/.test(
       pregunta
@@ -237,6 +244,7 @@ export function responderEntrevista({
     };
   }
 
+  // Despedidas
   if (
     /\b(adios|hasta luego|muchas gracias|gracias por su tiempo)\b/.test(
       pregunta
@@ -252,6 +260,7 @@ export function responderEntrevista({
     };
   }
 
+  // Identificar el tema clínico
   const tema = identificarTema(pregunta);
 
   if (tema) {
@@ -266,6 +275,7 @@ export function responderEntrevista({
     }
   }
 
+  // Pregunta no reconocida
   return {
     respuesta:
       canal === 'paciente'
