@@ -30,7 +30,7 @@ const estudios = [
   'Electroencefalograma'
 ];
 
-const boton = {
+const estiloBoton = {
   padding: '11px 16px',
   background: '#2563eb',
   color: '#fff',
@@ -51,6 +51,12 @@ export default function Consulta({ paciente, volver }) {
     familiar: []
   });
 
+  // Memoria conversacional independiente para cada interlocutor
+  const [ultimosTemas, setUltimosTemas] = useState({
+    paciente: null,
+    familiar: null
+  });
+
   const [solicitudes, setSolicitudes] = useState([]);
   const [temasExplorados, setTemasExplorados] = useState([]);
 
@@ -66,9 +72,11 @@ export default function Consulta({ paciente, volver }) {
     const resultado = responderEntrevista({
       pacienteId: paciente.id,
       interlocutor: canal,
-      mensaje: texto
+      mensaje: texto,
+      ultimoTema: ultimosTemas[canal]
     });
 
+    // Guardar pregunta y respuesta
     setConversaciones((prev) => ({
       ...prev,
       [canal]: [
@@ -84,7 +92,17 @@ export default function Consulta({ paciente, volver }) {
       ]
     }));
 
-    if (resultado.reconocido && resultado.tema) {
+    // Actualizar el tema solamente cuando es clínico
+    if (
+      resultado.reconocido &&
+      resultado.tema &&
+      !['saludo', 'despedida'].includes(resultado.tema)
+    ) {
+      setUltimosTemas((prev) => ({
+        ...prev,
+        [canal]: resultado.tema
+      }));
+
       setTemasExplorados((prev) =>
         prev.includes(resultado.tema)
           ? prev
@@ -134,7 +152,7 @@ export default function Consulta({ paciente, volver }) {
       <button
         onClick={volver}
         style={{
-          ...boton,
+          ...estiloBoton,
           background: '#f1f5f9',
           color: '#334155',
           marginBottom: '20px'
@@ -166,7 +184,7 @@ export default function Consulta({ paciente, volver }) {
               setMensaje('');
             }}
             style={{
-              ...boton,
+              ...estiloBoton,
               background:
                 pestana === id ? '#2563eb' : '#f1f5f9',
               color:
@@ -255,7 +273,7 @@ export default function Consulta({ paciente, volver }) {
             <button
               type="submit"
               style={{
-                ...boton,
+                ...estiloBoton,
                 opacity: mensaje.trim() ? 1 : 0.5
               }}
               disabled={!mensaje.trim()}
@@ -299,7 +317,7 @@ export default function Consulta({ paciente, volver }) {
 
               <button
                 style={{
-                  ...boton,
+                  ...estiloBoton,
                   background: solicitudes.includes(nombre)
                     ? '#e2e8f0'
                     : '#2563eb',
