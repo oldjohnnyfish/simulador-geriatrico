@@ -48,30 +48,70 @@ export default function Consulta({ paciente, volver }) {
     familiar: []
   });
   const [solicitudes, setSolicitudes] = useState([]);
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState('');
 
-  const enviar = (e) => {
+  const enviar = async (e) => {
     e.preventDefault();
+
     const texto = mensaje.trim();
-    if (!texto) return;
+
+    if (!texto || cargando) return;
+
+    const canal = pestana;
+
+    setError('');
+    setMensaje('');
+    setCargando(true);
 
     setConversaciones((prev) => ({
       ...prev,
-      [pestana]: [
-        ...prev[pestana],
-        { autor: 'estudiante', texto },
-        {
-          autor: 'sistema',
-          texto:
-            'La respuesta del paciente virtual estará disponible cuando conectemos Gemini.'
-        }
+      [canal]: [
+        ...prev[canal],
+        { autor: 'estudiante', texto }
       ]
     }));
 
-    setMensaje('');
+    try {
+      const respuesta = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          mensaje: texto
+        })
+      });
+
+      const datos = await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(
+          datos.error || 'Error de comunicación'
+        );
+      }
+
+      setConversaciones((prev) => ({
+        ...prev,
+        [canal]: [
+          ...prev[canal],
+          {
+            autor: 'sistema',
+            texto: datos.respuesta
+          }
+        ]
+      }));
+
+    } catch (err) {
+      setError(err.message || 'Error desconocido');
+    } finally {
+      setCargando(false);
+    }
   };
 
   const solicitar = (nombre) => {
     if (solicitudes.includes(nombre)) return;
+
     setSolicitudes((prev) => [...prev, nombre]);
   };
 
@@ -176,12 +216,30 @@ export default function Consulta({ paciente, volver }) {
                     ? 'Estudiante'
                     : 'Simulador'}
                 </strong>
+
                 <p style={{ marginBottom: 0 }}>
                   {item.texto}
                 </p>
               </div>
             ))}
+
+            {cargando && (
+              <p style={{ color: '#64748b' }}>
+                El paciente está respondiendo...
+              </p>
+            )}
           </div>
+
+          {error && (
+            <p style={{
+              color: '#b91c1c',
+              background: '#fef2f2',
+              padding: '12px',
+              borderRadius: '9px'
+            }}>
+              {error}
+            </p>
+          )}
 
           <form
             onSubmit={enviar}
@@ -191,6 +249,8 @@ export default function Consulta({ paciente, volver }) {
               value={mensaje}
               onChange={(e) => setMensaje(e.target.value)}
               placeholder="Escribe tu pregunta..."
+              disabled={cargando}
+              maxLength={1500}
               style={{
                 flex: 1,
                 minWidth: 0,
@@ -203,7 +263,7 @@ export default function Consulta({ paciente, volver }) {
             <button
               type="submit"
               style={boton}
-              disabled={!mensaje.trim()}
+              disabled={!mensaje.trim() || cargando}
             >
               <Send size={18} />
               Enviar
@@ -270,11 +330,13 @@ export default function Consulta({ paciente, volver }) {
               borderRadius: '10px'
             }}>
               <strong>Solicitudes registradas:</strong>
+
               <ul>
                 {solicitudes.map((s) => (
                   <li key={s}>{s}</li>
                 ))}
               </ul>
+
               <p style={{ fontSize: '13px' }}>
                 Los resultados estarán disponibles
                 cuando incorporemos los casos clínicos.
