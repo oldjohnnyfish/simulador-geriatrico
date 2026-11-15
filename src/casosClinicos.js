@@ -1,13 +1,11 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Fichas clínicas estructuradas
+ * Casos clínicos ficticios - Versión 2
  *
- * Datos ficticios para uso educativo.
- *
- * IMPORTANTE:
- * No mostrar el diagnóstico ni la información
- * reservada directamente al estudiante.
+ * Datos para simulación educativa.
+ * La información clínica debe revelarse
+ * progresivamente durante la entrevista.
  */
 
 export const casosClinicos = {
@@ -41,7 +39,7 @@ export const casosClinicos = {
 
       cronologia: {
         paciente:
-          'Comencé a notar los olvidos hace aproximadamente catorce meses.',
+          'Comencé a notar los olvidos hace aproximadamente catorce meses. No fue algo repentino.',
         familiar:
           'Los primeros cambios aparecieron hace poco más de un año y han sido graduales.'
       },
@@ -51,6 +49,27 @@ export const casosClinicos = {
           'A veces olvido dónde dejé mis llaves o alguna cita. Utilizo una agenda para organizarme.',
         familiar:
           'Tiene algunos olvidos recientes, pero suele recordar con pistas o al revisar sus anotaciones.'
+      },
+
+      atencion: {
+        paciente:
+          'Puedo seguir una conversación y leer sin mayores dificultades. A veces me distraigo si hay mucho ruido.',
+        familiar:
+          'No he notado dificultades importantes para mantener la atención.'
+      },
+
+      funcionesEjecutivas: {
+        paciente:
+          'Las tareas complicadas me toman un poco más de tiempo, pero todavía puedo organizar mis actividades.',
+        familiar:
+          'En ocasiones tarda más en planificar algo nuevo, aunque finalmente consigue hacerlo por su cuenta.'
+      },
+
+      visuoespacial: {
+        paciente:
+          'No he tenido problemas para reconocer lugares ni para encontrar el camino a casa.',
+        familiar:
+          'No hemos observado dificultades para orientarse en espacios conocidos.'
       },
 
       funcionalidad: {
@@ -71,12 +90,12 @@ export const casosClinicos = {
         paciente:
           'Tomo medicamento para controlar mi presión arterial y yo misma organizo mis tomas.',
         familiar:
-          'Ella se encarga de sus medicamentos.'
+          'Ella se encarga de sus medicamentos y no hemos detectado errores importantes.'
       },
 
       antecedentes: {
         paciente:
-          'Tengo hipertensión arterial y recibo tratamiento.',
+          'Tengo hipertensión arterial y recibo tratamiento. No recuerdo otros problemas médicos importantes.',
         familiar:
           'Sabemos que tiene hipertensión arterial controlada.'
       },
@@ -97,9 +116,9 @@ export const casosClinicos = {
 
       audicion: {
         paciente:
-          'Me cuesta escuchar cuando hay mucho ruido.',
+          'Me cuesta escuchar cuando hay mucho ruido, sobre todo si hablan varias personas.',
         familiar:
-          'Tiene cierta dificultad para escuchar cuando hablan varias personas.'
+          'Tiene cierta dificultad para escuchar en ambientes ruidosos.'
       },
 
       lenguaje: {
@@ -113,35 +132,129 @@ export const casosClinicos = {
         paciente:
           'Estudié dieciséis años y actualmente estoy jubilada.',
         familiar:
-          'Tiene dieciséis años de escolaridad.'
+          'Tiene dieciséis años de escolaridad y está jubilada.'
       },
 
       sueno: {
         paciente:
-          'No he notado cambios importantes en mi sueño.',
+          'Duermo alrededor de siete horas. En ocasiones despierto durante la noche, pero generalmente descanso bien.',
         familiar:
-          'No conozco problemas importantes relacionados con el sueño.'
+          'No conocemos alteraciones importantes del sueño.'
       },
 
       caidas: {
         paciente:
-          'No recuerdo haber tenido caídas recientes.',
+          'No he tenido caídas durante el último año.',
         familiar:
           'No tenemos conocimiento de caídas recientes.'
+      },
+
+      nutricion: {
+        paciente:
+          'Como tres veces al día y no he notado que haya bajado de peso sin proponérmelo.',
+        familiar:
+          'Mantiene su alimentación habitual y no hemos observado pérdida de peso importante.'
+      },
+
+      movilidad: {
+        paciente:
+          'Salgo a caminar varias veces por semana. No necesito bastón ni andadera.',
+        familiar:
+          'Camina de manera independiente y sigue saliendo de casa.'
+      },
+
+      fragilidad: {
+        paciente:
+          'Todavía puedo realizar mis actividades y no siento que haya perdido fuerza de manera importante.',
+        familiar:
+          'No hemos observado una disminución importante de su actividad física o su fuerza.'
+      },
+
+      redApoyo: {
+        paciente:
+          'Vivo sola, pero mi hija me visita con frecuencia y hablamos casi todos los días.',
+        familiar:
+          'Soy su hija. La visito varias veces por semana, aunque ella sigue siendo independiente.'
+      },
+
+      sintomasDepresivos: {
+        paciente:
+          'No me siento triste la mayor parte del tiempo. Todavía disfruto mis actividades.',
+        familiar:
+          'No hemos observado tristeza persistente ni abandono de sus actividades.'
+      },
+
+      alucinaciones: {
+        paciente:
+          'No, nunca he visto ni escuchado cosas que otras personas no puedan percibir.',
+        familiar:
+          'No hemos observado alucinaciones.'
+      },
+
+      fluctuaciones: {
+        paciente:
+          'No he tenido episodios en los que esté muy confundida y después vuelva a estar bien.',
+        familiar:
+          'No hemos observado cambios marcados de alerta o confusión durante el día.'
+      },
+
+      conducta: {
+        paciente:
+          'No creo que mi manera de comportarme haya cambiado.',
+        familiar:
+          'Su personalidad y su comportamiento se mantienen prácticamente iguales.'
+      },
+
+      antecedentesFamiliares: {
+        paciente:
+          'Mi madre tuvo problemas de memoria cuando era muy mayor, pero no sé qué diagnóstico tenía.',
+        familiar:
+          'La abuela materna tuvo dificultades de memoria a edad avanzada, sin un diagnóstico confirmado.'
       }
     },
 
-    dominiosPendientes: {
-      atencion: null,
-      funcionesEjecutivas: null,
-      habilidadesVisuoespaciales: null,
-      nutricion: null,
-      fragilidad: null,
-      redApoyo: null,
-      pruebasCognitivas: null,
-      exploracionFisica: null,
-      estudiosComplementarios: null
-    }
+    exploracion: {
+      signosVitales: {
+        presionArterial: '132/78 mmHg',
+        frecuenciaCardiaca: '72 lpm',
+        temperatura: '36.5 °C',
+        saturacionOxigeno: '97%'
+      },
+
+      neurologica:
+        'Sin focalización neurológica evidente en la exploración clínica.',
+
+      marcha:
+        'Marcha independiente, sin alteraciones evidentes.',
+
+      pruebasCognitivas: {
+        moca: {
+          puntuacion: 24,
+          maximo: 30,
+          observacion:
+            'Dificultades predominantes en evocación diferida y algunas tareas ejecutivas.'
+        }
+      }
+    },
+
+    estudios: {
+      biometriaHematica:
+        'Sin alteraciones clínicamente relevantes.',
+      tsh: '2.1 mUI/L',
+      vitaminaB12: '420 pg/mL',
+      resonancia:
+        'Cambios leves de volumen cerebral asociados con la edad, sin lesiones focales relevantes.'
+    },
+
+    objetivosEducativos: [
+      'Caracterizar el inicio y la evolución de los síntomas cognitivos.',
+      'Explorar diferentes dominios cognitivos.',
+      'Distinguir síntomas cognitivos de pérdida de independencia funcional.',
+      'Obtener información de un familiar o informante.',
+      'Identificar factores que pueden modificar el rendimiento cognitivo.',
+      'Interpretar pruebas cognitivas considerando edad y escolaridad.',
+      'Formular un diagnóstico diferencial razonado.'
+    ]
   }
 };
 
