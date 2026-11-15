@@ -4,9 +4,10 @@ import {
   Brain,
   ArrowRight,
   UserRound,
-  Stethoscope,
   ArrowLeft
 } from 'lucide-react';
+
+import Consulta from './Consulta.jsx';
 
 const pacientes = [
   {
@@ -126,7 +127,10 @@ export default function App() {
 
             <h1>Simulador de Consulta Geriátrica</h1>
 
-            <p style={{ color: '#64748b', lineHeight: 1.6 }}>
+            <p style={{
+              color: '#64748b',
+              lineHeight: 1.6
+            }}>
               Entrenamiento en evaluación cognitiva y
               diagnóstico diferencial de demencias.
             </p>
@@ -251,55 +255,14 @@ export default function App() {
 
         {pantalla === 'consulta' &&
           pacienteSeleccionado && (
-          <div style={styles.tarjeta}>
-            <Stethoscope
-              size={42}
-              color="#2563eb"
-            />
-
-            <h1>Consulta geriátrica</h1>
-
-            <h2>{pacienteSeleccionado.nombre}</h2>
-
-            <p>
-              Edad: {pacienteSeleccionado.edad} años
-            </p>
-
-            <p>
-              <strong>Motivo de consulta:</strong>{' '}
-              {pacienteSeleccionado.motivo}
-            </p>
-
-            <div style={{
-              background: '#eff6ff',
-              padding: '20px',
-              borderRadius: '12px',
-              margin: '24px 0'
-            }}>
-              <p>
-                La entrevista virtual de este paciente
-                estará disponible próximamente.
-              </p>
-
-              <p style={{ color: '#64748b' }}>
-                Aquí incorporaremos la conversación
-                con el paciente y el familiar,
-                las pruebas cognitivas,
-                la exploración clínica
-                y los estudios complementarios.
-              </p>
-            </div>
-
-            <button
-              style={styles.botonSecundario}
-              onClick={() =>
-                setPantalla('pacientes')
-              }
-            >
-              <ArrowLeft size={18} />
-              Volver a pacientes
-            </button>
-          </div>
+          <Consulta
+            key={pacienteSeleccionado.id}
+            paciente={pacienteSeleccionado}
+            volver={() => {
+              setPacienteSeleccionado(null);
+              setPantalla('pacientes');
+            }}
+          />
         )}
 
         <p style={{
