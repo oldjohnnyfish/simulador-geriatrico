@@ -9,6 +9,8 @@ import {
   ClipboardList
 } from 'lucide-react';
 
+import { responderEntrevista } from './motorEntrevista.js';
+
 const exploraciones = [
   'Signos vitales',
   'Exploración neurológica',
@@ -43,70 +45,54 @@ const boton = {
 export default function Consulta({ paciente, volver }) {
   const [pestana, setPestana] = useState('paciente');
   const [mensaje, setMensaje] = useState('');
+
   const [conversaciones, setConversaciones] = useState({
     paciente: [],
     familiar: []
   });
-  const [solicitudes, setSolicitudes] = useState([]);
-  const [cargando, setCargando] = useState(false);
-  const [error, setError] = useState('');
 
-  const enviar = async (e) => {
+  const [solicitudes, setSolicitudes] = useState([]);
+  const [temasExplorados, setTemasExplorados] = useState([]);
+
+  const enviar = (e) => {
     e.preventDefault();
 
     const texto = mensaje.trim();
 
-    if (!texto || cargando) return;
+    if (!texto) return;
 
     const canal = pestana;
 
-    setError('');
-    setMensaje('');
-    setCargando(true);
+    const resultado = responderEntrevista({
+      pacienteId: paciente.id,
+      interlocutor: canal,
+      mensaje: texto
+    });
 
     setConversaciones((prev) => ({
       ...prev,
       [canal]: [
         ...prev[canal],
-        { autor: 'estudiante', texto }
+        {
+          autor: 'estudiante',
+          texto
+        },
+        {
+          autor: 'sistema',
+          texto: resultado.respuesta
+        }
       ]
     }));
 
-    try {
-      const respuesta = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          mensaje: texto
-        })
-      });
-
-      const datos = await respuesta.json();
-
-      if (!respuesta.ok) {
-        throw new Error(
-          datos.error || 'Error de comunicación'
-        );
-      }
-
-      setConversaciones((prev) => ({
-        ...prev,
-        [canal]: [
-          ...prev[canal],
-          {
-            autor: 'sistema',
-            texto: datos.respuesta
-          }
-        ]
-      }));
-
-    } catch (err) {
-      setError(err.message || 'Error desconocido');
-    } finally {
-      setCargando(false);
+    if (resultado.reconocido && resultado.tema) {
+      setTemasExplorados((prev) =>
+        prev.includes(resultado.tema)
+          ? prev
+          : [...prev, resultado.tema]
+      );
     }
+
+    setMensaje('');
   };
 
   const solicitar = (nombre) => {
@@ -116,10 +102,26 @@ export default function Consulta({ paciente, volver }) {
   };
 
   const pestanas = [
-    { id: 'paciente', nombre: 'Paciente', Icono: UserRound },
-    { id: 'familiar', nombre: 'Familiar', Icono: Users },
-    { id: 'exploracion', nombre: 'Exploración', Icono: Stethoscope },
-    { id: 'estudios', nombre: 'Estudios', Icono: ClipboardList }
+    {
+      id: 'paciente',
+      nombre: 'Paciente',
+      Icono: UserRound
+    },
+    {
+      id: 'familiar',
+      nombre: 'Familiar',
+      Icono: Users
+    },
+    {
+      id: 'exploracion',
+      nombre: 'Exploración',
+      Icono: Stethoscope
+    },
+    {
+      id: 'estudios',
+      nombre: 'Estudios',
+      Icono: ClipboardList
+    }
   ];
 
   return (
@@ -159,7 +161,10 @@ export default function Consulta({ paciente, volver }) {
         {pestanas.map(({ id, nombre, Icono }) => (
           <button
             key={id}
-            onClick={() => setPestana(id)}
+            onClick={() => {
+              setPestana(id);
+              setMensaje('');
+            }}
             style={{
               ...boton,
               background:
@@ -214,7 +219,9 @@ export default function Consulta({ paciente, volver }) {
                 <strong>
                   {item.autor === 'estudiante'
                     ? 'Estudiante'
-                    : 'Simulador'}
+                    : pestana === 'paciente'
+                      ? paciente.nombre
+                      : 'Familiar'}
                 </strong>
 
                 <p style={{ marginBottom: 0 }}>
@@ -222,34 +229,19 @@ export default function Consulta({ paciente, volver }) {
                 </p>
               </div>
             ))}
-
-            {cargando && (
-              <p style={{ color: '#64748b' }}>
-                El paciente está respondiendo...
-              </p>
-            )}
           </div>
-
-          {error && (
-            <p style={{
-              color: '#b91c1c',
-              background: '#fef2f2',
-              padding: '12px',
-              borderRadius: '9px'
-            }}>
-              {error}
-            </p>
-          )}
 
           <form
             onSubmit={enviar}
-            style={{ display: 'flex', gap: '10px' }}
+            style={{
+              display: 'flex',
+              gap: '10px'
+            }}
           >
             <input
               value={mensaje}
               onChange={(e) => setMensaje(e.target.value)}
               placeholder="Escribe tu pregunta..."
-              disabled={cargando}
               maxLength={1500}
               style={{
                 flex: 1,
@@ -262,8 +254,11 @@ export default function Consulta({ paciente, volver }) {
 
             <button
               type="submit"
-              style={boton}
-              disabled={!mensaje.trim() || cargando}
+              style={{
+                ...boton,
+                opacity: mensaje.trim() ? 1 : 0.5
+              }}
+              disabled={!mensaje.trim()}
             >
               <Send size={18} />
               Enviar
@@ -338,8 +333,8 @@ export default function Consulta({ paciente, volver }) {
               </ul>
 
               <p style={{ fontSize: '13px' }}>
-                Los resultados estarán disponibles
-                cuando incorporemos los casos clínicos.
+                Los resultados específicos de cada caso
+                se incorporarán posteriormente.
               </p>
             </div>
           )}
