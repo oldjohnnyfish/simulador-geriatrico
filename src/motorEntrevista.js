@@ -1,15 +1,13 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor gratuito de entrevistas - Versión 5
+ * Motor gratuito de entrevistas - Versión 6
  *
- * Incluye:
- * - Reconocimiento de preguntas clínicas
- * - Respuestas desde casosClinicos.js
- * - Preguntas de seguimiento
- * - Contexto conversacional
+ * Reconocimiento de temas clínicos y preguntas
+ * de seguimiento contextualizadas.
  *
- * No utiliza servicios externos.
+ * Las respuestas provienen de casosClinicos.js.
+ * No utiliza APIs ni servicios externos.
  */
 
 import { obtenerCasoClinico } from './casosClinicos.js';
@@ -25,13 +23,6 @@ function normalizar(texto) {
 }
 
 const temas = [
-  {
-    id: 'cronologia',
-    patrones: [
-      /\b(desde cuando|hace cuanto|cuanto tiempo|cuando empezo|cuando inicio|cuando comenzaron|desde hace cuanto)\b/,
-      /\b(cuando noto|cuando aparecieron|desde que edad)\b/
-    ]
-  },
   {
     id: 'antecedentesFamiliares',
     patrones: [
@@ -193,6 +184,13 @@ const temas = [
     patrones: [
       /\b(que le trae|motivo de consulta|por que viene|que le pasa|en que puedo ayudar|cual es su problema)\b/
     ]
+  },
+  {
+    id: 'cronologia',
+    patrones: [
+      /\b(desde cuando|hace cuanto|cuanto tiempo|cuando empezo|cuando inicio|cuando comenzaron|desde hace cuanto)\b/,
+      /\b(cuando noto|cuando aparecieron|desde que edad)\b/
+    ]
   }
 ];
 
@@ -202,72 +200,51 @@ function identificarTema(pregunta) {
   ) || null;
 }
 
-/*
- * Respuestas de seguimiento.
- * Por ahora corresponden a Elena Martínez.
- */
-const seguimientosElena = {
-  memoria: {
-    ejemplo: {
-      paciente:
-        'Por ejemplo, a veces no recuerdo dónde dejé las llaves o se me pasa alguna cita.',
-      familiar:
-        'Por ejemplo, en ocasiones no recuerda dónde dejó sus cosas o algún compromiso.'
-    },
-    solucion: {
-      paciente:
-        'Empecé a utilizar una agenda para anotar mis compromisos y eso me ayuda bastante.',
-      familiar:
-        'Utiliza una agenda y notas para organizarse. Hasta ahora le han funcionado bien.'
-    }
+const tiposSeguimiento = [
+  {
+    id: 'ejemplo',
+    patrones: [
+      /\b(ejemplo|ejemplos|puede explicarme mejor|a que se refiere|como por ejemplo)\b/
+    ]
   },
-
-  funcionesEjecutivas: {
-    ejemplo: {
-      paciente:
-        'Cuando tengo que organizar varias cosas nuevas, a veces necesito más tiempo para decidir por dónde empezar.',
-      familiar:
-        'Cuando tiene que organizar algo complicado, suele tardar un poco más, pero lo resuelve sola.'
-    }
+  {
+    id: 'solucion',
+    patrones: [
+      /\b(como lo resuelve|como lo soluciona|que hace para evitarlo|como se organiza|como lo maneja)\b/
+    ]
   },
-
-  audicion: {
-    ejemplo: {
-      paciente:
-        'Cuando estoy en una reunión y todos hablan al mismo tiempo, me cuesta seguir la conversación.',
-      familiar:
-        'En reuniones familiares a veces necesita que le repitamos lo que dijimos.'
-    }
+  {
+    id: 'frecuencia',
+    patrones: [
+      /\b(con que frecuencia|cada cuanto|que tan seguido|cuantas veces|le pasa seguido|le sucede seguido)\b/
+    ]
   },
-
-  animo: {
-    ejemplo: {
-      paciente:
-        'Me preocupa que los olvidos empeoren, aunque sigo disfrutando mis actividades.',
-      familiar:
-        'A veces expresa preocupación por su memoria, pero mantiene sus actividades habituales.'
-    }
+  {
+    id: 'evolucion',
+    patrones: [
+      /\b(ha empeorado|ha progresado|ha aumentado|ha cambiado con el tiempo|se ha agravado|ha ido empeorando)\b/,
+      /\b(desde cuando|hace cuanto|cuanto tiempo|cuando empezo|desde hace cuanto)\b/
+    ]
+  },
+  {
+    id: 'repercusion',
+    patrones: [
+      /\b(afecta sus actividades|afecta su vida|afecta su independencia|le impide|le dificulta|consecuencias|repercusion|impacto en su vida)\b/,
+      /\b(necesita ayuda por eso|ha dejado de hacer cosas|puede seguir haciendo sus actividades)\b/
+    ]
   }
-};
+];
 
 function identificarSeguimiento(pregunta) {
-  if (
-    /\b(ejemplo|ejemplos|como por ejemplo|puede explicarme mejor|a que se refiere)\b/.test(
-      pregunta
-    )
-  ) {
-    return 'ejemplo';
-  }
+  return tiposSeguimiento.find((tipo) =>
+    tipo.patrones.some((patron) => patron.test(pregunta))
+  )?.id || null;
+}
 
-  if (
-    /\b(como lo resuelve|como lo soluciona|que hace para evitarlo|como se organiza|como lo maneja)\b/.test(
-      pregunta
-    )
-  ) {
-    return 'solucion';
-  }
-
-  return null;
+function respuestaNoDisponible(canal) {
+  return canal === 'paciente'
+    ? 'No sabría darle ese detalle con precisión.'
+    : 'No tenemos información suficiente para precisar ese aspecto.';
 }
 
 export function responderEntrevista({
@@ -300,7 +277,6 @@ export function responderEntrevista({
     };
   }
 
-  // Saludos
   if (
     /^(hola|buenos dias|buenas tardes|buenas noches)\b/.test(
       pregunta
@@ -316,7 +292,6 @@ export function responderEntrevista({
     };
   }
 
-  // Despedidas
   if (
     /\b(adios|hasta luego|muchas gracias|gracias por su tiempo)\b/.test(
       pregunta
@@ -332,44 +307,63 @@ export function responderEntrevista({
     };
   }
 
-  // Seguimientos basados en el tema anterior
   const tipoSeguimiento = identificarSeguimiento(pregunta);
+  const temaExplicito = identificarTema(pregunta);
 
-  if (
-    pacienteId === 'caso-01' &&
-    ultimoTema &&
-    tipoSeguimiento
-  ) {
-    const respuestaSeguimiento =
-      seguimientosElena[ultimoTema]?.[tipoSeguimiento]?.[canal];
+  /*
+   * Si hay un seguimiento y un tema explícito,
+   * utilizar el tema explícito, salvo que se trate
+   * de una referencia temporal al tema anterior.
+   */
+  if (tipoSeguimiento) {
+    let temaContextual = ultimoTema;
 
-    if (respuestaSeguimiento) {
+    if (
+      temaExplicito &&
+      temaExplicito.id !== 'cronologia'
+    ) {
+      temaContextual = temaExplicito.id;
+    }
+
+    if (temaContextual) {
+      const respuesta =
+        caso.seguimientos?.[temaContextual]
+          ?.[tipoSeguimiento]?.[canal];
+
+      if (respuesta) {
+        return {
+          respuesta,
+          tema: temaContextual,
+          reconocido: true,
+          seguimiento: true
+        };
+      }
+
       return {
-        respuesta: respuestaSeguimiento,
-        tema: ultimoTema,
+        respuesta: respuestaNoDisponible(canal),
+        tema: temaContextual,
         reconocido: true,
-        seguimiento: true
+        seguimiento: true,
+        datoDisponible: false
       };
     }
   }
 
   // Pregunta clínica principal
-  const tema = identificarTema(pregunta);
-
-  if (tema) {
-    const informacion = caso.entrevista?.[tema.id];
+  if (temaExplicito) {
+    const informacion =
+      caso.entrevista?.[temaExplicito.id];
 
     if (informacion?.[canal]) {
       return {
         respuesta: informacion[canal],
-        tema: tema.id,
+        tema: temaExplicito.id,
         reconocido: true,
         seguimiento: false
       };
     }
   }
 
-  // Pregunta no reconocida
   return {
     respuesta:
       canal === 'paciente'
