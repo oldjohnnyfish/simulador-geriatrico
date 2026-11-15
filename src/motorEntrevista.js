@@ -1,12 +1,15 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor gratuito de entrevistas - Versión 4.1
+ * Motor gratuito de entrevistas - Versión 5
  *
- * Reconocimiento de preguntas clínicas en texto libre.
- * Respuestas obtenidas de casosClinicos.js.
+ * Incluye:
+ * - Reconocimiento de preguntas clínicas
+ * - Respuestas desde casosClinicos.js
+ * - Preguntas de seguimiento
+ * - Contexto conversacional
  *
- * No requiere Gemini ni servicios externos.
+ * No utiliza servicios externos.
  */
 
 import { obtenerCasoClinico } from './casosClinicos.js';
@@ -199,10 +202,79 @@ function identificarTema(pregunta) {
   ) || null;
 }
 
+/*
+ * Respuestas de seguimiento.
+ * Por ahora corresponden a Elena Martínez.
+ */
+const seguimientosElena = {
+  memoria: {
+    ejemplo: {
+      paciente:
+        'Por ejemplo, a veces no recuerdo dónde dejé las llaves o se me pasa alguna cita.',
+      familiar:
+        'Por ejemplo, en ocasiones no recuerda dónde dejó sus cosas o algún compromiso.'
+    },
+    solucion: {
+      paciente:
+        'Empecé a utilizar una agenda para anotar mis compromisos y eso me ayuda bastante.',
+      familiar:
+        'Utiliza una agenda y notas para organizarse. Hasta ahora le han funcionado bien.'
+    }
+  },
+
+  funcionesEjecutivas: {
+    ejemplo: {
+      paciente:
+        'Cuando tengo que organizar varias cosas nuevas, a veces necesito más tiempo para decidir por dónde empezar.',
+      familiar:
+        'Cuando tiene que organizar algo complicado, suele tardar un poco más, pero lo resuelve sola.'
+    }
+  },
+
+  audicion: {
+    ejemplo: {
+      paciente:
+        'Cuando estoy en una reunión y todos hablan al mismo tiempo, me cuesta seguir la conversación.',
+      familiar:
+        'En reuniones familiares a veces necesita que le repitamos lo que dijimos.'
+    }
+  },
+
+  animo: {
+    ejemplo: {
+      paciente:
+        'Me preocupa que los olvidos empeoren, aunque sigo disfrutando mis actividades.',
+      familiar:
+        'A veces expresa preocupación por su memoria, pero mantiene sus actividades habituales.'
+    }
+  }
+};
+
+function identificarSeguimiento(pregunta) {
+  if (
+    /\b(ejemplo|ejemplos|como por ejemplo|puede explicarme mejor|a que se refiere)\b/.test(
+      pregunta
+    )
+  ) {
+    return 'ejemplo';
+  }
+
+  if (
+    /\b(como lo resuelve|como lo soluciona|que hace para evitarlo|como se organiza|como lo maneja)\b/.test(
+      pregunta
+    )
+  ) {
+    return 'solucion';
+  }
+
+  return null;
+}
+
 export function responderEntrevista({
   pacienteId,
   interlocutor,
-  mensaje
+  mensaje,
+  ultimoTema = null
 }) {
   const caso = obtenerCasoClinico(pacienteId);
 
@@ -260,7 +332,28 @@ export function responderEntrevista({
     };
   }
 
-  // Identificar el tema clínico
+  // Seguimientos basados en el tema anterior
+  const tipoSeguimiento = identificarSeguimiento(pregunta);
+
+  if (
+    pacienteId === 'caso-01' &&
+    ultimoTema &&
+    tipoSeguimiento
+  ) {
+    const respuestaSeguimiento =
+      seguimientosElena[ultimoTema]?.[tipoSeguimiento]?.[canal];
+
+    if (respuestaSeguimiento) {
+      return {
+        respuesta: respuestaSeguimiento,
+        tema: ultimoTema,
+        reconocido: true,
+        seguimiento: true
+      };
+    }
+  }
+
+  // Pregunta clínica principal
   const tema = identificarTema(pregunta);
 
   if (tema) {
@@ -270,7 +363,8 @@ export function responderEntrevista({
       return {
         respuesta: informacion[canal],
         tema: tema.id,
-        reconocido: true
+        reconocido: true,
+        seguimiento: false
       };
     }
   }
