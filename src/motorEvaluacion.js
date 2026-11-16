@@ -1,18 +1,10 @@
 
-/*
- * Simulador de Consulta Geriátrica
- * Motor de evaluación diagnóstica - Versión 3
- *
- * Correcciones:
- * - Concordancia de género y número.
- * - Negaciones de pérdida funcional.
- * - Expresiones equivalentes.
- * - Detección básica de contradicciones.
- *
- * Evaluación orientativa, gratuita y local.
- */
-
 import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
+
+/*
+ * Motor de evaluación clínica V4
+ * Evaluación local, sin servicios externos.
+ */
 
 function normalizar(texto) {
   return String(texto || '')
@@ -34,13 +26,6 @@ function dividirOraciones(texto) {
 function coincide(texto, patrones) {
   return patrones.some((patron) => patron.test(texto));
 }
-
-/*
- * Cada criterio tiene patrones positivos
- * y patrones contradictorios.
- *
- * Las contradicciones explícitas tienen prioridad.
- */
 
 const reglasClinicas = {
   inicio_evolucion: {
@@ -85,9 +70,10 @@ const reglasClinicas = {
       /\b(actividades de la vida diaria|actividades instrumentales)\s+(conservadas|preservadas|independientes)\b/
     ],
     contradictorios: [
-      /\b(presenta|tiene|existe|hay)\s+(dependencia funcional|perdida de independencia|deterioro funcional)\b/,
-      /\b(dependencia funcional|perdida de independencia|deterioro funcional)\s+(importante|significativ[oa]|establecid[oa])\b/,
-      /\b(no conserva|ha perdido|perdio)\s+(su\s+)?(independencia|autonomia|funcionalidad)\b/,
+      /\b(?<!no\s)(presenta|tiene|existe|hay)\s+(dependencia funcional|perdida de independencia|deterioro funcional)\b/,
+      /\b(?<!sin\s)(dependencia funcional|perdida de independencia|deterioro funcional)\s+(importante|significativ[oa]|establecid[oa])\b/,
+      /\bno conserva\s+(su\s+)?(independencia|autonomia|funcionalidad)\b/,
+      /\b(?<!no\s)(ha perdido|perdio)\s+(su\s+)?(independencia|autonomia|funcionalidad)\b/,
       /\b(dependiente|requiere ayuda)\s+(para|en)\s+(sus\s+)?actividades\b/
     ]
   },
@@ -251,7 +237,7 @@ export function evaluarCaso({
       puntosMaximos: justificacion.puntuacionMaxima,
       criterios,
       advertencia:
-        'La calificación automática es orientativa. El reconocimiento de patrones clínicos no sustituye la valoración docente.'
+        'La calificación automática es orientativa. Las reglas identifican patrones clínicos, pero no sustituyen la valoración docente.'
     },
 
     retroalimentacionFinal:
