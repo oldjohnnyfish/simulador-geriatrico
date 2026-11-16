@@ -2,8 +2,11 @@
 import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
 
 /*
- * Motor de evaluación clínica V4
+ * Motor de evaluación clínica V5
  * Evaluación local, sin servicios externos.
+ *
+ * Corrección V5:
+ * Reconocimiento de "El MoCA es de 24/30".
  */
 
 function normalizar(texto) {
@@ -93,14 +96,14 @@ const reglasClinicas = {
 
   evaluacion_cognitiva: {
     positivos: [
-      /\b(moca|montreal cognitive assessment)\s*(de|:|=|con|fue|obtuvo)?\s*24\s*(\/|de)\s*30\b/,
+      /\b(moca|montreal cognitive assessment)\s*(es\s+de|es|de|:|=|con|fue|obtuvo)?\s*24\s*(\/|de)\s*30\b/,
       /\b24\s*(\/|de)\s*30\s*(en|de|del)\s*(el\s+)?moca\b/,
       /\b(moca|prueba cognitiva|tamizaje cognitivo)\b.{0,75}\b(alterad[oa]|baj[oa]|dificultades|deficit|evocacion|ejecutiv[oa])\b/,
       /\b(evocacion diferida|recuerdo diferido)\s+(alterad[oa]|disminuid[oa]|afectad[oa])\b/
     ],
     contradictorios: [
       /\b(moca|prueba cognitiva|tamizaje cognitivo)\s+(normal|intacto|sin alteraciones)\b/,
-      /\bmoca\s*(de|:|=|con|fue)?\s*30\s*(\/|de)\s*30\b/,
+      /\bmoca\s*(es\s+de|es|de|:|=|con|fue)?\s*30\s*(\/|de)\s*30\b/,
       /\b(no hay|sin)\s+(alteraciones|dificultades)\s+(en\s+)?(el\s+)?moca\b/
     ]
   },
