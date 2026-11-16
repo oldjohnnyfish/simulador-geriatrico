@@ -14,6 +14,7 @@ import {
 import { responderEntrevista } from './motorEntrevista.js';
 import { obtenerCasoClinico } from './casosClinicos.js';
 import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
+import { evaluarCaso } from './motorEvaluacion.js';
 
 const exploraciones = [
   { id: 'signosVitales', nombre: 'Signos vitales' },
@@ -59,7 +60,6 @@ const estiloCampo = {
 
 function obtenerResultadoExploracion(caso, id) {
   const exploracion = caso?.exploracion;
-
   if (!exploracion) return null;
 
   if (id === 'signosVitales') {
@@ -74,13 +74,8 @@ function obtenerResultadoExploracion(caso, id) {
     ].join('\n');
   }
 
-  if (id === 'neurologica') {
-    return exploracion.neurologica || null;
-  }
-
-  if (id === 'marcha') {
-    return exploracion.marcha || null;
-  }
+  if (id === 'neurologica') return exploracion.neurologica || null;
+  if (id === 'marcha') return exploracion.marcha || null;
 
   if (id === 'moca') {
     const moca = exploracion.pruebasCognitivas?.moca;
@@ -98,11 +93,176 @@ function obtenerResultadoExploracion(caso, id) {
 function obtenerResultadoEstudio(caso, id) {
   const resultado = caso?.estudios?.[id];
 
-  if (typeof resultado === 'string' && resultado.trim()) {
-    return resultado;
-  }
+  return typeof resultado === 'string' && resultado.trim()
+    ? resultado
+    : null;
+}
 
-  return null;
+function ResultadoEvaluacion({ resultado }) {
+  const secciones = [
+    {
+      titulo: 'Diagnóstico sindromático',
+      datos: resultado.sindromatico
+    },
+    {
+      titulo: 'Diagnóstico etiológico',
+      datos: resultado.etiologico
+    }
+  ];
+
+  return (
+    <div style={{ marginTop: '28px' }}>
+      <div style={{
+        background: '#eff6ff',
+        border: '1px solid #bfdbfe',
+        borderRadius: '14px',
+        padding: '24px'
+      }}>
+        <h2 style={{ marginTop: 0 }}>
+          Evaluación final
+        </h2>
+
+        <div style={{
+          fontSize: '38px',
+          fontWeight: 700,
+          color: '#1d4ed8'
+        }}>
+          {resultado.puntuacionTotal}/
+          {resultado.puntuacionMaxima}
+        </div>
+
+        <div style={{
+          height: '12px',
+          background: '#dbeafe',
+          borderRadius: '20px',
+          overflow: 'hidden',
+          marginTop: '14px'
+        }}>
+          <div style={{
+            height: '100%',
+            width: `${
+              resultado.puntuacionMaxima > 0
+                ? 100 * resultado.puntuacionTotal /
+                  resultado.puntuacionMaxima
+                : 0
+            }%`,
+            background: '#2563eb'
+          }} />
+        </div>
+      </div>
+
+      {secciones.map(({ titulo, datos }) => (
+        <div key={titulo} style={{
+          padding: '20px 0',
+          borderBottom: '1px solid #e2e8f0'
+        }}>
+          <h3>{titulo}</h3>
+
+          <p>
+            <strong>
+              {datos.puntosObtenidos}/{datos.puntosMaximos}
+              {' '}puntos
+            </strong>
+            {' · '}
+            {datos.correcto
+              ? 'Respuesta correcta'
+              : 'Respuesta incorrecta'}
+          </p>
+
+          <p>{datos.explicacion}</p>
+        </div>
+      ))}
+
+      <div style={{ marginTop: '24px' }}>
+        <h3>
+          Justificación clínica
+        </h3>
+
+        <p>
+          <strong>
+            {resultado.justificacion.puntosObtenidos}/
+            {resultado.justificacion.puntosMaximos}
+            {' '}puntos
+          </strong>
+        </p>
+
+        {resultado.justificacion.criterios.map(
+          (criterio) => (
+            <div key={criterio.id} style={{
+              padding: '14px',
+              marginBottom: '10px',
+              borderRadius: '10px',
+              background: '#f8fafc'
+            }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '12px'
+              }}>
+                <strong>{criterio.nombre}</strong>
+
+                <strong>
+                  {criterio.puntosObtenidos}/
+                  {criterio.puntosMaximos}
+                </strong>
+              </div>
+
+              <p style={{
+                color: criterio.logrado
+                  ? '#166534'
+                  : '#9a3412',
+                marginBottom: '6px'
+              }}>
+                {criterio.logrado
+                  ? 'Concepto identificado por el sistema'
+                  : 'Concepto no identificado por el sistema'}
+              </p>
+
+              <p style={{ marginBottom: 0 }}>
+                {criterio.retroalimentacion}
+              </p>
+            </div>
+          )
+        )}
+
+        <p style={{
+          color: '#64748b',
+          fontSize: '13px'
+        }}>
+          {resultado.justificacion.advertencia}
+        </p>
+      </div>
+
+      {resultado.retroalimentacionFinal && (
+        <div style={{
+          background: '#f8fafc',
+          padding: '20px',
+          borderRadius: '12px',
+          marginTop: '24px'
+        }}>
+          <h3>
+            {resultado.retroalimentacionFinal.titulo}
+          </h3>
+
+          <p>
+            {resultado.retroalimentacionFinal.mensaje}
+          </p>
+
+          <h4>Recomendaciones</h4>
+
+          <ul>
+            {resultado.retroalimentacionFinal.recomendaciones.map(
+              (recomendacion, i) => (
+                <li key={i} style={{ marginBottom: '8px' }}>
+                  {recomendacion}
+                </li>
+              )
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function Consulta({ paciente, volver }) {
@@ -133,6 +293,9 @@ export default function Consulta({ paciente, volver }) {
 
   const [evaluacionEnviada, setEvaluacionEnviada] =
     useState(false);
+
+  const [resultadoEvaluacion, setResultadoEvaluacion] =
+    useState(null);
 
   const caso = obtenerCasoClinico(paciente.id);
   const evaluacion = obtenerEvaluacionClinica(paciente.id);
@@ -171,10 +334,9 @@ export default function Consulta({ paciente, volver }) {
         [canal]: resultado.tema
       }));
 
-      setTemasExplorados((prev) =>
-        prev.includes(resultado.tema)
-          ? prev
-          : [...prev, resultado.tema]
+      setTemasExplorados((prev) => prev.includes(resultado.tema)
+        ? prev
+        : [...prev, resultado.tema]
       );
     }
 
@@ -193,6 +355,8 @@ export default function Consulta({ paciente, volver }) {
     e.preventDefault();
 
     if (
+      evaluacionEnviada ||
+      !evaluacion ||
       !diagnosticoSindromatico ||
       !diagnosticoEtiologico ||
       !justificacionClinica.trim()
@@ -200,6 +364,19 @@ export default function Consulta({ paciente, volver }) {
       return;
     }
 
+    const resultado = evaluarCaso({
+      pacienteId: paciente.id,
+      diagnosticoSindromatico,
+      diagnosticoEtiologico,
+      justificacionClinica
+    });
+
+    if (resultado.error) {
+      window.alert(resultado.error);
+      return;
+    }
+
+    setResultadoEvaluacion(resultado);
     setEvaluacionEnviada(true);
   };
 
@@ -221,13 +398,10 @@ export default function Consulta({ paciente, volver }) {
         : obtenerResultadoEstudio(caso, item.id);
 
     return (
-      <div
-        key={clave}
-        style={{
-          padding: '16px 0',
-          borderBottom: '1px solid #e2e8f0'
-        }}
-      >
+      <div key={clave} style={{
+        padding: '16px 0',
+        borderBottom: '1px solid #e2e8f0'
+      }}>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -344,16 +518,14 @@ export default function Consulta({ paciente, volver }) {
             )}
 
             {conversaciones[pestana].map((item, i) => (
-              <div
-                key={i}
-                style={{
-                  background:
-                    item.autor === 'estudiante' ? '#dbeafe' : '#fff',
-                  padding: '12px',
-                  borderRadius: '10px',
-                  marginBottom: '10px'
-                }}
-              >
+              <div key={i} style={{
+                background: item.autor === 'estudiante'
+                  ? '#dbeafe'
+                  : '#fff',
+                padding: '12px',
+                borderRadius: '10px',
+                marginBottom: '10px'
+              }}>
                 <strong>
                   {item.autor === 'estudiante'
                     ? 'Estudiante'
@@ -390,8 +562,8 @@ export default function Consulta({ paciente, volver }) {
               type="submit"
               style={{
                 ...estiloBoton,
-                opacity:
-                  mensaje.trim() && !evaluacionEnviada ? 1 : 0.5
+                opacity: mensaje.trim() &&
+                  !evaluacionEnviada ? 1 : 0.5
               }}
               disabled={!mensaje.trim() || evaluacionEnviada}
             >
@@ -452,7 +624,10 @@ export default function Consulta({ paciente, volver }) {
 
                 <label
                   htmlFor="diagnostico-sindromatico"
-                  style={{ display: 'block', marginBottom: '9px' }}
+                  style={{
+                    display: 'block',
+                    marginBottom: '9px'
+                  }}
                 >
                   {evaluacion.diagnosticoSindromatico.pregunta}
                 </label>
@@ -467,7 +642,9 @@ export default function Consulta({ paciente, volver }) {
                   required
                   style={estiloCampo}
                 >
-                  <option value="">Selecciona una opción</option>
+                  <option value="">
+                    Selecciona una opción
+                  </option>
 
                   {evaluacion.diagnosticoSindromatico.opciones.map(
                     (opcion) => (
@@ -484,7 +661,10 @@ export default function Consulta({ paciente, volver }) {
 
                 <label
                   htmlFor="diagnostico-etiologico"
-                  style={{ display: 'block', marginBottom: '9px' }}
+                  style={{
+                    display: 'block',
+                    marginBottom: '9px'
+                  }}
                 >
                   {evaluacion.diagnosticoEtiologico.pregunta}
                 </label>
@@ -499,7 +679,9 @@ export default function Consulta({ paciente, volver }) {
                   required
                   style={estiloCampo}
                 >
-                  <option value="">Selecciona una opción</option>
+                  <option value="">
+                    Selecciona una opción
+                  </option>
 
                   {evaluacion.diagnosticoEtiologico.opciones.map(
                     (opcion) => (
@@ -516,7 +698,10 @@ export default function Consulta({ paciente, volver }) {
 
                 <label
                   htmlFor="justificacion-clinica"
-                  style={{ display: 'block', marginBottom: '9px' }}
+                  style={{
+                    display: 'block',
+                    marginBottom: '9px'
+                  }}
                 >
                   {evaluacion.justificacionClinica.pregunta}
                 </label>
@@ -559,35 +744,11 @@ export default function Consulta({ paciente, volver }) {
                   </button>
                 </div>
               ) : (
-                <div style={{
-                  marginTop: '28px',
-                  padding: '20px',
-                  borderRadius: '12px',
-                  background: '#f0fdf4',
-                  border: '1px solid #bbf7d0'
-                }}>
-                  <h3 style={{ marginTop: 0 }}>
-                    <CheckCircle2
-                      size={20}
-                      style={{
-                        verticalAlign: 'middle',
-                        marginRight: '8px'
-                      }}
-                    />
-                    Caso finalizado
-                  </h3>
-
-                  <p>
-                    Tus respuestas han quedado cerradas
-                    en esta sesión.
-                  </p>
-
-                  <p style={{ marginBottom: 0 }}>
-                    La calificación y retroalimentación
-                    detallada se incorporarán en el
-                    siguiente paso.
-                  </p>
-                </div>
+                resultadoEvaluacion && (
+                  <ResultadoEvaluacion
+                    resultado={resultadoEvaluacion}
+                  />
+                )
               )}
             </form>
           )}
