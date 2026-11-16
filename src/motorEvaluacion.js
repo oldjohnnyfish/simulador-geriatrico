@@ -1,10 +1,15 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de evaluación diagnóstica - Versión 2
+ * Motor de evaluación diagnóstica - Versión 3
  *
- * Evaluación orientativa basada en reglas clínicas.
- * No utiliza APIs ni servicios externos.
+ * Correcciones:
+ * - Concordancia de género y número.
+ * - Negaciones de pérdida funcional.
+ * - Expresiones equivalentes.
+ * - Detección básica de contradicciones.
+ *
+ * Evaluación orientativa, gratuita y local.
  */
 
 import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
@@ -22,7 +27,7 @@ function normalizar(texto) {
 function dividirOraciones(texto) {
   return normalizar(texto)
     .split(/[.;:!?\n]+/)
-    .map((parte) => parte.trim())
+    .map((oracion) => oracion.trim())
     .filter(Boolean);
 }
 
@@ -31,26 +36,23 @@ function coincide(texto, patrones) {
 }
 
 /*
- * Los patrones positivos describen el concepto
- * clínico esperado.
+ * Cada criterio tiene patrones positivos
+ * y patrones contradictorios.
  *
- * Los patrones contradictorios identifican
- * interpretaciones incompatibles.
- *
- * Una contradicción explícita tiene prioridad.
+ * Las contradicciones explícitas tienen prioridad.
  */
 
 const reglasClinicas = {
   inicio_evolucion: {
     positivos: [
-      /\b(inicio|comienzo|aparicion)\s+(gradual|insidios[oa]|progresiv[oa])/,
+      /\b(inicio|comienzo|aparicion)\s+(gradual|insidios[oa]|progresiv[oa])\b/,
       /\b(gradual|insidios[oa]|progresiv[oa])\b/,
       /\b(14|catorce)\s+meses\b/,
       /\bmas de un ano\b/,
       /\b(desde hace|evolucion de)\s+\d+\s+meses\b/
     ],
     contradictorios: [
-      /\b(inicio|comienzo|aparicion)\s+(brusc[oa]|subit[oa]|agud[oa])/,
+      /\b(inicio|comienzo|aparicion)\s+(brusc[oa]|subit[oa]|agud[oa])\b/,
       /\b(no|sin)\s+(progresion|evolucion|cambios cognitivos)\b/
     ]
   },
@@ -66,7 +68,7 @@ const reglasClinicas = {
     contradictorios: [
       /\b(no|sin)\s+(presenta|tiene|existen|hay)?\s*(problemas|dificultades|alteraciones|deterioro)\s+(de|en)?\s*(memoria|cognicion)\b/,
       /\b(memoria|cognicion)\s+(normal|intacta|sin alteraciones)\b/,
-      /\b(no hay deterioro cognitivo)\b/
+      /\bno hay deterioro cognitivo\b/
     ]
   },
 
@@ -77,7 +79,9 @@ const reglasClinicas = {
       /\b(independiente|autonoma|autonomo)\s+(para|en|con)\b/,
       /\b(conserva|mantiene|preserva)\s+(su\s+)?(independencia|autonomia|funcionalidad)\b/,
       /\b(sin|no presenta)\s+(perdida de independencia|dependencia funcional|deterioro funcional)\b/,
-      /\b(no ha perdido)\s+(su\s+)?(independencia|autonomia)\b/,
+      /\bno\s+(ha\s+)?perdido\s+(su\s+)?(independencia|autonomia|funcionalidad)\b/,
+      /\bno\s+(ha\s+)?perdido\s+la\s+capacidad\s+de\s+(realizar|hacer)\b/,
+      /\b(no depende|no necesita ayuda)\s+(de terceros\s+)?(para|en)\b/,
       /\b(actividades de la vida diaria|actividades instrumentales)\s+(conservadas|preservadas|independientes)\b/
     ],
     contradictorios: [
@@ -90,9 +94,10 @@ const reglasClinicas = {
 
   informante: {
     positivos: [
-      /\b(corroborad[oa]|confirmad[oa]|referid[oa]|reportad[oa])\s+(por|mediante)\s+(su\s+|un\s+|una\s+)?(hija|hijo|familiar|informante)\b/,
+      /\b(corroborad[oa]s?|confirmad[oa]s?|referid[oa]s?|reportad[oa]s?)\s+(por|mediante)\s+(su\s+|un\s+|una\s+)?(hija|hijo|familiar|informante)\b/,
       /\b(su\s+)?(hija|hijo|familiar|informante)\s+(confirma|corrobora|refiere|reporta|describe|nota|observa)\b/,
-      /\b(informacion|testimonio|reporte)\s+(de|del|por)\s+(la\s+|el\s+|su\s+)?(hija|hijo|familiar|informante)\b/
+      /\b(informacion|testimonio|reporte)\s+(de|del|por)\s+(la\s+|el\s+|su\s+)?(hija|hijo|familiar|informante)\b/,
+      /\b(segun|de acuerdo con)\s+(su\s+|la\s+|el\s+)?(hija|hijo|familiar|informante)\b/
     ],
     contradictorios: [
       /\b(familiar|hija|hijo|informante)\s+(niega|descarta)\s+(los\s+)?(cambios|problemas|sintomas)\s+cognitivos\b/,
@@ -109,7 +114,7 @@ const reglasClinicas = {
     ],
     contradictorios: [
       /\b(moca|prueba cognitiva|tamizaje cognitivo)\s+(normal|intacto|sin alteraciones)\b/,
-      /\b(moca)\s*(de|:|=|con|fue)?\s*30\s*(\/|de)\s*30\b/,
+      /\bmoca\s*(de|:|=|con|fue)?\s*30\s*(\/|de)\s*30\b/,
       /\b(no hay|sin)\s+(alteraciones|dificultades)\s+(en\s+)?(el\s+)?moca\b/
     ]
   },
@@ -146,18 +151,14 @@ function evaluarCriterio(texto, criterio) {
 
   const oraciones = dividirOraciones(texto);
 
-  const tieneContradiccion = oraciones.some((oracion) =>
-    coincide(oracion, reglas.contradictorios)
-  );
-
   const tieneEvidencia = oraciones.some((oracion) =>
     coincide(oracion, reglas.positivos)
   );
 
-  /*
-   * Si se encuentra una contradicción explícita,
-   * no se otorgan puntos por ese criterio.
-   */
+  const tieneContradiccion = oraciones.some((oracion) =>
+    coincide(oracion, reglas.contradictorios)
+  );
+
   const logrado = tieneEvidencia && !tieneContradiccion;
 
   return {
@@ -210,8 +211,7 @@ export function evaluarCaso({
   );
 
   const puntosJustificacion = criterios.reduce(
-    (total, criterio) =>
-      total + criterio.puntosObtenidos,
+    (total, criterio) => total + criterio.puntosObtenidos,
     0
   );
 
@@ -251,7 +251,7 @@ export function evaluarCaso({
       puntosMaximos: justificacion.puntuacionMaxima,
       criterios,
       advertencia:
-        'La calificación automática es orientativa. Las reglas identifican algunas afirmaciones clínicas, pero no sustituyen la valoración docente.'
+        'La calificación automática es orientativa. El reconocimiento de patrones clínicos no sustituye la valoración docente.'
     },
 
     retroalimentacionFinal:
