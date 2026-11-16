@@ -1,10 +1,10 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de evaluación diagnóstica - Versión 1
+ * Motor de evaluación diagnóstica - Versión 2
  *
- * Calificación automática orientativa.
- * Sin APIs ni servicios externos.
+ * Evaluación orientativa basada en reglas clínicas.
+ * No utiliza APIs ni servicios externos.
  */
 
 import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
@@ -14,56 +14,151 @@ function normalizar(texto) {
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s/]/g, ' ')
+    .replace(/[^a-z0-9\s/.,;:!?-]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function escaparRegex(texto) {
-  return texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function dividirOraciones(texto) {
+  return normalizar(texto)
+    .split(/[.;:!?\n]+/)
+    .map((parte) => parte.trim())
+    .filter(Boolean);
 }
 
-function contieneConcepto(texto, concepto) {
-  const expresion = new RegExp(
-    `(^|\\s)${escaparRegex(concepto)}(?=\\s|$)`
-  );
-
-  return expresion.test(texto);
+function coincide(texto, patrones) {
+  return patrones.some((patron) => patron.test(texto));
 }
 
 /*
- * Detecta algunas negaciones cercanas.
- * No sustituye el análisis semántico.
+ * Los patrones positivos describen el concepto
+ * clínico esperado.
+ *
+ * Los patrones contradictorios identifican
+ * interpretaciones incompatibles.
+ *
+ * Una contradicción explícita tiene prioridad.
  */
-function estaNegado(texto, concepto) {
-  const posicion = texto.indexOf(concepto);
 
-  if (posicion < 0) return false;
+const reglasClinicas = {
+  inicio_evolucion: {
+    positivos: [
+      /\b(inicio|comienzo|aparicion)\s+(gradual|insidios[oa]|progresiv[oa])/,
+      /\b(gradual|insidios[oa]|progresiv[oa])\b/,
+      /\b(14|catorce)\s+meses\b/,
+      /\bmas de un ano\b/,
+      /\b(desde hace|evolucion de)\s+\d+\s+meses\b/
+    ],
+    contradictorios: [
+      /\b(inicio|comienzo|aparicion)\s+(brusc[oa]|subit[oa]|agud[oa])/,
+      /\b(no|sin)\s+(progresion|evolucion|cambios cognitivos)\b/
+    ]
+  },
 
-  const anterior = texto
-    .slice(Math.max(0, posicion - 45), posicion)
-    .split(/\s+/)
-    .slice(-5)
-    .join(' ');
+  alteracion_cognitiva: {
+    positivos: [
+      /\b(problemas|dificultades|fallas|alteraciones|deterioro)\s+(de|en|con|la|las)?\s*(memoria|recuerdo|evocacion|cognicion)\b/,
+      /\b(olvidos|olvidadiz[oa])\b/,
+      /\b(dificultades|alteraciones)\s+(ejecutivas|visuoespaciales)\b/,
+      /\b(evocacion diferida|recuerdo diferido)\b/,
+      /\b(deterioro|alteracion)\s+cognitiv[oa]\b/
+    ],
+    contradictorios: [
+      /\b(no|sin)\s+(presenta|tiene|existen|hay)?\s*(problemas|dificultades|alteraciones|deterioro)\s+(de|en)?\s*(memoria|cognicion)\b/,
+      /\b(memoria|cognicion)\s+(normal|intacta|sin alteraciones)\b/,
+      /\b(no hay deterioro cognitivo)\b/
+    ]
+  },
 
-  return /\b(no|sin|niega|ausencia de|carece de)\b/.test(
-    anterior
-  );
-}
+  funcionalidad: {
+    positivos: [
+      /\b(independencia|autonomia)\s+(conservada|preservada|mantenida)\b/,
+      /\b(funcionalidad|funcion)\s+(conservada|preservada|mantenida)\b/,
+      /\b(independiente|autonoma|autonomo)\s+(para|en|con)\b/,
+      /\b(conserva|mantiene|preserva)\s+(su\s+)?(independencia|autonomia|funcionalidad)\b/,
+      /\b(sin|no presenta)\s+(perdida de independencia|dependencia funcional|deterioro funcional)\b/,
+      /\b(no ha perdido)\s+(su\s+)?(independencia|autonomia)\b/,
+      /\b(actividades de la vida diaria|actividades instrumentales)\s+(conservadas|preservadas|independientes)\b/
+    ],
+    contradictorios: [
+      /\b(presenta|tiene|existe|hay)\s+(dependencia funcional|perdida de independencia|deterioro funcional)\b/,
+      /\b(dependencia funcional|perdida de independencia|deterioro funcional)\s+(importante|significativ[oa]|establecid[oa])\b/,
+      /\b(no conserva|ha perdido|perdio)\s+(su\s+)?(independencia|autonomia|funcionalidad)\b/,
+      /\b(dependiente|requiere ayuda)\s+(para|en)\s+(sus\s+)?actividades\b/
+    ]
+  },
+
+  informante: {
+    positivos: [
+      /\b(corroborad[oa]|confirmad[oa]|referid[oa]|reportad[oa])\s+(por|mediante)\s+(su\s+|un\s+|una\s+)?(hija|hijo|familiar|informante)\b/,
+      /\b(su\s+)?(hija|hijo|familiar|informante)\s+(confirma|corrobora|refiere|reporta|describe|nota|observa)\b/,
+      /\b(informacion|testimonio|reporte)\s+(de|del|por)\s+(la\s+|el\s+|su\s+)?(hija|hijo|familiar|informante)\b/
+    ],
+    contradictorios: [
+      /\b(familiar|hija|hijo|informante)\s+(niega|descarta)\s+(los\s+)?(cambios|problemas|sintomas)\s+cognitivos\b/,
+      /\b(no hay|sin)\s+(informante|corroboracion familiar)\b/
+    ]
+  },
+
+  evaluacion_cognitiva: {
+    positivos: [
+      /\b(moca|montreal cognitive assessment)\s*(de|:|=|con|fue|obtuvo)?\s*24\s*(\/|de)\s*30\b/,
+      /\b24\s*(\/|de)\s*30\s*(en|de|del)\s*(el\s+)?moca\b/,
+      /\b(moca|prueba cognitiva|tamizaje cognitivo)\b.{0,75}\b(alterad[oa]|baj[oa]|dificultades|deficit|evocacion|ejecutiv[oa])\b/,
+      /\b(evocacion diferida|recuerdo diferido)\s+(alterad[oa]|disminuid[oa]|afectad[oa])\b/
+    ],
+    contradictorios: [
+      /\b(moca|prueba cognitiva|tamizaje cognitivo)\s+(normal|intacto|sin alteraciones)\b/,
+      /\b(moca)\s*(de|:|=|con|fue)?\s*30\s*(\/|de)\s*30\b/,
+      /\b(no hay|sin)\s+(alteraciones|dificultades)\s+(en\s+)?(el\s+)?moca\b/
+    ]
+  },
+
+  diagnostico_diferencial: {
+    positivos: [
+      /\b(considerar|descartar|evaluar|investigar|explorar)\b.{0,65}\b(delirium|depresion|hipoacusia|audicion|b12|tsh|causas reversibles)\b/,
+      /\b(diagnosticos diferenciales|diagnostico diferencial)\b/,
+      /\b(factores|causas)\s+(modificables|reversibles)\b/,
+      /\b(hipoacusia|deficit auditivo|alteracion auditiva)\s+(puede|podria|contribuye|influir)\b/,
+      /\b(descartar|evaluar)\s+(hipotiroidismo|deficiencia de vitamina b12|depresion)\b/
+    ],
+    contradictorios: [
+      /\b(delirium|depresion|hipotiroidismo|deficiencia de vitamina b12)\s+(confirmad[oa]|demostrad[oa])\b/,
+      /\b(no es necesario|no requiere)\s+(descartar|considerar|evaluar)\s+(otras causas|diagnosticos diferenciales)\b/
+    ]
+  }
+};
 
 function evaluarCriterio(texto, criterio) {
-  const palabras = criterio.palabrasClave || [];
+  const reglas = reglasClinicas[criterio.id];
 
-  const coincidencias = palabras.filter((palabra) => {
-    const concepto = normalizar(palabra);
+  if (!reglas) {
+    return {
+      id: criterio.id,
+      nombre: criterio.nombre,
+      puntosMaximos: criterio.puntos,
+      puntosObtenidos: 0,
+      logrado: false,
+      coincidencias: [],
+      retroalimentacion: criterio.retroalimentacion
+    };
+  }
 
-    return (
-      contieneConcepto(texto, concepto) &&
-      !estaNegado(texto, concepto)
-    );
-  });
+  const oraciones = dividirOraciones(texto);
 
-  const logrado = coincidencias.length > 0;
+  const tieneContradiccion = oraciones.some((oracion) =>
+    coincide(oracion, reglas.contradictorios)
+  );
+
+  const tieneEvidencia = oraciones.some((oracion) =>
+    coincide(oracion, reglas.positivos)
+  );
+
+  /*
+   * Si se encuentra una contradicción explícita,
+   * no se otorgan puntos por ese criterio.
+   */
+  const logrado = tieneEvidencia && !tieneContradiccion;
 
   return {
     id: criterio.id,
@@ -71,7 +166,9 @@ function evaluarCriterio(texto, criterio) {
     puntosMaximos: criterio.puntos,
     puntosObtenidos: logrado ? criterio.puntos : 0,
     logrado,
-    coincidencias,
+    coincidencias: logrado
+      ? ['Concepto clínico identificado']
+      : [],
     retroalimentacion: criterio.retroalimentacion
   };
 }
@@ -108,14 +205,13 @@ export function evaluarCaso({
     ? etiologico.puntuacionMaxima
     : 0;
 
-  const texto = normalizar(justificacionClinica);
-
-  const criterios = justificacion.criterios.map(
-    (criterio) => evaluarCriterio(texto, criterio)
+  const criterios = justificacion.criterios.map((criterio) =>
+    evaluarCriterio(justificacionClinica, criterio)
   );
 
   const puntosJustificacion = criterios.reduce(
-    (total, criterio) => total + criterio.puntosObtenidos,
+    (total, criterio) =>
+      total + criterio.puntosObtenidos,
     0
   );
 
@@ -154,7 +250,8 @@ export function evaluarCaso({
       puntosObtenidos: puntosJustificacion,
       puntosMaximos: justificacion.puntuacionMaxima,
       criterios,
-      advertencia: justificacion.advertencia
+      advertencia:
+        'La calificación automática es orientativa. Las reglas identifican algunas afirmaciones clínicas, pero no sustituyen la valoración docente.'
     },
 
     retroalimentacionFinal:
