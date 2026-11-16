@@ -1,13 +1,46 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Evaluaciones diagnósticas - Versión 1
+ * Evaluaciones diagnósticas - Versión 2
  *
- * Criterios de evaluación para casos ficticios.
- * Retroalimentación al finalizar el caso.
- *
- * No utiliza servicios externos.
+ * Catálogo único de diagnósticos etiológicos.
+ * Evaluación local, sin servicios externos.
  */
+
+export const opcionesEtiologicas = [
+  {
+    id: 'etiologia_no_establecida',
+    texto: 'Etiología aún no establecida'
+  },
+  {
+    id: 'alzheimer_confirmado',
+    texto: 'Enfermedad de Alzheimer'
+  },
+  {
+    id: 'vascular_confirmado',
+    texto: 'Deterioro cognitivo de origen vascular'
+  },
+  {
+    id: 'cuerpos_lewy',
+    texto: 'Enfermedad con cuerpos de Lewy'
+  },
+  {
+    id: 'frontotemporal',
+    texto: 'Degeneración lobar frontotemporal'
+  },
+  {
+    id: 'demencia_rapidamente_progresiva',
+    texto: 'Demencia rápidamente progresiva'
+  },
+  {
+    id: 'demencia_mixta',
+    texto: 'Demencia mixta'
+  },
+  {
+    id: 'otras_causas',
+    texto: 'Otras causas de deterioro cognitivo'
+  }
+];
 
 export const evaluacionesClinicas = {
   'caso-01': {
@@ -55,28 +88,7 @@ export const evaluacionesClinicas = {
       pregunta:
         '¿Cuál es la interpretación etiológica más apropiada?',
 
-      opciones: [
-        {
-          id: 'alzheimer_confirmado',
-          texto:
-            'Enfermedad de Alzheimer confirmada'
-        },
-        {
-          id: 'vascular_confirmado',
-          texto:
-            'Deterioro cognitivo de etiología vascular confirmada'
-        },
-        {
-          id: 'etiologia_no_establecida',
-          texto:
-            'Etiología aún no establecida; considerar enfermedad de Alzheimer prodrómica entre los diagnósticos diferenciales'
-        },
-        {
-          id: 'delirium_infeccioso',
-          texto:
-            'Delirium secundario a infección'
-        }
-      ],
+      opciones: opcionesEtiologicas,
 
       respuestaCorrecta: 'etiologia_no_establecida',
 
@@ -166,7 +178,8 @@ export const evaluacionesClinicas = {
         },
         {
           id: 'diagnostico_diferencial',
-          nombre: 'Consideración de diagnósticos diferenciales y factores modificables',
+          nombre:
+            'Consideración de diagnósticos diferenciales y factores modificables',
           puntos: 8,
           palabrasClave: [
             'delirium',
@@ -188,8 +201,7 @@ export const evaluacionesClinicas = {
     },
 
     retroalimentacionFinal: {
-      titulo:
-        'Evaluación de razonamiento clínico',
+      titulo: 'Evaluación de razonamiento clínico',
 
       mensaje:
         'La integración diagnóstica debe considerar los síntomas, su evolución, el funcionamiento cotidiano, la información del familiar y los resultados de la evaluación cognitiva.',
