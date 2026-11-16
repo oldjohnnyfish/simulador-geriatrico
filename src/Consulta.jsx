@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   ArrowLeft,
@@ -15,6 +14,37 @@ import { responderEntrevista } from './motorEntrevista.js';
 import { obtenerCasoClinico } from './casosClinicos.js';
 import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
 import { evaluarCaso } from './motorEvaluacion.js';
+
+// Opciones adicionales para los seis escenarios docentes.
+// Se conservan las opciones originales y sus identificadores,
+// para no alterar la evaluación automática de Elena.
+const diagnosticosEtiologicosAdicionales = [
+  { id: 'alzheimer', texto: 'Enfermedad de Alzheimer' },
+  { id: 'vascular', texto: 'Deterioro cognitivo de origen vascular' },
+  { id: 'cuerpos_lewy', texto: 'Enfermedad con cuerpos de Lewy' },
+  { id: 'frontotemporal', texto: 'Degeneración lobar frontotemporal' },
+  { id: 'demencia_rapidamente_progresiva', texto: 'Demencia rápidamente progresiva' },
+  { id: 'demencia_mixta', texto: 'Demencia mixta' },
+  { id: 'otras_causas', texto: 'Otras causas de deterioro cognitivo' }
+];
+
+function obtenerOpcionesEtiologicas(opcionesOriginales = []) {
+  const opciones = [...opcionesOriginales];
+  const normalizarEtiqueta = (valor) => String(valor || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+
+  for (const adicional of diagnosticosEtiologicosAdicionales) {
+    const yaExiste = opciones.some((opcion) =>
+      opcion.id === adicional.id ||
+      normalizarEtiqueta(opcion.texto) === normalizarEtiqueta(adicional.texto)
+    );
+    if (!yaExiste) opciones.push(adicional);
+  }
+  return opciones;
+}
 
 const exploraciones = [
   { id: 'signosVitales', nombre: 'Signos vitales' },
@@ -683,7 +713,9 @@ export default function Consulta({ paciente, volver }) {
                     Selecciona una opción
                   </option>
 
-                  {evaluacion.diagnosticoEtiologico.opciones.map(
+                  {obtenerOpcionesEtiologicas(
+                    evaluacion.diagnosticoEtiologico.opciones
+                  ).map(
                     (opcion) => (
                       <option key={opcion.id} value={opcion.id}>
                         {opcion.texto}
