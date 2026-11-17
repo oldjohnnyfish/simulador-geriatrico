@@ -1,7 +1,7 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de entrevista - Versión 9
+ * Motor de entrevista - Versión 10
  *
  * Reconocimiento flexible de preguntas clínicas.
  * Seguimiento contextual de la conversación.
@@ -57,7 +57,8 @@ const temas = [
   {
     id: 'visuoespacial',
     patrones: [
-      /\b(visuoespacial|espacial|reconocer lugares|reconocer caminos|dibujar figuras|calcular distancias)\b/
+      /\b(visuoespacial|espacial|reconocer lugares|reconocer caminos|dibujar figuras|calcular distancias)\b/,
+      /\b(calcula mal las distancias|problemas para calcular distancias|ubicar objetos|encontrar objetos)\b/
     ]
   },
   {
@@ -73,13 +74,31 @@ const temas = [
       /\b(alucinaciones?|alucina|alucinado)\b/,
       /\b(ve cosas|ha visto cosas|ve personas que no estan|escucha voces|oye voces)\b/,
       /\b(ver|ve|visto|mirar)\b.*\b(cosas|personas|figuras|sombras)\b.*\b(no ven|no ve|no existen|no estan|nadie mas)\b/,
-      /\b(cosas que otras personas no ven|cosas que los demas no ven)\b/
+      /\b(cosas que otras personas no ven|cosas que los demas no ven)\b/,
+      /\b(ve|ha visto|cree ver|dice ver|observa)\b.*\b(personas|animales|ninos|gatos|perros|figuras|sombras)\b/,
+      /\b(personas|animales|figuras|sombras)\b.*\b(que no existen|que no estan|que nadie mas ve|inexistentes)\b/,
+      /\b(visiones|apariciones|imagenes que no existen)\b/
     ]
   },
   {
     id: 'fluctuaciones',
     patrones: [
-      /\b(fluctuaciones?|cambios de alerta|confusion intermitente|momentos de confusion|dias buenos y malos|cambios bruscos de atencion)\b/
+      /\b(fluctuaciones?|fluctua|fluctuan|fluctuante)\b/,
+      /\b(cambios de alerta|confusion intermitente|momentos de confusion|episodios de confusion)\b/,
+      /\b(periodos de confusion|periodos de lucidez|momentos de lucidez)\b/,
+      /\b(dias buenos y malos|dias buenos y dias malos|dias mejores y peores)\b/,
+      /\b(cambios bruscos de atencion|cambios de atencion|cambios en la atencion)\b/,
+      /\b(episodios|momentos|periodos|ratos)\b.*\b(confusion|confundido|confundida|somnolencia|desconexion|ausencia)\b/,
+      /\b(esta|parece|se queda|queda)\b.*\b(ausente|desconectado|desconectada|somnoliento|somnolienta|adormilado|adormilada)\b/,
+      /\b(mira|mirando|mirada)\b.*\b(al vacio|fija|perdida)\b/,
+      /\b(somnolencia diurna|somnolencia durante el dia|sueno durante el dia)\b/,
+      /\b(cambia|cambios|varia|variaciones)\b.*\b(lucidez|claridad mental|estado de alerta|nivel de alerta)\b/,
+      /\b(a veces|por momentos|por ratos)\b.*\b(lucido|lucida|confundido|confundida|ausente|somnoliento|somnolienta)\b/,
+      /\b(de repente|repentinamente)\b.*\b(confundido|confundida|ausente|somnoliento|somnolienta)\b/,
+      /\b(vuelve|regresa|recupera)\b.*\b(normalidad|estar bien|estado habitual|lucidez)\b/,
+      /\b(alterno|alterna|alternan)\b.*\b(confusion|lucidez|atencion|somnolencia)\b/,
+      /\b(despierto|atento|alerta)\b.*\b(somnoliento|confundido|ausente|desconectado)\b/,
+      /\b(somnoliento|confundido|ausente|desconectado)\b.*\b(despierto|atento|alerta)\b/
     ]
   },
   {
@@ -134,7 +153,10 @@ const temas = [
   {
     id: 'movilidad',
     patrones: [
-      /\b(movilidad|caminar|camina|marcha|baston|andadera|ejercicio|actividad fisica)\b/
+      /\b(movilidad|caminar|camina|marcha|baston|andadera|ejercicio|actividad fisica)\b/,
+      /\b(parkinson|parkinsonismo|bradicinesia|rigidez|temblor|pasos cortos|lentitud motora)\b/,
+      /\b(lento|lenta|lentitud)\b.*\b(movimientos?|caminar|marcha)\b/,
+      /\b(iniciar la marcha|dificultad para girar|menos braceo)\b/
     ]
   },
   {
@@ -178,7 +200,11 @@ const temas = [
   {
     id: 'sueno',
     patrones: [
-      /\b(sueno|dormir|duerme|insomnio|pesadillas|descanso)\b/
+      /\b(sueno|dormir|duerme|insomnio|pesadillas|descanso)\b/,
+      /\b(suenos intensos|suenos vividos|actuar los suenos|actua sus suenos)\b/,
+      /\b(grita|gritos|golpea|golpes|patadas|manotazos)\b.*\b(dormido|dormida|durmiendo|noche|suenos)\b/,
+      /\b(dormido|dormida|durmiendo|noche|suenos)\b.*\b(grita|gritos|golpea|golpes|patadas|manotazos)\b/,
+      /\b(trastorno de conducta del sueno rem|conducta del sueno rem)\b/
     ]
   },
   {
@@ -196,14 +222,12 @@ const patronesCronologia = {
     /\b(con que|con cuales)\b.*\b(sintomas|problemas)\b.*\b(empezo|inicio|comenzo)\b/,
     /\b(que|cuales)\b.*\b(sintomas|problemas)\b.*\b(al principio|al inicio)\b/
   ],
-
   primerasLimitaciones: [
     /\b(primera|primeras|primer)\b.*\b(actividad|actividades|dificultad funcional|limitacion)\b/,
     /\b(que dejo de hacer primero|que actividad dejo de hacer)\b/,
     /\b(cuando|desde cuando|hace cuanto)\b.*\b(necesitar ayuda|necesita ayuda|perdio su independencia|dejo de ser independiente)\b/,
     /\b(que actividades dejo de hacer|que empezo a dejar de hacer)\b/
   ],
-
   evolucion: [
     /\b(evolucion|evolucionado|evolucionaron|evolucionando|evoluciono|evolucionan)\b/,
     /\b(progresion|progresado|progresaron|progresivo|progresivamente)\b/,
@@ -216,14 +240,12 @@ const patronesCronologia = {
     /\b(que cambios)\b.*\b(con el tiempo|desde entonces|desde el inicio|desde que)\b/,
     /\b(como ha ido|como han ido|como fue cambiando|como fueron cambiando)\b/
   ],
-
   inicio: [
     /\b(como|de que manera)\b.*\b(comenzo|comenzaron|inicio|iniciaron|empezo|empezaron|arranco)\b/,
     /\b(inicio brusco|inicio gradual|inicio repentino|inicio insidioso)\b/,
     /\b(brusco o gradual|repentino o progresivo|subito o gradual)\b/,
     /\b(de repente|de forma gradual|de manera subita|de forma subita|poco a poco)\b/
   ],
-
   tiempo: [
     /\b(desde cuando|desde hace cuanto|hace cuanto|cuanto tiempo|cuando empezo|cuando inicio|cuando comenzaron|cuando aparecieron)\b/,
     /\b(cuando noto|cuando notaron|desde que edad|cuanto lleva|cuantos meses|cuantos anos)\b/
