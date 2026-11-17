@@ -1,7 +1,7 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Fichas clínicas ficticias - Versión 5
+ * Fichas clínicas ficticias - Versión 6
  * Uso exclusivamente educativo.
  */
 
@@ -942,6 +942,285 @@ export const casosClinicos = {
       'Interpretar el MoCA junto con los hallazgos neurológicos y la escolaridad.',
       'Relacionar las lesiones vasculares de neuroimagen con el patrón clínico y su cronología.',
       'Considerar diagnósticos alternativos y posibles contribuciones mixtas sin atribuir todo deterioro a lesiones incidentales.'
+    ]
+  }
+,
+
+  // CASO 04: JORGE VILLASEÑOR
+  'caso-04': {
+    id: 'caso-04',
+    identidad: {
+      nombre: 'Jorge Villaseñor',
+      edad: 74,
+      escolaridad: 12,
+      ocupacion: 'Técnico electricista jubilado'
+    },
+    presentacion: 'Hombre de 74 años que acude acompañado de su esposa por dificultades de concentración, sueño inquieto y problemas crecientes para realizar actividades cotidianas.',
+    informacionReservada: {
+      diagnostico: 'Trastorno neurocognitivo mayor con características clínicas de demencia con cuerpos de Lewy probable',
+      evolucionMeses: 48,
+      curso: 'Trastorno de conducta del sueño REM probable previo al deterioro cognitivo, seguido de deterioro progresivo con fluctuaciones, alucinaciones visuales y parkinsonismo espontáneo',
+      independenciaFuncional: false
+    },
+    entrevista: {
+      motivo: {
+        paciente: 'Mi esposa dice que a veces estoy distraído y que duermo inquieto. Yo siento que hay días en que me cuesta concentrarme.',
+        familiar: 'Soy su esposa. Desde hace tiempo tiene noches muy inquietas y, últimamente, hay momentos en que parece ausente. Ya no puede organizar algunas cosas sin ayuda.'
+      },
+      cronologia: {
+        paciente: 'No sé exactamente cuándo comenzó. Primero fueron problemas para dormir; después empecé a sentirme más lento para pensar.',
+        familiar: 'Hace unos cuatro años comenzó a moverse y hablar durante los sueños. Hace dos años aparecieron problemas de atención y orientación espacial; hace año y medio notamos fluctuaciones. Las visiones comenzaron hace unos diez meses y la lentitud de movimientos hace unos seis meses.'
+      },
+      memoria: {
+        paciente: 'A veces no recuerdo qué iba a hacer, pero si me dan tiempo o alguna pista puedo acordarme.',
+        familiar: 'Olvida instrucciones cuando está distraído. En días buenos recuerda conversaciones y acontecimientos recientes bastante mejor de lo que parece en días malos.'
+      },
+      atencion: {
+        paciente: 'A ratos me cuesta seguir lo que me dicen, sobre todo si hay varias personas hablando.',
+        familiar: 'Hay momentos en que conversa normalmente y otros en que mira fijamente, tarda mucho en responder o parece somnoliento, incluso el mismo día.'
+      },
+      funcionesEjecutivas: {
+        paciente: 'Me cuesta organizar tareas con varios pasos. Antes reparaba cosas en casa, pero ahora me confundo.',
+        familiar: 'Ha dejado de organizar reparaciones y pagos porque pierde la secuencia de los pasos y necesita supervisión.'
+      },
+      visuoespacial: {
+        paciente: 'A veces calculo mal las distancias o me cuesta encontrar un objeto aunque esté frente a mí.',
+        familiar: 'Se equivoca al calcular distancias y en ocasiones no identifica bien dónde están los objetos. Se desorienta en lugares poco familiares.'
+      },
+      funcionalidad: {
+        paciente: 'Me baño y me visto solo, pero mi esposa me ayuda con las cuentas y las medicinas.',
+        familiar: 'Conserva la mayoría de las actividades básicas, aunque necesita supervisión para medicamentos, finanzas, traslados y tareas de varios pasos.'
+      },
+      finanzas: {
+        paciente: 'Mi esposa se encarga de los pagos porque a veces me equivoco.',
+        familiar: 'Desde hace alrededor de un año dejó de administrar las cuentas por errores de organización y pagos omitidos.'
+      },
+      medicamentos: {
+        paciente: 'Tomo pastillas para la presión. Mi esposa organiza el pastillero.',
+        familiar: 'Tuvo confusiones con horarios y ahora superviso sus medicamentos diariamente.'
+      },
+      antecedentes: {
+        paciente: 'Tengo hipertensión. Nunca me han diagnosticado enfermedad de Parkinson ni he tenido un derrame.',
+        familiar: 'Hipertensión en tratamiento. Sin ictus conocido ni diagnóstico previo de enfermedad de Parkinson. No ha recibido antipsicóticos ni bloqueadores dopaminérgicos.'
+      },
+      orientacion: {
+        paciente: 'Reconozco mi casa y a mi familia. A veces me confundo con la fecha.',
+        familiar: 'Habitualmente reconoce a las personas y los lugares, pero durante sus episodios de menor alerta puede desorientarse temporalmente.'
+      },
+      animo: {
+        paciente: 'Me frustra no poder hacer algunas cosas. No me siento triste todos los días.',
+        familiar: 'Está más apático y menos activo, pero no tiene un episodio depresivo persistente que explique el cuadro.'
+      },
+      audicion: {
+        paciente: 'Escucho bien si me hablan de frente.',
+        familiar: 'Tiene dificultad auditiva leve en lugares ruidosos, pero eso no explica los episodios de desconexión.'
+      },
+      lenguaje: {
+        paciente: 'A veces tardo en responder, aunque sé lo que quiero decir.',
+        familiar: 'Su lenguaje suele ser comprensible; el tiempo de respuesta cambia mucho según el momento del día.'
+      },
+      escolaridad: {
+        paciente: 'Estudié doce años y trabajé como técnico electricista.',
+        familiar: 'Tiene doce años de escolaridad y antes realizaba tareas técnicas complejas sin dificultad.'
+      },
+      sueno: {
+        paciente: 'Tengo sueños muy intensos. Mi esposa dice que hablo y me muevo dormido, pero casi nunca me acuerdo.',
+        familiar: 'Desde hace cuatro años grita, da manotazos y patadas mientras sueña. Una vez cayó de la cama y en otra ocasión me golpeó accidentalmente. Parece actuar el contenido de sus sueños.'
+      },
+      caidas: {
+        paciente: 'Me he tropezado algunas veces. Una vez me caí al levantarme de noche.',
+        familiar: 'Ha tenido tropiezos por lentitud y dificultad al girar. También cayó de la cama durante un episodio nocturno.'
+      },
+      nutricion: {
+        paciente: 'Como bien. A veces tengo estreñimiento.',
+        familiar: 'El apetito es aceptable; refiere estreñimiento desde hace años y no ha perdido peso de forma importante.'
+      },
+      movilidad: {
+        paciente: 'Camino más despacio y me cuesta empezar a moverme o dar la vuelta.',
+        familiar: 'Desde hace unos seis meses camina con pasos cortos, menos braceo y lentitud; no tenía estos síntomas motores años antes del deterioro cognitivo.'
+      },
+      fragilidad: {
+        paciente: 'Hago menos ejercicio porque me siento más lento.',
+        familiar: 'Ha reducido su actividad por la lentitud motora y los problemas cognitivos; no presenta una enfermedad aguda reciente.'
+      },
+      redApoyo: {
+        paciente: 'Vivo con mi esposa y ella me acompaña a las consultas.',
+        familiar: 'Soy su esposa y cuidadora principal. Nuestra hija nos ayuda con compras y traslados.'
+      },
+      sintomasDepresivos: {
+        paciente: 'A veces estoy desanimado, pero todavía disfruto escuchar música y estar con mi familia.',
+        familiar: 'Tiene apatía ocasional, sin tristeza persistente ni una relación temporal que explique los síntomas cognitivos.'
+      },
+      alucinaciones: {
+        paciente: 'A veces creo ver a alguien en la sala o un animal cerca de la puerta. Cuando miro otra vez ya no está. No siempre me asusta.',
+        familiar: 'Desde hace diez meses describe personas desconocidas sentadas en la sala y pequeños animales que nadie más ve. Son imágenes detalladas, recurrentes y ocurren estando despierto.'
+      },
+      fluctuaciones: {
+        paciente: 'Tengo días en que pienso bien y otros en que estoy muy lento o como adormilado.',
+        familiar: 'En un mismo día puede estar conversando con claridad y después pasar una o dos horas somnoliento, mirando al vacío y respondiendo poco. Luego vuelve a su estado habitual, sin fiebre ni enfermedad aguda.'
+      },
+      conducta: {
+        paciente: 'A veces me asusto cuando veo algo extraño, pero no creo haber cambiado mucho de carácter.',
+        familiar: 'Se inquieta ocasionalmente por las visiones. No presenta desinhibición marcada ni pérdida temprana de empatía.'
+      },
+      antecedentesFamiliares: {
+        paciente: 'No recuerdo familiares con enfermedad de Parkinson.',
+        familiar: 'No conocemos antecedentes familiares de parkinsonismo ni de demencia diagnosticada.'
+      }
+    },
+    seguimientos: {
+      cronologia: {
+        ejemplo: {
+          paciente: 'Primero fueron los sueños agitados; después noté que me costaba concentrarme.',
+          familiar: 'El primer síntoma fueron los movimientos durante los sueños, hace cuatro años. Las dificultades cognitivas comenzaron aproximadamente dos años después.'
+        },
+        evolucion: {
+          paciente: 'Los problemas han aumentado poco a poco, aunque tengo ratos buenos y malos.',
+          familiar: 'Tras los sueños actuados aparecieron problemas de atención y espacio; luego fluctuaciones, visiones y finalmente lentitud motora.'
+        },
+        repercusion: {
+          paciente: 'Ahora mi esposa se ocupa de las cuentas y las pastillas.',
+          familiar: 'Ha perdido independencia instrumental y necesita supervisión diaria.'
+        }
+      },
+      sueno: {
+        ejemplo: {
+          paciente: 'He soñado que me persiguen y al despertar mi esposa dice que estaba dando golpes.',
+          familiar: 'Grita y mueve brazos y piernas como si estuviera defendiéndose; una noche cayó de la cama.'
+        },
+        frecuencia: {
+          paciente: 'No sé con qué frecuencia, porque estoy dormido.',
+          familiar: 'Ocurre varias noches por mes, aunque la intensidad varía.'
+        },
+        evolucion: {
+          paciente: 'Mi esposa dice que esto comenzó hace años.',
+          familiar: 'Comenzó hace cuatro años, antes de los problemas de memoria y movimiento.'
+        },
+        repercusion: {
+          paciente: 'Me preocupa lastimarla mientras duermo.',
+          familiar: 'Hemos retirado objetos cercanos a la cama por riesgo de lesiones.'
+        }
+      },
+      fluctuaciones: {
+        ejemplo: {
+          paciente: 'Por la mañana puedo estar bien y más tarde me quedo como ausente.',
+          familiar: 'Ayer conversó normalmente al desayunar y por la tarde estuvo casi dos horas mirando al vacío y respondiendo lentamente; luego se recuperó.'
+        },
+        frecuencia: {
+          paciente: 'Me pasa algunos días.',
+          familiar: 'Los episodios aparecen varias veces por semana y pueden ocurrir en un mismo día.'
+        },
+        evolucion: {
+          paciente: 'Al principio solo me distraía; ahora tengo momentos muy distintos.',
+          familiar: 'Las fluctuaciones claras comenzaron hace aproximadamente dieciocho meses.'
+        },
+        repercusion: {
+          paciente: 'En esos momentos necesito que me repitan las cosas.',
+          familiar: 'No lo dejamos realizar tareas riesgosas cuando está somnoliento o desconectado.'
+        }
+      },
+      alucinaciones: {
+        ejemplo: {
+          paciente: 'He visto a un niño sentado en la sala y a veces un gato junto a la puerta, pero desaparecen.',
+          familiar: 'Describe con detalle personas o animales inexistentes mientras está despierto.'
+        },
+        frecuencia: {
+          paciente: 'No todos los días, pero sí varias veces.',
+          familiar: 'Las visiones ocurren varias veces al mes y últimamente son más frecuentes.'
+        },
+        evolucion: {
+          paciente: 'Creo que comenzaron el año pasado.',
+          familiar: 'Comenzaron hace unos diez meses, después de los cambios cognitivos.'
+        },
+        repercusion: {
+          paciente: 'A veces me sorprenden, pero no siempre me dan miedo.',
+          familiar: 'A veces le generan inquietud; procuramos hablarle con calma y no confrontarlo.'
+        }
+      },
+      movilidad: {
+        ejemplo: {
+          paciente: 'Me cuesta iniciar la marcha y girar rápido.',
+          familiar: 'Camina con pasos cortos, menos movimiento de brazos y lentitud; tarda en levantarse de la silla.'
+        },
+        evolucion: {
+          paciente: 'Me he vuelto más lento desde hace algunos meses.',
+          familiar: 'La lentitud y rigidez aparecieron hace unos seis meses, después del inicio del deterioro cognitivo.'
+        },
+        repercusion: {
+          paciente: 'Evito caminar deprisa porque temo tropezar.',
+          familiar: 'Necesita acompañamiento en trayectos largos y vigilancia por riesgo de caídas.'
+        }
+      },
+      memoria: {
+        ejemplo: {
+          paciente: 'Si estoy distraído pierdo una instrucción, pero con pistas a veces la recuerdo.',
+          familiar: 'En los momentos de buena atención recuerda mejor; la memoria no fue el primer problema.'
+        },
+        evolucion: {
+          paciente: 'Mi concentración ha empeorado poco a poco.',
+          familiar: 'Primero fallaron atención y habilidades visuoespaciales, más que la memoria episódica.'
+        },
+        repercusion: {
+          paciente: 'Necesito que me expliquen las tareas de una en una.',
+          familiar: 'Requiere supervisión para completar tareas de varios pasos.'
+        }
+      },
+      funcionalidad: {
+        ejemplo: {
+          paciente: 'Puedo comer y vestirme solo, pero ya no administro mis cuentas.',
+          familiar: 'Puede realizar actividades básicas, pero necesita ayuda para pagos, medicación y traslados.'
+        },
+        evolucion: {
+          paciente: 'Antes hacía las cuentas y reparaciones de la casa.',
+          familiar: 'La dependencia instrumental se hizo evidente durante el último año.'
+        },
+        repercusion: {
+          paciente: 'Mi esposa revisa las medicinas y las cuentas.',
+          familiar: 'Necesita supervisión cotidiana y no puede gestionar de manera segura todas sus actividades instrumentales.'
+        }
+      },
+      antecedentes: {
+        ejemplo: {
+          paciente: 'Nunca he tenido un diagnóstico de Parkinson ni un infarto cerebral.',
+          familiar: 'No tenía enfermedad de Parkinson conocida antes de los síntomas cognitivos y no toma medicamentos bloqueadores dopaminérgicos.'
+        }
+      }
+    },
+    exploracion: {
+      signosVitales: {
+        presionArterial: '128/76 mmHg',
+        frecuenciaCardiaca: '70 lpm',
+        temperatura: '36.4 °C',
+        saturacionOxigeno: '97%'
+      },
+      neurologica: 'En la consulta se encuentra alerta, con respuesta ocasionalmente lenta. Bradicinesia bilateral leve, rigidez en extremidades superiores y disminución del braceo. Sin temblor de reposo prominente ni focalización piramidal. El parkinsonismo apareció después del inicio de los síntomas cognitivos.',
+      marcha: 'Marcha lenta con pasos cortos, disminución del braceo bilateral y dificultad al girar; sin hemiparesia ni patrón de marcha espástica.',
+      pruebasCognitivas: {
+        moca: {
+          puntuacion: 18,
+          maximo: 30,
+          observacion: 'Dificultades prominentes en atención, funciones ejecutivas y habilidades visuoespaciales; recuerdo diferido relativamente mejor con pistas. El rendimiento puede variar con el estado de alerta. Interpretar según escolaridad y contexto clínico.'
+        }
+      }
+    },
+    estudios: {
+      biometriaHematica: 'Sin anemia ni alteraciones clínicamente relevantes.',
+      quimicaSanguinea: 'Glucosa y función renal sin alteraciones relevantes.',
+      tsh: '2.2 mUI/L',
+      vitaminaB12: '510 pg/mL',
+      resonancia: 'Atrofia cerebral leve inespecífica, sin lesión vascular extensa, masa, hidrocefalia ni lesión aguda que explique el síndrome. La resonancia convencional no confirma ni excluye demencia con cuerpos de Lewy.',
+      polisomnografia: 'No se ha realizado. La historia es sugestiva de trastorno de conducta del sueño REM, pendiente de confirmación polisomnográfica si está indicada.'
+    },
+    objetivosEducativos: [
+      'Investigar la cronología de los síntomas del sueño, cognitivos, perceptivos y motores.',
+      'Reconocer un posible trastorno de conducta del sueño REM como manifestación prodrómica.',
+      'Identificar fluctuaciones cognitivas y diferenciarlas de delirium.',
+      'Explorar alucinaciones visuales recurrentes y bien formadas.',
+      'Identificar parkinsonismo espontáneo y su relación temporal con el deterioro cognitivo.',
+      'Evaluar predominio de alteraciones atencionales, ejecutivas y visuoespaciales.',
+      'Documentar dependencia instrumental para establecer un síndrome demencial.',
+      'Distinguir la demencia con cuerpos de Lewy de enfermedad de Parkinson con demencia, Alzheimer, delirium y causas farmacológicas.',
+      'Reconocer que la polisomnografía puede confirmar el trastorno de conducta del sueño REM y que la evaluación clínica no constituye confirmación neuropatológica.'
     ]
   }
 };
