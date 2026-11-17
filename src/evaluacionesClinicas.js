@@ -1,12 +1,13 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Evaluaciones diagnósticas - Versión 4
+ * Evaluaciones diagnósticas - Versión 5
  *
  * Casos:
  * 01 - Elena Martínez
  * 02 - María Hernández
  * 03 - Roberto Salgado
+ * 04 - Jorge Villaseñor
  *
  * Catálogos diagnósticos compartidos.
  * Evaluación local, sin servicios externos.
@@ -628,6 +629,143 @@ export const evaluacionesClinicas = {
         'Interpretar el MoCA junto con la exploración neurológica y la escolaridad.',
         'Relacionar los hallazgos de neuroimagen con el perfil cognitivo y la cronología.',
         'Considerar patología mixta y otras causas contribuyentes sin asumir que toda lesión vascular explica necesariamente todos los síntomas.'
+      ]
+    }
+  },
+
+  // ==========================================
+  // CASO 04: JORGE VILLASEÑOR
+  // ==========================================
+
+  'caso-04': {
+    pacienteId: 'caso-04',
+
+    configuracion: {
+      retroalimentacion: 'al_finalizar',
+      puntuacionMaxima: 100
+    },
+
+    diagnosticoSindromatico: {
+      puntuacionMaxima: 30,
+      pregunta: '¿Cuál es el diagnóstico sindromático más probable?',
+      opciones: opcionesSindromaticas,
+      respuestaCorrecta: 'demencia',
+      explicacion:
+        'El deterioro cognitivo de Jorge afecta la atención, las funciones ejecutivas y las habilidades visuoespaciales, y compromete su independencia para administrar finanzas, medicamentos y traslados. Esto corresponde a un trastorno neurocognitivo mayor, aunque conserve la mayoría de las actividades básicas.'
+    },
+
+    diagnosticoEtiologico: {
+      puntuacionMaxima: 20,
+      pregunta: '¿Cuál es la interpretación etiológica más apropiada?',
+      opciones: opcionesEtiologicas,
+      respuestaCorrecta: 'cuerpos_lewy',
+      explicacion:
+        'El síndrome clínico es compatible con demencia con cuerpos de Lewy probable: deterioro cognitivo que precede al parkinsonismo espontáneo, fluctuaciones de atención y alerta, alucinaciones visuales recurrentes bien formadas y parkinsonismo espontáneo. Además, la historia sugiere trastorno de conducta del sueño REM, todavía no confirmado mediante polisomnografía. La resonancia inespecífica no confirma ni excluye esta etiología.'
+    },
+
+    justificacionClinica: {
+      puntuacionMaxima: 50,
+      pregunta: 'Justifique su diagnóstico utilizando los hallazgos de la entrevista, la exploración y los estudios complementarios.',
+      criterios: [
+        {
+          id: 'inicio_evolucion',
+          nombre: 'Cronología de síntomas de sueño, cognitivos y motores',
+          puntos: 8,
+          palabrasClave: [
+            'cuatro anos', '4 anos', 'dos anos', '2 anos',
+            '18 meses', 'dieciocho meses', '10 meses', 'diez meses',
+            '6 meses', 'seis meses', 'sueno rem', 'suenos actuados',
+            'trastorno de conducta del sueno rem', 'antes del deterioro cognitivo',
+            'despues del deterioro cognitivo', 'parkinsonismo posterior',
+            'cronologia', 'evolucion'
+          ],
+          retroalimentacion:
+            'La actuación de sueños comenzó hace cuatro años; los síntomas cognitivos aparecieron hace dos años, seguidos por fluctuaciones, alucinaciones visuales y, finalmente, parkinsonismo. El deterioro cognitivo precedió a los síntomas motores.'
+        },
+        {
+          id: 'alteracion_cognitiva',
+          nombre: 'Perfil cognitivo y manifestaciones nucleares',
+          puntos: 8,
+          palabrasClave: [
+            'fluctuaciones', 'fluctuacion', 'atencion', 'alerta',
+            'somnolencia', 'episodios de confusion', 'visuoespacial',
+            'visuoespaciales', 'funciones ejecutivas', 'disfuncion ejecutiva',
+            'alucinaciones visuales', 'alucinaciones', 'personas',
+            'animales', 'parkinsonismo', 'bradicinesia', 'rigidez'
+          ],
+          retroalimentacion:
+            'Predominan dificultades atencionales, ejecutivas y visuoespaciales, con fluctuaciones cognitivas y alucinaciones visuales recurrentes y detalladas. La exploración también identifica parkinsonismo espontáneo.'
+        },
+        {
+          id: 'funcionalidad',
+          nombre: 'Pérdida de independencia instrumental',
+          puntos: 12,
+          palabrasClave: [
+            'dependencia', 'perdida de independencia', 'perdida de autonomia',
+            'deterioro funcional', 'actividades instrumentales', 'aivd',
+            'finanzas', 'cuentas', 'pagos', 'medicamentos', 'traslados',
+            'supervision', 'necesita ayuda', 'actividades basicas',
+            'trastorno neurocognitivo mayor', 'sindrome demencial'
+          ],
+          retroalimentacion:
+            'La supervisión necesaria para finanzas, medicamentos y traslados demuestra pérdida de autonomía instrumental atribuible al deterioro cognitivo, pese a la relativa preservación de actividades básicas.'
+        },
+        {
+          id: 'informante',
+          nombre: 'Aporte de la esposa como informante',
+          puntos: 6,
+          palabrasClave: [
+            'esposa', 'familiar', 'informante', 'heteroanamnesis',
+            'corroborado', 'corrobora', 'cuidadora', 'testimonio familiar',
+            'minimiza'
+          ],
+          retroalimentacion:
+            'La esposa permite reconstruir los episodios nocturnos, las fluctuaciones, las alucinaciones y la secuencia temporal; el paciente minimiza parte de sus dificultades.'
+        },
+        {
+          id: 'evaluacion_cognitiva',
+          nombre: 'Interpretación del MoCA y exploración neurológica',
+          puntos: 8,
+          palabrasClave: [
+            'moca', '18/30', '18 de 30', 'evaluacion cognitiva',
+            'prueba cognitiva', 'tamizaje cognitivo', 'atencion',
+            'visuoespacial', 'funciones ejecutivas', 'bradicinesia',
+            'rigidez', 'marcha lenta', 'pasos cortos', 'exploracion neurologica'
+          ],
+          retroalimentacion:
+            'El MoCA de 18/30 y la exploración con bradicinesia, rigidez y marcha de pasos cortos apoyan la alteración cognitiva y el parkinsonismo. El rendimiento debe interpretarse según la escolaridad y las fluctuaciones del estado de alerta.'
+        },
+        {
+          id: 'diagnostico_diferencial',
+          nombre: 'Diagnóstico diferencial y límites de la evidencia',
+          puntos: 8,
+          palabrasClave: [
+            'cuerpos de lewy', 'lewy', 'alzheimer', 'parkinson',
+            'demencia asociada a parkinson', 'regla de un ano',
+            'delirium', 'depresion', 'medicamentos', 'antipsicoticos',
+            'resonancia', 'polisomnografia', 'sueno rem', 'b12', 'tsh',
+            'diagnostico diferencial', 'sin biomarcadores', 'probable'
+          ],
+          retroalimentacion:
+            'El inicio cognitivo anterior al parkinsonismo favorece demencia con cuerpos de Lewy frente a demencia asociada a enfermedad de Parkinson. Deben considerarse delirium, Alzheimer y causas farmacológicas. El trastorno de conducta del sueño REM es probable, pero no está confirmado por polisomnografía; la resonancia es inespecífica.'
+        }
+      ],
+      advertencia:
+        'La evaluación automática de texto libre es orientativa. Detectar palabras clave no demuestra que se hayan integrado correctamente los criterios clínicos. La revisión docente sigue siendo necesaria.'
+    },
+
+    retroalimentacionFinal: {
+      titulo: 'Evaluación de razonamiento clínico',
+      mensaje:
+        'Jorge presenta un trastorno neurocognitivo mayor con características clínicas de demencia con cuerpos de Lewy probable. La integración depende de la pérdida de independencia instrumental, las fluctuaciones cognitivas, las alucinaciones visuales bien formadas, el parkinsonismo espontáneo y los síntomas compatibles con trastorno de conducta del sueño REM.',
+      recomendaciones: [
+        'Reconstruir la cronología de síntomas nocturnos, cognitivos, perceptivos y motores.',
+        'Distinguir el trastorno neurocognitivo mayor del deterioro cognitivo leve por la pérdida de independencia instrumental.',
+        'Investigar fluctuaciones de atención y alerta y diferenciarlas de delirium.',
+        'Documentar alucinaciones visuales recurrentes y parkinsonismo espontáneo.',
+        'Incorporar la información de la esposa y el MoCA de 18/30.',
+        'Diferenciar demencia con cuerpos de Lewy de demencia asociada a enfermedad de Parkinson y enfermedad de Alzheimer.',
+        'Evitar afirmar confirmación polisomnográfica del trastorno de conducta del sueño REM cuando no se ha realizado el estudio.'
       ]
     }
   }
