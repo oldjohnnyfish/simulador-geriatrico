@@ -1,12 +1,12 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor gratuito de entrevistas - Versión 6
+ * Motor gratuito de entrevistas - Versión 7
  *
- * Reconocimiento de temas clínicos y preguntas
- * de seguimiento contextualizadas.
+ * Entrevistas clínicas con reconocimiento de temas,
+ * cronología y preguntas de seguimiento.
  *
- * Las respuestas provienen de casosClinicos.js.
+ * Las respuestas proceden de casosClinicos.js.
  * No utiliza APIs ni servicios externos.
  */
 
@@ -20,6 +20,10 @@ function normalizar(texto) {
     .replace(/[¿?¡!.,;:()]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function coincide(texto, patrones) {
+  return patrones.some((patron) => patron.test(texto));
 }
 
 const temas = [
@@ -83,7 +87,7 @@ const temas = [
   {
     id: 'conducta',
     patrones: [
-      /\b(conducta|comportamiento|personalidad|desinhibicion|impulsividad|agresividad|apatia)\b/
+      /\b(conducta|comportamiento|personalidad|desinhibicion|impulsividad|agresividad|apatia|irritabilidad|suspicacia|desconfianza)\b/
     ]
   },
   {
@@ -189,14 +193,19 @@ const temas = [
     id: 'cronologia',
     patrones: [
       /\b(desde cuando|hace cuanto|cuanto tiempo|cuando empezo|cuando inicio|cuando comenzaron|desde hace cuanto)\b/,
-      /\b(cuando noto|cuando aparecieron|desde que edad)\b/
+      /\b(cuando noto|cuando aparecieron|desde que edad)\b/,
+      /\b(como comenzo|como inicio|como empezo|como fue el inicio)\b/,
+      /\b(primer sintoma|primeros sintomas|primer cambio|primeros cambios|lo primero que noto|lo primero que observaron)\b/,
+      /\b(inicio brusco|inicio gradual|inicio repentino|inicio insidioso)\b/,
+      /\b(de repente|de forma gradual|de manera progresiva|de manera subita|de forma subita)\b/,
+      /\b(como ha evolucionado|como evoluciono|curso de la enfermedad|progresion de los sintomas)\b/
     ]
   }
 ];
 
 function identificarTema(pregunta) {
   return temas.find((tema) =>
-    tema.patrones.some((patron) => patron.test(pregunta))
+    coincide(pregunta, tema.patrones)
   ) || null;
 }
 
@@ -223,7 +232,8 @@ const tiposSeguimiento = [
     id: 'evolucion',
     patrones: [
       /\b(ha empeorado|ha progresado|ha aumentado|ha cambiado con el tiempo|se ha agravado|ha ido empeorando)\b/,
-      /\b(desde cuando|hace cuanto|cuanto tiempo|cuando empezo|desde hace cuanto)\b/
+      /\b(desde cuando|hace cuanto|cuanto tiempo|cuando empezo|desde hace cuanto)\b/,
+      /\b(como ha evolucionado|como evoluciono|ha sido progresivo|ha ido avanzando)\b/
     ]
   },
   {
@@ -237,7 +247,7 @@ const tiposSeguimiento = [
 
 function identificarSeguimiento(pregunta) {
   return tiposSeguimiento.find((tipo) =>
-    tipo.patrones.some((patron) => patron.test(pregunta))
+    coincide(pregunta, tipo.patrones)
   )?.id || null;
 }
 
@@ -245,6 +255,125 @@ function respuestaNoDisponible(canal) {
   return canal === 'paciente'
     ? 'No sabría darle ese detalle con precisión.'
     : 'No tenemos información suficiente para precisar ese aspecto.';
+}
+
+function construirRespuesta(
+  respuesta,
+  tema,
+  seguimiento = false
+) {
+  return {
+    respuesta,
+    tema,
+    reconocido: true,
+    seguimiento
+  };
+}
+
+/*
+ * Preguntas específicas sobre la cronología.
+ *
+ * Se procesan antes de los temas generales
+ * para evitar que palabras como "memoria",
+ * "enfermedad" o "actividades" desvíen
+ * la interpretación de la pregunta.
+ *
+ * Las respuestas se obtienen del caso clínico,
+ * sin inventar información.
+ */
+function responderCronologia(caso, canal, pregunta) {
+  const cronologia = caso.entrevista?.cronologia;
+  const seguimientos = caso.seguimientos?.cronologia;
+
+  if (!cronologia?.[canal]) {
+    return null;
+  }
+
+  const primerSintoma = [
+    /\b(primer sintoma|primeros sintomas|primer cambio|primeros cambios)\b/,
+    /\b(lo primero que noto|lo primero que observaron|que fue lo primero)\b/,
+    /\b(con que sintoma|con cuales sintomas)\b.*\b(empezo|inicio|comenzo)\b/,
+    /\b(que sintomas?|cuales sintomas?)\b.*\b(al principio|al inicio|primero)\b/
+  ];
+
+  const inicio = [
+    /\b(como comenzo|como inicio|como empezo|como fue el inicio)\b/,
+    /\b(como empezaron|como iniciaron|como comenzaron)\b/,
+    /\b(inicio brusco|inicio gradual|inicio repentino|inicio insidioso)\b/,
+    /\b(brusco o gradual|repentino o progresivo|subito o gradual)\b/,
+    /\b(de repente|de forma gradual|de manera subita|de forma subita)\b/
+  ];
+
+  const evolucion = [
+    /\b(como ha evolucionado|como evoluciono|como ha progresado)\b/,
+    /\b(ha ido empeorando|ha ido avanzando|ha sido progresivo)\b/,
+    /\b(progresion de los sintomas|curso de la enfermedad)\b/,
+    /\b(que paso despues|que ocurrio despues|que sucedio despues)\b/
+  ];
+
+  const tiempo = [
+    /\b(desde cuando|hace cuanto|cuanto tiempo|cuando empezo|cuando inicio|cuando comenzaron|desde hace cuanto)\b/,
+    /\b(cuando noto|cuando aparecieron|desde que edad)\b/,
+    /\b(cuanto lleva|cuantos meses|cuantos anos)\b/
+  ];
+
+  const primerasLimitaciones = [
+    /\b(primera actividad|primeras actividades|primeras dificultades funcionales)\b/,
+    /\b(que dejo de hacer primero|que actividad dejo de hacer)\b/,
+    /\b(cuando empezo a necesitar ayuda|cuando comenzo a necesitar ayuda)\b/,
+    /\b(cuando perdio su independencia|cuando dejo de ser independiente)\b/
+  ];
+
+  if (coincide(pregunta, primerasLimitaciones)) {
+    const respuesta =
+      caso.seguimientos?.funcionalidad?.evolucion?.[canal] ||
+      caso.entrevista?.funcionalidad?.[canal];
+
+    if (respuesta) {
+      return construirRespuesta(
+        respuesta,
+        'funcionalidad',
+        true
+      );
+    }
+  }
+
+  if (coincide(pregunta, primerSintoma)) {
+    return construirRespuesta(
+      seguimientos?.ejemplo?.[canal] ||
+        cronologia[canal],
+      'cronologia',
+      Boolean(seguimientos?.ejemplo?.[canal])
+    );
+  }
+
+  if (coincide(pregunta, evolucion)) {
+    return construirRespuesta(
+      seguimientos?.evolucion?.[canal] ||
+        cronologia[canal],
+      'cronologia',
+      Boolean(seguimientos?.evolucion?.[canal])
+    );
+  }
+
+  if (coincide(pregunta, inicio)) {
+    return construirRespuesta(
+      seguimientos?.evolucion?.[canal] ||
+        cronologia[canal],
+      'cronologia',
+      Boolean(seguimientos?.evolucion?.[canal])
+    );
+  }
+
+  if (coincide(pregunta, tiempo)) {
+    return construirRespuesta(
+      cronologia[canal],
+      'cronologia',
+      false
+    );
+  }
+
+  return null;
 }
 
 export function responderEntrevista({
@@ -265,7 +394,9 @@ export function responderEntrevista({
   }
 
   const canal =
-    interlocutor === 'familiar' ? 'familiar' : 'paciente';
+    interlocutor === 'familiar'
+      ? 'familiar'
+      : 'paciente';
 
   const pregunta = normalizar(mensaje);
 
@@ -282,14 +413,12 @@ export function responderEntrevista({
       pregunta
     )
   ) {
-    return {
-      respuesta:
-        canal === 'paciente'
-          ? 'Buenos días, doctor. Mucho gusto.'
-          : 'Buenos días, doctor. Gracias por recibirnos.',
-      tema: 'saludo',
-      reconocido: true
-    };
+    return construirRespuesta(
+      canal === 'paciente'
+        ? 'Buenos días, doctor. Mucho gusto.'
+        : 'Buenos días, doctor. Gracias por recibirnos.',
+      'saludo'
+    );
   }
 
   if (
@@ -297,23 +426,42 @@ export function responderEntrevista({
       pregunta
     )
   ) {
-    return {
-      respuesta:
-        canal === 'paciente'
-          ? 'Muchas gracias, doctor. Que tenga buen día.'
-          : 'Muchas gracias por atendernos.',
-      tema: 'despedida',
-      reconocido: true
-    };
+    return construirRespuesta(
+      canal === 'paciente'
+        ? 'Muchas gracias, doctor. Que tenga buen día.'
+        : 'Muchas gracias por atendernos.',
+      'despedida'
+    );
   }
 
-  const tipoSeguimiento = identificarSeguimiento(pregunta);
-  const temaExplicito = identificarTema(pregunta);
+  /*
+   * Las preguntas sobre el inicio general
+   * de la enfermedad tienen prioridad.
+   */
+  const respuestaCronologica =
+    responderCronologia(caso, canal, pregunta);
+
+  if (respuestaCronologica) {
+    return respuestaCronologica;
+  }
+
+  const tipoSeguimiento =
+    identificarSeguimiento(pregunta);
+
+  const temaExplicito =
+    identificarTema(pregunta);
 
   /*
-   * Si hay un seguimiento y un tema explícito,
-   * utilizar el tema explícito, salvo que se trate
-   * de una referencia temporal al tema anterior.
+   * Si el estudiante menciona un tema concreto,
+   * se prioriza sobre el tema de la pregunta
+   * anterior.
+   *
+   * Ejemplo:
+   * "¿Desde cuándo tiene problemas de memoria?"
+   * se responde con la cronología del caso.
+   *
+   * "¿Ha empeorado su memoria?"
+   * utiliza el seguimiento de memoria.
    */
   if (tipoSeguimiento) {
     let temaContextual = ultimoTema;
@@ -331,12 +479,26 @@ export function responderEntrevista({
           ?.[tipoSeguimiento]?.[canal];
 
       if (respuesta) {
-        return {
+        return construirRespuesta(
           respuesta,
-          tema: temaContextual,
-          reconocido: true,
-          seguimiento: true
-        };
+          temaContextual,
+          true
+        );
+      }
+
+      /*
+       * Si existe una respuesta general para
+       * el tema, se usa como alternativa.
+       */
+      const respuestaGeneral =
+        caso.entrevista?.[temaContextual]?.[canal];
+
+      if (respuestaGeneral) {
+        return construirRespuesta(
+          respuestaGeneral,
+          temaContextual,
+          false
+        );
       }
 
       return {
@@ -349,18 +511,19 @@ export function responderEntrevista({
     }
   }
 
-  // Pregunta clínica principal
+  /*
+   * Pregunta clínica principal.
+   */
   if (temaExplicito) {
     const informacion =
       caso.entrevista?.[temaExplicito.id];
 
     if (informacion?.[canal]) {
-      return {
-        respuesta: informacion[canal],
-        tema: temaExplicito.id,
-        reconocido: true,
-        seguimiento: false
-      };
+      return construirRespuesta(
+        informacion[canal],
+        temaExplicito.id,
+        false
+      );
     }
   }
 
