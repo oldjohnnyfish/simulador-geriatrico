@@ -3,11 +3,12 @@ import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de evaluación clínica - Versión 7
+ * Motor de evaluación clínica - Versión 8
  *
  * Caso 01: Elena Martínez
  * Caso 02: María Hernández
  * Caso 03: Roberto Salgado
+ * Caso 04: Jorge Villaseñor
  *
  * Evaluación local sin servicios externos.
  * Reglas específicas por caso.
@@ -376,13 +377,137 @@ const reglasRoberto = {
 };
 
 /*
+ * CASO 04: JORGE VILLASEÑOR
+ * Trastorno neurocognitivo mayor con demencia con cuerpos de Lewy probable.
+ * El trastorno de conducta del sueño REM es clínicamente sugestivo,
+ * pero no está confirmado mediante polisomnografía.
+ */
+
+const reglasJorge = {
+  inicio_evolucion: reglas(
+    [
+      /\b(4|cuatro)\s+anos\b.{0,130}\b(sueno|suenos|gritos|patadas|movimientos nocturnos|rem)\b/,
+      /\b(sueno|suenos|movimientos nocturnos|rem)\b.{0,130}\b(4|cuatro)\s+anos\b/,
+      /\b(sueno|suenos|rem)\b.{0,100}\b(antes|precedio|precedieron|previo|primero)\b/,
+      /\b(primero|inicialmente)\b.{0,100}\b(sueno|suenos|rem|nocturnos)\b/,
+      /\b(2|dos)\s+anos\b.{0,100}\b(cognitiv|atencion|visuoespacial|memoria)\b/,
+      /\b(18|dieciocho)\s+meses\b.{0,90}\b(fluctuacion|fluctuaciones|alerta|atencion)\b/,
+      /\b(10|diez)\s+meses\b.{0,90}\b(alucinaciones|visiones)\b/,
+      /\b(6|seis)\s+meses\b.{0,100}\b(parkinsonismo|bradicinesia|rigidez|lentitud|marcha)\b/,
+      /\b(cognitiv|deterioro|demencia)\b.{0,100}\b(antes|precedio|precedieron|previo|anterior)\b.{0,70}\b(parkinsonismo|motor|motores|rigidez|bradicinesia)\b/,
+      /\b(parkinsonismo|sintomas motores|rigidez|bradicinesia)\b.{0,100}\b(despues|posterior|tras)\b.{0,70}\b(cognitiv|deterioro|demencia)\b/
+    ],
+    [
+      /\b(parkinsonismo|enfermedad de parkinson|sintomas motores)\b.{0,100}\b(anos antes|mucho antes|precedio|precedieron|antes)\b.{0,60}\b(cognitiv|deterioro|demencia)\b/,
+      /\b(cognitiv|deterioro|demencia)\b.{0,100}\b(despues|posterior)\b.{0,70}\b(parkinsonismo|enfermedad de parkinson)\b/,
+      /\b(no hay|sin)\s+(evolucion|cronologia|sintomas previos)\b/
+    ]
+  ),
+
+  alteracion_cognitiva: reglas(
+    [
+      /\b(fluctuaciones?|fluctuante|confusion intermitente|episodios de confusion)\b/,
+      /\b(atencion|alerta|lucidez)\b.{0,80}\b(variable|fluctuante|cambia|alternante|somnolencia)\b/,
+      /\b(somnolencia|mirada al vacio|periodos de desconexion)\b/,
+      /\b(alucinaciones visuales|visiones recurrentes|visiones bien formadas)\b/,
+      /\b(ve|observa|describe)\b.{0,70}\b(personas|animales|figuras)\b.{0,70}\b(no existen|nadie mas ve|inexistentes)\b/,
+      /\b(dificultades|alteraciones|deficit|deterioro)\b.{0,60}\b(atencionales?|ejecutiv[oa]s?|visuoespaciales?)\b/,
+      /\b(funciones ejecutivas|disfuncion ejecutiva|alteracion visuoespacial|deficit atencional)\b/,
+      /\b(parkinsonismo espontaneo|bradicinesia|rigidez)\b/
+    ],
+    [
+      /\b(no hay|sin|niega|ausencia de)\s+(fluctuaciones|alucinaciones visuales|alteraciones cognitivas|deterioro cognitivo|parkinsonismo)\b/,
+      /\b(atencion|funciones ejecutivas|habilidades visuoespaciales)\b.{0,30}\b(intactas|normales|sin alteraciones)\b/,
+      /\b(alucinaciones)\b.{0,50}\b(exclusivamente|solo)\s+(durante el sueno|al dormir)\b/
+    ]
+  ),
+
+  funcionalidad: reglas(
+    [
+      /\b(perdida|perdio|ha perdido)\s+(de\s+|su\s+|la\s+)?(independencia|autonomia)\b/,
+      /\b(deterioro|declive|compromiso|afectacion)\s+funcional\b/,
+      /\b(dependencia)\s+(funcional|instrumental|en actividades|para actividades)\b/,
+      /\b(actividades instrumentales|aivd)\b.{0,90}\b(afectadas|alteradas|deterioradas|dependencia|ayuda|supervision|dificultad)\b/,
+      /\b(necesita|requiere)\s+(ayuda|supervision|apoyo)\b/,
+      /\b(ya no puede|dejo de poder)\s+(manejar|administrar|organizar)\b/,
+      /\b(esposa|familiar|cuidadora)\b.{0,80}\b(supervisa|ayuda|administra|organiza|prepara)\b/,
+      /\b(supervision|ayuda|apoyo)\b.{0,80}\b(finanzas|cuentas|pagos|medicamentos|traslados)\b/,
+      /\b(finanzas|cuentas|pagos|medicamentos|traslados)\b.{0,80}\b(supervision|ayuda|apoyo|dependencia)\b/
+    ],
+    [
+      /\b(independencia|autonomia|funcionalidad)\s+(completamente\s+)?(conservada|preservada|intacta)\b/,
+      /\b(conserva|mantiene)\s+(toda\s+)?(su\s+)?(independencia|autonomia|funcionalidad)\b/,
+      /\b(sin|no presenta)\s+(dependencia funcional|deterioro funcional|perdida de independencia)\b/,
+      /\b(no necesita|sin necesidad de)\s+(ayuda|supervision)\b/,
+      /\b(actividades instrumentales|aivd)\s+(conservadas|independientes|intactas)\b/
+    ]
+  ),
+
+  informante: reglas(
+    [
+      /\b(esposa|familiar|informante|cuidadora)\s+(confirma|corrobora|refiere|reporta|describe|nota|observa|explica|documenta)\b/,
+      /\b(segun|de acuerdo con)\s+(su\s+|la\s+)?(esposa|familiar|informante|cuidadora)\b/,
+      /\b(informacion|testimonio|reporte|relato)\s+(de|del|por)\s+(la\s+|su\s+)?(esposa|familiar|informante|cuidadora)\b/,
+      /\b(corroborad[oa]s?|confirmad[oa]s?|referid[oa]s?|reportad[oa]s?)\s+(por|mediante)\s+(su\s+|la\s+|una\s+)?(esposa|familiar|informante|cuidadora)\b/,
+      /\b(heteroanamnesis|informacion corroborada por la esposa)\b/,
+      /\b(esposa)\b.{0,110}\b(suenos|fluctuaciones|alucinaciones|evolucion|deterioro|dependencia|parkinsonismo)\b/
+    ],
+    [
+      /\b(esposa|familiar|informante|cuidadora)\s+(niega|descarta)\s+(los\s+)?(cambios|problemas|sintomas)\s+cognitivos\b/,
+      /\b(no hay|sin)\s+(informante|corroboracion familiar|informacion familiar)\b/
+    ]
+  ),
+
+  evaluacion_cognitiva: reglas(
+    [
+      /\b(moca|montreal cognitive assessment)\s*(es\s+de|es|de|:|=|con|fue|obtuvo)?\s*18\s*(\/|de)\s*30\b/,
+      /\b18\s*(\/|de)\s*30\s*(en|de|del)\s*(el\s+)?moca\b/,
+      /\b(moca|prueba cognitiva|tamizaje cognitivo)\b.{0,90}\b(alterad[oa]|baj[oa]|deterioro|deficit|afectacion|ejecutiv[oa]|atencion|visuoespacial)\b/,
+      /\b(bradicinesia|rigidez)\b.{0,90}\b(exploracion|neurologica|marcha|braceo|pasos cortos)\b/,
+      /\b(exploracion neurologica)\b.{0,90}\b(bradicinesia|rigidez|parkinsonismo|pasos cortos|marcha lenta)\b/,
+      /\b(marcha)\s+(lenta|de pasos cortos)\b/,
+      /\b(alteracion|deterioro)\s+cognitiv[oa]\s+(objetiv[oa]|significativ[oa])\b/
+    ],
+    [
+      /\b(moca|prueba cognitiva|tamizaje cognitivo)\s+(normal|intacto|sin alteraciones)\b/,
+      /\bmoca\s*(es\s+de|es|de|:|=|con|fue)?\s*(30|24|17|16)\s*(\/|de)\s*30\b/,
+      /\b(no hay|sin)\s+(alteraciones|dificultades)\s+(en\s+)?(el\s+)?moca\b/,
+      /\b(no hay|sin)\s+(bradicinesia|rigidez|parkinsonismo)\b/
+    ]
+  ),
+
+  diagnostico_diferencial: reglas(
+    [
+      /\b(diagnosticos diferenciales|diagnostico diferencial)\b/,
+      /\b(considerar|descartar|diferenciar|evaluar|investigar|explorar)\b.{0,100}\b(alzheimer|parkinson|delirium|depresion|medicamentos|antipsicoticos|b12|tsh)\b/,
+      /\b(regla de un ano|regla del ano)\b/,
+      /\b(demencia con cuerpos de lewy|demencia por cuerpos de lewy|cuerpos de lewy probable)\b/,
+      /\b(cognitiv|deterioro|demencia)\b.{0,100}\b(antes|precedio|precedieron|previo|anterior)\b.{0,70}\b(parkinsonismo|parkinson|motor|motores)\b/,
+      /\b(parkinsonismo|parkinson|motor|motores)\b.{0,100}\b(despues|posterior|tras)\b.{0,70}\b(cognitiv|deterioro|demencia)\b/,
+      /\b(polisomnografia)\b.{0,100}\b(pendiente|no realizada|no se realizo|sin confirmar|confirmacion)\b/,
+      /\b(no hay|sin)\s+(polisomnografia|confirmacion polisomnografica|biomarcadores confirmatorios)\b/,
+      /\b(resonancia|rm cerebral|neuroimagen)\b.{0,90}\b(inespecifica|no confirma|no excluye|sin lesiones explicativas)\b/,
+      /\b(tsh|vitamina b12|b12)\b.{0,50}\b(normal|normales|sin alteraciones)\b/
+    ],
+    [
+      /\b(polisomnografia)\b.{0,70}\b(confirmo|confirmada|demostro|positiva)\b/,
+      /\b(trastorno de conducta del sueno rem)\b.{0,70}\b(confirmado por polisomnografia|confirmacion polisomnografica)\b/,
+      /\b(enfermedad de parkinson)\b.{0,100}\b(anos antes|mucho antes|precedio|precedieron)\b.{0,70}\b(deterioro|demencia|cognitiv)\b/,
+      /\b(resonancia|neuroimagen)\b.{0,90}\b(confirma|demuestra)\b.{0,70}\b(cuerpos de lewy)\b/,
+      /\b(no es necesario|no requiere)\s+(descartar|considerar|evaluar)\s+(otras causas|diagnosticos diferenciales)\b/
+    ]
+  )
+};
+
+/*
  * REGISTRO DE REGLAS POR CASO
  */
 
 const reglasPorCaso = {
   'caso-01': reglasElena,
   'caso-02': reglasMaria,
-  'caso-03': reglasRoberto
+  'caso-03': reglasRoberto,
+  'caso-04': reglasJorge
 };
 
 /*
