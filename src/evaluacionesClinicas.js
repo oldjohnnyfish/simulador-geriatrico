@@ -1,11 +1,12 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Evaluaciones diagnósticas - Versión 3
+ * Evaluaciones diagnósticas - Versión 4
  *
  * Casos:
  * 01 - Elena Martínez
  * 02 - María Hernández
+ * 03 - Roberto Salgado
  *
  * Catálogos diagnósticos compartidos.
  * Evaluación local, sin servicios externos.
@@ -397,6 +398,236 @@ export const evaluacionesClinicas = {
         'Incorporar la información de la hija como informante.',
         'Interpretar el MoCA y los estudios complementarios en el contexto clínico.',
         'Considerar diagnósticos diferenciales y evitar presentar la etiología como confirmada por biomarcadores.'
+      ]
+    }
+  },
+
+  // ==========================================
+  // CASO 03: ROBERTO SALGADO
+  // ==========================================
+
+  'caso-03': {
+    pacienteId: 'caso-03',
+
+    configuracion: {
+      retroalimentacion: 'al_finalizar',
+      puntuacionMaxima: 100
+    },
+
+    diagnosticoSindromatico: {
+      puntuacionMaxima: 30,
+
+      pregunta:
+        '¿Cuál es el diagnóstico sindromático más probable?',
+
+      opciones: opcionesSindromaticas,
+
+      respuestaCorrecta: 'demencia',
+
+      explicacion:
+        'Roberto presenta alteraciones cognitivas persistentes que comprometen su independencia para actividades instrumentales de la vida diaria. Las dificultades ejecutivas y atencionales comenzaron antes del ictus y se acompañaron de pérdida de autonomía. Después del evento vascular, la dependencia aumentó. Los hallazgos son compatibles con síndrome demencial o trastorno neurocognitivo mayor. La discapacidad motora posterior al ictus también debe considerarse al interpretar la dependencia para actividades básicas.'
+    },
+
+    diagnosticoEtiologico: {
+      puntuacionMaxima: 20,
+
+      pregunta:
+        '¿Cuál es la interpretación etiológica más apropiada?',
+
+      opciones: opcionesEtiologicas,
+
+      respuestaCorrecta: 'vascular_confirmado',
+
+      explicacion:
+        'El patrón clínico es compatible con un trastorno neurocognitivo mayor de origen vascular. Existe un deterioro cognitivo predominantemente ejecutivo y atencional de evolución gradual, asociado con enfermedad cerebral de pequeños vasos, seguido de un empeoramiento brusco tras un ictus isquémico subcortical. La resonancia muestra hiperintensidades extensas de sustancia blanca, infartos lacunares y un infarto subcortical crónico. La concordancia entre cronología, perfil cognitivo, hallazgos neurológicos y neuroimagen apoya la contribución vascular.'
+    },
+
+    justificacionClinica: {
+      puntuacionMaxima: 50,
+
+      pregunta:
+        'Justifique su diagnóstico utilizando los hallazgos de la entrevista, la exploración y los estudios complementarios.',
+
+      criterios: [
+        {
+          id: 'inicio_evolucion',
+          nombre:
+            'Cronología del deterioro y empeoramiento posterior al ictus',
+          puntos: 8,
+
+          palabrasClave: [
+            'cuatro anos',
+            '4 anos',
+            'gradual',
+            'progresivo',
+            'lentamente',
+            'ictus',
+            'evento vascular',
+            'infarto cerebral',
+            'derrame',
+            'ocho meses',
+            '8 meses',
+            'empeoramiento brusco',
+            'deterioro escalonado',
+            'deterioro abrupto'
+          ],
+
+          retroalimentacion:
+            'Es fundamental reconocer dos etapas: deterioro cognitivo gradual durante aproximadamente cuatro años y empeoramiento brusco después del ictus ocurrido hace ocho meses. La relación temporal con el evento vascular es una pieza central del razonamiento etiológico.'
+        },
+
+        {
+          id: 'alteracion_cognitiva',
+          nombre:
+            'Perfil cognitivo ejecutivo, atencional y de lentitud de procesamiento',
+          puntos: 8,
+
+          palabrasClave: [
+            'funciones ejecutivas',
+            'disfuncion ejecutiva',
+            'funcion ejecutiva',
+            'atencion',
+            'lentitud',
+            'velocidad de procesamiento',
+            'procesamiento',
+            'planificacion',
+            'organizacion',
+            'concentracion',
+            'enlentecimiento',
+            'bradipsiquia',
+            'memoria',
+            'evocacion con pistas'
+          ],
+
+          retroalimentacion:
+            'El perfil cognitivo presenta predominio de disfunción ejecutiva, dificultades de atención y enlentecimiento del procesamiento. Este patrón, junto con la mejoría parcial de evocación mediante pistas, resulta compatible con afectación vascular subcortical.'
+        },
+
+        {
+          id: 'funcionalidad',
+          nombre:
+            'Pérdida de independencia y repercusión funcional',
+          puntos: 12,
+
+          palabrasClave: [
+            'dependencia',
+            'perdida de independencia',
+            'perdida de autonomia',
+            'deterioro funcional',
+            'actividades instrumentales',
+            'aivd',
+            'finanzas',
+            'pagos',
+            'medicamentos',
+            'supervision',
+            'necesita ayuda',
+            'bano',
+            'vestido',
+            'actividades basicas',
+            'abvd'
+          ],
+
+          retroalimentacion:
+            'La pérdida de independencia para finanzas y medicamentos precedió al ictus y demuestra repercusión cognitiva sobre las actividades instrumentales. La necesidad posterior de ayuda para baño y vestido debe interpretarse considerando tanto las dificultades cognitivas como la hemiparesia residual.'
+        },
+
+        {
+          id: 'informante',
+          nombre:
+            'Corroboración de la evolución por la esposa',
+          puntos: 6,
+
+          palabrasClave: [
+            'esposa',
+            'familiar',
+            'informante',
+            'heteroanamnesis',
+            'corroborado',
+            'corrobora',
+            'cuidadora',
+            'testimonio familiar'
+          ],
+
+          retroalimentacion:
+            'La esposa permite establecer que el deterioro cognitivo comenzó antes del ictus, identificar los primeros dominios afectados y documentar el empeoramiento posterior y la pérdida de independencia.'
+        },
+
+        {
+          id: 'evaluacion_cognitiva',
+          nombre:
+            'Integración de MoCA y exploración neurológica',
+          puntos: 8,
+
+          palabrasClave: [
+            'moca',
+            '17/30',
+            '17 de 30',
+            'evaluacion cognitiva',
+            'prueba cognitiva',
+            'tamizaje cognitivo',
+            'hemiparesia',
+            'focalizacion neurologica',
+            'focalidad neurologica',
+            'debilidad derecha',
+            'marcha asimetrica',
+            'exploracion neurologica'
+          ],
+
+          retroalimentacion:
+            'El MoCA de 17/30 documenta alteración cognitiva, especialmente ejecutiva y atencional. La hemiparesia derecha residual y la marcha asimétrica apoyan la existencia de secuelas neurológicas del ictus. Los resultados deben interpretarse según escolaridad y limitaciones motoras.'
+        },
+
+        {
+          id: 'diagnostico_diferencial',
+          nombre:
+            'Evidencia vascular en neuroimagen y diagnóstico diferencial',
+          puntos: 8,
+
+          palabrasClave: [
+            'enfermedad de pequenos vasos',
+            'pequenos vasos',
+            'sustancia blanca',
+            'hiperintensidades',
+            'infartos lacunares',
+            'lagunas',
+            'infarto subcortical',
+            'resonancia',
+            'vascular',
+            'isquemico',
+            'isquemia',
+            'alzheimer',
+            'demencia mixta',
+            'depresion',
+            'delirium',
+            'diagnostico diferencial',
+            'b12',
+            'tsh'
+          ],
+
+          retroalimentacion:
+            'La resonancia muestra enfermedad extensa de pequeños vasos, infartos lacunares y secuela de infarto subcortical. Es importante vincular estos hallazgos con el perfil cognitivo y la cronología, además de considerar causas alternativas o contribuyentes, incluida la posibilidad de patología mixta.'
+        }
+      ],
+
+      advertencia:
+        'La evaluación automática de texto libre es orientativa. Identificar términos relacionados con enfermedad vascular no garantiza que la explicación clínica sea correcta. Es necesario valorar la concordancia entre evolución, perfil cognitivo, repercusión funcional y neuroimagen. La revisión docente continúa siendo necesaria.'
+    },
+
+    retroalimentacionFinal: {
+      titulo: 'Evaluación de razonamiento clínico',
+
+      mensaje:
+        'Roberto presenta un trastorno neurocognitivo mayor con un patrón clínico compatible con etiología vascular. La clave es reconocer la evolución gradual previa, caracterizada por disfunción ejecutiva y enlentecimiento, seguida de un deterioro brusco después del ictus. La información de la esposa, la pérdida de independencia y la evidencia de enfermedad cerebral de pequeños vasos e infartos subcorticales respaldan la interpretación.',
+
+      recomendaciones: [
+        'Reconstruir la cronología completa y distinguir el deterioro previo del empeoramiento posterior al ictus.',
+        'Identificar el predominio de alteraciones ejecutivas, atencionales y de velocidad de procesamiento.',
+        'Documentar la pérdida de independencia instrumental anterior al ictus.',
+        'Diferenciar la discapacidad atribuible al deterioro cognitivo de las limitaciones motoras posteriores al evento vascular.',
+        'Utilizar la información de la esposa para corroborar la evolución.',
+        'Interpretar el MoCA junto con la exploración neurológica y la escolaridad.',
+        'Relacionar los hallazgos de neuroimagen con el perfil cognitivo y la cronología.',
+        'Considerar patología mixta y otras causas contribuyentes sin asumir que toda lesión vascular explica necesariamente todos los síntomas.'
       ]
     }
   }
