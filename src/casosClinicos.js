@@ -1,7 +1,7 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Fichas clínicas ficticias - Versión 4
+ * Fichas clínicas ficticias - Versión 5
  * Uso exclusivamente educativo.
  */
 
@@ -655,6 +655,293 @@ export const casosClinicos = {
       'Explorar síntomas neuropsiquiátricos y diagnósticos diferenciales.',
       'Interpretar el MoCA en relación con escolaridad, funcionalidad y evolución.',
       'Formular un diagnóstico sindromático y etiológico razonado.'
+    ]
+  },
+
+  // CASO 03: ROBERTO SALGADO
+  'caso-03': {
+    id: 'caso-03',
+
+    identidad: {
+      nombre: 'Roberto Salgado',
+      edad: 76,
+      escolaridad: 12,
+      ocupacion: 'Contador jubilado'
+    },
+
+    presentacion:
+      'Hombre de 76 años que acude acompañado de su esposa por dificultades cognitivas y funcionales que empeoraron después de un evento cerebrovascular.',
+
+    informacionReservada: {
+      diagnostico: 'Trastorno neurocognitivo mayor de origen vascular asociado con enfermedad cerebral de pequeños vasos e ictus subcortical',
+      evolucionMeses: 48,
+      curso: 'Gradual durante años, con empeoramiento brusco después de un ictus hace ocho meses',
+      independenciaFuncional: false
+    },
+
+    entrevista: {
+      motivo: {
+        paciente: 'Desde que me dio el derrame pienso más despacio y me cuesta hacer varias cosas. Mi esposa está preocupada.',
+        familiar: 'Soy su esposa. Ya llevaba años más lento y desorganizado, pero desde el infarto cerebral de hace ocho meses empeoró mucho.'
+      },
+      cronologia: {
+        paciente: 'Antes del derrame ya me tardaba más en hacer las cosas. Hace ocho meses tuve el infarto y desde entonces estoy peor.',
+        familiar: 'Hace unos cuatro años comenzó lentamente con dificultades para organizarse y concentrarse. Hace dos años necesitó ayuda con pagos y medicinas. Hace ocho meses sufrió un ictus y tuvo un deterioro marcado.'
+      },
+      memoria: {
+        paciente: 'A veces se me va lo que iba a hacer, sobre todo si me interrumpen. Con una pista suelo acordarme.',
+        familiar: 'Olvida algunas indicaciones, pero lo que más destaca es que se distrae, tarda en responder y no logra organizar lo que debe hacer. Suele recordar mejor con pistas.'
+      },
+      atencion: {
+        paciente: 'Me cuesta concentrarme si hay ruido o varias personas hablando.',
+        familiar: 'Pierde el hilo de conversaciones largas y le cuesta hacer dos cosas al mismo tiempo. Esto empeoró tras el ictus.'
+      },
+      funcionesEjecutivas: {
+        paciente: 'Antes llevaba las cuentas de la casa; ahora me confundo con los pasos y me tardo mucho.',
+        familiar: 'El primer cambio fue la lentitud para planificar y resolver problemas. Después cometió errores con pagos y medicamentos; tras el ictus ya no puede encargarse de esas tareas.'
+      },
+      visuoespacial: {
+        paciente: 'Reconozco mi casa y las calles conocidas. Me cuesta moverme en lugares con muchos obstáculos.',
+        familiar: 'Reconoce lugares familiares. Sus dificultades para desplazarse se relacionan más con la marcha y la lentitud que con perderse.'
+      },
+      funcionalidad: {
+        paciente: 'Me baño con algo de ayuda porque me cuesta mantener el equilibrio. Mi esposa lleva las cuentas y las pastillas.',
+        familiar: 'Antes del ictus ya necesitaba ayuda con finanzas y medicamentos. Desde el evento requiere supervisión diaria y ayuda parcial para bañarse y vestirse por la debilidad y la dificultad para organizar los pasos.'
+      },
+      finanzas: {
+        paciente: 'Ya no llevo los pagos; me cuesta revisar las cuentas.',
+        familiar: 'Comenzó a equivocarse con recibos hace dos años. Después del ictus dejamos de permitirle administrar dinero solo.'
+      },
+      medicamentos: {
+        paciente: 'Mi esposa prepara las pastillas. Si no me recuerda, puedo saltarme alguna.',
+        familiar: 'Antes del ictus confundía horarios. Ahora yo preparo y superviso todas sus tomas.'
+      },
+      antecedentes: {
+        paciente: 'Tengo presión alta, diabetes y colesterol elevado. Hace ocho meses tuve un infarto cerebral y me quedó algo débil el lado derecho.',
+        familiar: 'Hipertensión de larga evolución, diabetes tipo 2 y dislipidemia. Hace ocho meses sufrió un ictus isquémico subcortical izquierdo con hemiparesia derecha residual. No conocemos otros ictus clínicos previos.'
+      },
+      orientacion: {
+        paciente: 'Sé dónde estoy y qué día es casi siempre, aunque a veces me equivoco con la fecha.',
+        familiar: 'Generalmente está orientado. A veces confunde la fecha, sobre todo cuando cambia su rutina.'
+      },
+      animo: {
+        paciente: 'Me frustra no poder hacer lo mismo que antes. A veces estoy desanimado.',
+        familiar: 'Se frustra por sus limitaciones y tiene menos iniciativa, pero los problemas de planificación comenzaron años antes del ictus.'
+      },
+      audicion: {
+        paciente: 'Escucho bien si me hablan de frente.',
+        familiar: 'A veces necesita que le repitamos las preguntas, especialmente si está distraído.'
+      },
+      lenguaje: {
+        paciente: 'Sé lo que quiero decir, pero tardo en encontrar las palabras.',
+        familiar: 'Habla más lentamente desde el ictus, pero comprende instrucciones sencillas. No presenta una afasia importante.'
+      },
+      escolaridad: {
+        paciente: 'Estudié doce años y trabajé como contador.',
+        familiar: 'Tiene doce años de escolaridad; antes administraba cuentas complejas por su trabajo.'
+      },
+      sueno: {
+        paciente: 'Duermo unas seis o siete horas. A veces me despierto por la noche.',
+        familiar: 'No hemos observado conductas de actuación de sueños ni cambios bruscos de alerta durante el día.'
+      },
+      caidas: {
+        paciente: 'Me he tropezado algunas veces desde el derrame.',
+        familiar: 'Tuvo una caída sin lesión grave hace tres meses y varios tropiezos por su marcha asimétrica.'
+      },
+      nutricion: {
+        paciente: 'Como bien. A veces necesito que me corten la carne porque la mano derecha es torpe.',
+        familiar: 'Mantiene el apetito y no ha tenido pérdida de peso importante. Come por sí mismo con algunas adaptaciones.'
+      },
+      movilidad: {
+        paciente: 'Camino despacio con bastón. Arrastro un poco el pie derecho.',
+        familiar: 'La marcha se había vuelto lenta antes del ictus. Desde entonces tiene marcha asimétrica y usa bastón por la debilidad derecha.'
+      },
+      fragilidad: {
+        paciente: 'Me canso más y hago menos ejercicio desde el infarto.',
+        familiar: 'Ha reducido su actividad física por las secuelas del ictus; necesita apoyo para algunas actividades.'
+      },
+      redApoyo: {
+        paciente: 'Vivo con mi esposa; ella me ayuda con las medicinas y las citas.',
+        familiar: 'Soy su esposa y cuidadora principal. Una hija nos visita y apoya con traslados y compras.'
+      },
+      sintomasDepresivos: {
+        paciente: 'Hay días en que estoy triste por lo que ya no puedo hacer, pero también disfruto ver a mi familia.',
+        familiar: 'Tiene frustración y algunos días de desánimo. Los cambios cognitivos empezaron antes de estos síntomas.'
+      },
+      alucinaciones: {
+        paciente: 'No veo ni escucho cosas que los demás no perciban.',
+        familiar: 'No ha presentado alucinaciones visuales.'
+      },
+      fluctuaciones: {
+        paciente: 'Me canso durante el día, pero no tengo episodios repentinos de confusión.',
+        familiar: 'No presenta fluctuaciones importantes de alerta; su lentitud es relativamente constante.'
+      },
+      conducta: {
+        paciente: 'Me impaciento cuando no puedo hacer algo rápido.',
+        familiar: 'Está más irritable y con menos iniciativa, pero no ha tenido desinhibición marcada ni cambios graves de personalidad.'
+      },
+      antecedentesFamiliares: {
+        paciente: 'Mi padre tenía presión alta y sufrió un derrame cuando era mayor.',
+        familiar: 'Su padre tuvo hipertensión y un evento cerebrovascular; no conocemos antecedentes familiares de demencia diagnosticada.'
+      }
+    },
+
+    seguimientos: {
+      cronologia: {
+        ejemplo: {
+          paciente: 'Primero me costaba organizar las cuentas y tardaba más. Después vino el infarto cerebral.',
+          familiar: 'Lo primero, hace cuatro años, fue la lentitud para pensar, planear y concentrarse. Los olvidos no eran lo principal.'
+        },
+        frecuencia: {
+          paciente: 'Al principio era ocasional; ahora me cuesta todos los días.',
+          familiar: 'Las dificultades eran cada vez más frecuentes antes del ictus y se volvieron cotidianas después.'
+        },
+        evolucion: {
+          paciente: 'Fui empeorando poco a poco, pero después del derrame el cambio fue mucho más grande.',
+          familiar: 'Primero hubo un deterioro gradual durante años. Hace ocho meses, después del ictus, tuvo un descenso brusco y marcado en cognición, marcha e independencia.'
+        },
+        repercusion: {
+          paciente: 'Antes hacía más cosas solo. Ahora necesito ayuda para las cuentas, medicinas y a veces para bañarme.',
+          familiar: 'Antes del ictus ya había perdido independencia instrumental; después requirió ayuda también para algunas actividades básicas.'
+        }
+      },
+      memoria: {
+        ejemplo: {
+          paciente: 'Si me dan varias instrucciones, olvido alguna. Cuando me recuerdan el contexto, muchas veces me acuerdo.',
+          familiar: 'Si le pedimos tres tareas seguidas, olvida una; con pistas puede recuperar parte de la información.'
+        },
+        solucion: {
+          paciente: 'Las notas y que me repitan los pasos me ayudan.',
+          familiar: 'Las indicaciones breves, las listas y las pistas ayudan parcialmente.'
+        },
+        frecuencia: {
+          paciente: 'Me pasa casi todos los días si tengo muchas cosas que hacer.',
+          familiar: 'Las dificultades de atención y organización son diarias.'
+        },
+        evolucion: {
+          paciente: 'La memoria me falla más desde el infarto.',
+          familiar: 'Los problemas ejecutivos precedieron al ictus; después empeoraron la atención y los olvidos.'
+        },
+        repercusion: {
+          paciente: 'Mi esposa me recuerda lo que tengo que hacer.',
+          familiar: 'Necesita instrucciones paso a paso y supervisión de sus tareas.'
+        }
+      },
+      funcionesEjecutivas: {
+        ejemplo: {
+          paciente: 'Si tengo que pagar varios recibos, no sé por cuál empezar y me confundo.',
+          familiar: 'Comenzó a duplicar pagos y a perder el orden de las tareas. Después del ictus no logra organizar ni una actividad de varios pasos sin guía.'
+        },
+        frecuencia: {
+          paciente: 'Cada vez que algo requiere varios pasos.',
+          familiar: 'Ocurre diariamente en actividades que requieren planificación.'
+        },
+        evolucion: {
+          paciente: 'Antes me tardaba más; después del derrame dejé de poder hacerlo solo.',
+          familiar: 'Hace cuatro años apareció lentitud ejecutiva; hace dos años errores funcionales; hace ocho meses empeoramiento brusco tras el ictus.'
+        },
+        repercusion: {
+          paciente: 'Ya no manejo las cuentas ni organizo mis medicinas.',
+          familiar: 'La disfunción ejecutiva contribuye a la dependencia instrumental y a la necesidad de supervisión.'
+        }
+      },
+      funcionalidad: {
+        ejemplo: {
+          paciente: 'Puedo comer solo, pero a veces necesito ayuda para bañarme y abotonarme la ropa.',
+          familiar: 'Requiere ayuda parcial para baño y vestido, y supervisión completa para finanzas y medicación.'
+        },
+        evolucion: {
+          paciente: 'Primero dejé las cuentas; después del derrame empecé a necesitar ayuda para bañarme.',
+          familiar: 'La dependencia instrumental apareció antes del ictus; la ayuda para actividades básicas se hizo necesaria después.'
+        },
+        repercusion: {
+          paciente: 'Mi esposa tiene que estar pendiente de mí todos los días.',
+          familiar: 'Necesita supervisión diaria y ayuda física parcial por las secuelas motoras.'
+        }
+      },
+      movilidad: {
+        ejemplo: {
+          paciente: 'Arrastro un poco el pie derecho y uso bastón.',
+          familiar: 'Tiene debilidad derecha residual y marcha asimétrica; usa bastón.'
+        },
+        evolucion: {
+          paciente: 'Ya caminaba algo lento, pero el derrame empeoró mucho mi marcha.',
+          familiar: 'La lentitud de marcha precedía al ictus; la asimetría y hemiparesia aparecieron después.'
+        },
+        repercusion: {
+          paciente: 'Necesito apoyo para caminar fuera de casa.',
+          familiar: 'Tiene mayor riesgo de caídas y necesita acompañamiento para trayectos largos.'
+        }
+      },
+      antecedentes: {
+        ejemplo: {
+          paciente: 'Me dio un infarto cerebral hace ocho meses y quedé débil del lado derecho.',
+          familiar: 'El ictus isquémico subcortical izquierdo ocurrió hace ocho meses y dejó hemiparesia derecha leve.'
+        },
+        evolucion: {
+          paciente: 'El cambio fue repentino cuando tuve el derrame.',
+          familiar: 'El evento vascular produjo un empeoramiento súbito sobre un deterioro cognitivo previo y gradual.'
+        },
+        repercusion: {
+          paciente: 'Desde entonces camino peor y necesito más ayuda.',
+          familiar: 'Desde el ictus aumentó notablemente la dependencia funcional.'
+        }
+      },
+      animo: {
+        evolucion: {
+          paciente: 'Me desanimé más después del infarto.',
+          familiar: 'La frustración aumentó después del ictus; la lentitud cognitiva era previa.'
+        },
+        repercusion: {
+          paciente: 'A veces no tengo ganas de salir.',
+          familiar: 'Participa menos en actividades, en parte por las limitaciones motoras.'
+        }
+      }
+    },
+
+    exploracion: {
+      signosVitales: {
+        presionArterial: '146/84 mmHg',
+        frecuenciaCardiaca: '76 lpm',
+        temperatura: '36.5 °C',
+        saturacionOxigeno: '97%'
+      },
+      neurologica:
+        'Alerta, orientado en persona y lugar, con lentitud de respuesta. Hemiparesia derecha residual leve (4+/5), reflejos osteotendinosos aumentados a la derecha y discreta torpeza motora derecha. Sin signos de parkinsonismo.',
+      marcha:
+        'Marcha lenta y asimétrica, con discreta circunducción de la pierna derecha. Utiliza bastón; dificultad en giros y marcha en tándem.',
+      pruebasCognitivas: {
+        moca: {
+          puntuacion: 17,
+          maximo: 30,
+          observacion:
+            'Alteraciones prominentes en funciones ejecutivas, atención y velocidad de procesamiento, con dificultades de evocación parcialmente facilitadas por pistas. Interpretar según escolaridad y limitaciones motoras.'
+        }
+      }
+    },
+
+    estudios: {
+      biometriaHematica:
+        'Sin anemia ni alteraciones clínicamente relevantes.',
+      quimicaSanguinea:
+        'Glucosa de 148 mg/dL; creatinina de 1.0 mg/dL.',
+      tsh: '2.0 mUI/L',
+      vitaminaB12: '480 pg/mL',
+      resonancia:
+        'Hiperintensidades extensas y confluentes de sustancia blanca compatibles con enfermedad cerebral de pequeños vasos, múltiples infartos lacunares crónicos e infarto subcortical izquierdo crónico en territorio de perforantes. Sin lesión aguda.',
+      tomografia:
+        'Sin hemorragia ni lesión intracraneal aguda; cambios isquémicos crónicos de sustancia blanca y secuela subcortical izquierda.'
+    },
+
+    objetivosEducativos: [
+      'Reconstruir el inicio gradual del deterioro cognitivo previo al ictus.',
+      'Identificar el predominio de disfunción ejecutiva, lentitud cognitiva y alteración de la atención.',
+      'Distinguir los cambios graduales por enfermedad de pequeños vasos del empeoramiento brusco posterior al ictus.',
+      'Determinar la pérdida de independencia instrumental y la ayuda parcial para actividades básicas.',
+      'Corroborar la cronología y la repercusión funcional mediante la entrevista con la esposa.',
+      'Interpretar el MoCA junto con los hallazgos neurológicos y la escolaridad.',
+      'Relacionar las lesiones vasculares de neuroimagen con el patrón clínico y su cronología.',
+      'Considerar diagnósticos alternativos y posibles contribuciones mixtas sin atribuir todo deterioro a lesiones incidentales.'
     ]
   }
 };
