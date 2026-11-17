@@ -3,7 +3,7 @@ import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de evaluación clínica - Versión 8
+ * Motor de evaluación clínica - Versión 9
  *
  * Caso 01: Elena Martínez
  * Caso 02: María Hernández
@@ -416,8 +416,10 @@ const reglasJorge = {
       /\b(parkinsonismo espontaneo|bradicinesia|rigidez)\b/
     ],
     [
-      /\b(no hay|sin|niega|ausencia de)\s+(fluctuaciones|alucinaciones visuales|alteraciones cognitivas|deterioro cognitivo|parkinsonismo)\b/,
-      /\b(atencion|funciones ejecutivas|habilidades visuoespaciales)\b.{0,30}\b(intactas|normales|sin alteraciones)\b/,
+      /\b(no hay|sin|niega|ausencia de|no presenta|no tiene|no existen)\s+(fluctuaciones|alucinaciones visuales|alteraciones cognitivas|deterioro cognitivo|parkinsonismo|alteraciones de atencion|alteraciones ejecutivas)\b/,
+      /\b(memoria|atencion|funciones ejecutivas|habilidades visuoespaciales)\b.{0,100}\b(conservad[oa]s?|intact[oa]s?|normales|sin alteraciones)\b/,
+      /\b(no presenta|no tiene|sin|niega|ausencia de)\b.{0,30}\b(alucinaciones visuales|fluctuaciones cognitivas|parkinsonismo|alteraciones del sueno rem)\b/,
+      /\b(no presenta|no tiene|sin|niega|ausencia de)\b.{0,35}\b(deterioro cognitivo|deficit cognitivo|dificultades cognitivas)\b/,
       /\b(alucinaciones)\b.{0,50}\b(exclusivamente|solo)\s+(durante el sueno|al dormir)\b/
     ]
   ),
@@ -469,7 +471,8 @@ const reglasJorge = {
       /\b(alteracion|deterioro)\s+cognitiv[oa]\s+(objetiv[oa]|significativ[oa])\b/
     ],
     [
-      /\b(moca|prueba cognitiva|tamizaje cognitivo)\s+(normal|intacto|sin alteraciones)\b/,
+      /\b(moca|prueba cognitiva|tamizaje cognitivo)\s+(es\s+)?(normal|intacto|sin alteraciones)\b/,
+      /\b(moca)\s+(es|fue|resulta|esta)\s+normal\b/,
       /\bmoca\s*(es\s+de|es|de|:|=|con|fue)?\s*(30|24|17|16)\s*(\/|de)\s*30\b/,
       /\b(no hay|sin)\s+(alteraciones|dificultades)\s+(en\s+)?(el\s+)?moca\b/,
       /\b(no hay|sin)\s+(bradicinesia|rigidez|parkinsonismo)\b/
