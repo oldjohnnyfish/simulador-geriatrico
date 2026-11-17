@@ -1,11 +1,12 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de entrevista - Versión 8
+ * Motor de entrevista - Versión 9
  *
  * Reconocimiento flexible de preguntas clínicas.
- * Mantiene contexto, interlocutores y datos del caso.
- * Sin APIs ni servicios externos.
+ * Seguimiento contextual de la conversación.
+ * Diferencia entre paciente y familiar.
+ * Sin APIs externas ni servicios de pago.
  */
 
 import { obtenerCasoClinico } from './casosClinicos.js';
@@ -21,7 +22,7 @@ function normalizar(texto) {
 }
 
 function coincide(texto, patrones) {
-  return patrones.some((p) => p.test(texto));
+  return patrones.some((patron) => patron.test(texto));
 }
 
 const temas = [
@@ -195,27 +196,34 @@ const patronesCronologia = {
     /\b(con que|con cuales)\b.*\b(sintomas|problemas)\b.*\b(empezo|inicio|comenzo)\b/,
     /\b(que|cuales)\b.*\b(sintomas|problemas)\b.*\b(al principio|al inicio)\b/
   ],
+
   primerasLimitaciones: [
     /\b(primera|primeras|primer)\b.*\b(actividad|actividades|dificultad funcional|limitacion)\b/,
     /\b(que dejo de hacer primero|que actividad dejo de hacer)\b/,
     /\b(cuando|desde cuando|hace cuanto)\b.*\b(necesitar ayuda|necesita ayuda|perdio su independencia|dejo de ser independiente)\b/,
     /\b(que actividades dejo de hacer|que empezo a dejar de hacer)\b/
   ],
+
   evolucion: [
     /\b(evolucion|evolucionado|evolucionaron|evolucionando|evoluciono|evolucionan)\b/,
     /\b(progresion|progresado|progresaron|progresivo|progresivamente)\b/,
     /\b(empeorado|empeorando|empeoraron|agravado|agravando)\b/,
     /\b(avanzado|avanzando|avanzaron|deteriorado|deteriorando)\b/,
     /\b(que paso despues|que ocurrio despues|que sucedio despues|que vino despues)\b/,
+    /\b(y despues que paso|y luego que paso|y entonces que paso)\b/,
+    /\b(y despues|y luego|y entonces|que vino despues)\b/,
+    /\b(como siguio|como continuaron|como ha seguido|que paso a continuacion)\b/,
     /\b(que cambios)\b.*\b(con el tiempo|desde entonces|desde el inicio|desde que)\b/,
     /\b(como ha ido|como han ido|como fue cambiando|como fueron cambiando)\b/
   ],
+
   inicio: [
     /\b(como|de que manera)\b.*\b(comenzo|comenzaron|inicio|iniciaron|empezo|empezaron|arranco)\b/,
     /\b(inicio brusco|inicio gradual|inicio repentino|inicio insidioso)\b/,
     /\b(brusco o gradual|repentino o progresivo|subito o gradual)\b/,
     /\b(de repente|de forma gradual|de manera subita|de forma subita|poco a poco)\b/
   ],
+
   tiempo: [
     /\b(desde cuando|desde hace cuanto|hace cuanto|cuanto tiempo|cuando empezo|cuando inicio|cuando comenzaron|cuando aparecieron)\b/,
     /\b(cuando noto|cuando notaron|desde que edad|cuanto lleva|cuantos meses|cuantos anos)\b/
@@ -285,14 +293,11 @@ function respuestaDe(caso, tema, canal, tipo = null) {
   if (tipo) {
     return caso.seguimientos?.[tema]?.[tipo]?.[canal] || null;
   }
+
   return caso.entrevista?.[tema]?.[canal] || null;
 }
 
 function responderCronologia(caso, canal, pregunta) {
-  /*
-   * Preguntas sobre las primeras limitaciones
-   * funcionales.
-   */
   if (
     coincide(
       pregunta,
@@ -308,10 +313,6 @@ function responderCronologia(caso, canal, pregunta) {
     }
   }
 
-  /*
-   * Primeros síntomas: se prioriza frente a
-   * cualquier otra palabra de la pregunta.
-   */
   if (
     coincide(pregunta, patronesCronologia.primerSintoma)
   ) {
@@ -324,10 +325,6 @@ function responderCronologia(caso, canal, pregunta) {
     }
   }
 
-  /*
-   * Detectar evolución general frente a evolución
-   * de un dominio cognitivo específico.
-   */
   if (
     coincide(pregunta, patronesCronologia.evolucion)
   ) {
@@ -352,9 +349,6 @@ function responderCronologia(caso, canal, pregunta) {
     }
   }
 
-  /*
-   * Forma de inicio: brusco, gradual, insidioso.
-   */
   if (
     coincide(pregunta, patronesCronologia.inicio)
   ) {
@@ -367,9 +361,6 @@ function responderCronologia(caso, canal, pregunta) {
     }
   }
 
-  /*
-   * Tiempo de evolución.
-   */
   if (
     coincide(pregunta, patronesCronologia.tiempo)
   ) {
@@ -442,9 +433,6 @@ export function responderEntrevista({
     );
   }
 
-  /*
-   * Reconocimiento prioritario de cronología.
-   */
   const cronologia =
     responderCronologia(caso, canal, pregunta);
 
@@ -455,12 +443,6 @@ export function responderEntrevista({
   const temaExplicito = identificarTema(pregunta);
   const tipoSeguimiento = identificarSeguimiento(pregunta);
 
-  /*
-   * Preguntas contextuales:
-   * "¿Y después?"
-   * "¿Ha empeorado?"
-   * "¿Con qué frecuencia?"
-   */
   if (tipoSeguimiento) {
     const tema = temaExplicito || ultimoTema;
 
@@ -483,9 +465,6 @@ export function responderEntrevista({
     }
   }
 
-  /*
-   * Referencias coloquiales al tema anterior.
-   */
   if (
     ultimoTema &&
     coincide(pregunta, [
@@ -510,9 +489,6 @@ export function responderEntrevista({
     }
   }
 
-  /*
-   * Pregunta principal por dominio clínico.
-   */
   if (temaExplicito) {
     const respuesta =
       respuestaDe(caso, temaExplicito, canal);
