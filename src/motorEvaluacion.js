@@ -3,13 +3,14 @@ import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de evaluación clínica - Versión 11
+ * Motor de evaluación clínica - Versión 12
  *
  * Caso 01: Elena Martínez
  * Caso 02: María Hernández
  * Caso 03: Roberto Salgado
  * Caso 04: Jorge Villaseñor
  * Caso 05: Arturo Mendoza
+ * Caso 06: Carmen Ríos
  *
  * Evaluación local sin servicios externos.
  * Reglas específicas por caso.
@@ -571,12 +572,73 @@ const reglasArturo = {
  * REGISTRO DE REGLAS POR CASO
  */
 
+/* CASO 06: CARMEN RÍOS */
+const reglasCarmen = {
+  inicio_evolucion: reglas([
+    /\b(rapidamente progresiv[oa]|rapida progresion|progresion rapida|empeoramiento rapido|deterioro acelerado)\b/,
+    /\b(cuatro|4) meses\b/,
+    /\b(empeora|empeoramiento|deterioro)\b.{0,35}\b(cada semana|semana a semana|en pocos meses)\b/
+  ], [
+    /\b(deterioro cognitivo|demencia|problemas de memoria|sintomas cognitivos)\s+(?:de|desde hace|con|comenzo hace|tiene|desde|de evolucion de)\s+(?:18|dieciocho|\d+|varios)\s+anos\b/,
+    /\b(evolucion|progresion|curso)\s+(lenta|lento|estacionari[oa])\b/,
+    /\b(no hay|sin|no presenta)\s+(progresion|deterioro progresivo)\b/
+  ]),
+  alteracion_cognitiva: reglas([
+    /\b(deterioro|afectacion|alteracion)\s+(cognitiv[oa]\s+)?(multidominio|multidimensional|global)\b/,
+    /\b(mioclonias?|sacudidas|ataxia|dismetria|hiperreflexia)\b/,
+    /\b(memoria|atencion|lenguaje|orientacion)\b.{0,70}\b(memoria|atencion|lenguaje|orientacion)\b/
+  ], [
+    /\b(no presenta|no tiene|sin|ausencia de|niega|no hay)\s+(mioclonias?|ataxia|deterioro cognitivo|alteraciones cognitivas)\b/,
+    /\b(cognicion|exploracion neurologica)\s+(es\s+)?(normal|intacta|sin alteraciones)\b/
+  ]),
+  funcionalidad: reglas([
+    /\b(perdida de|perdio|ha perdido)\s+(su\s+|la\s+)?(independencia|autonomia)\b/,
+    /\b(dependencia|deterioro|declive|compromiso)\s+(funcional|instrumental|progresiv[oa])\b/,
+    /\b(ayuda|supervision|dependencia|apoyo)\b.{0,65}\b(aivd|abvd|actividades|finanzas|medicamentos|bano|vestido|banarse|vestirse)\b/,
+    /\b(aivd|abvd|actividades instrumentales|actividades basicas)\b.{0,45}\b(afectadas|alteradas|dependencia|ayuda|supervision)\b/,
+    /\bya no puede\s+(administrar|manejar|vestirse|banarse)\b/
+  ], [
+    /\b(actualmente|ahora|en la actualidad)\s+(?:es\s+|sigue\s+|permanece\s+)?(independiente|autonoma)\b/,
+    /\b(conserva|mantiene|preserva)\s+(?:toda\s+)?(?:su\s+|la\s+)?(independencia|autonomia|funcionalidad)\b/,
+    /\b(independencia|autonomia|funcionalidad)\s+(?:actualmente\s+)?(?:esta\s+)?(conservada|intacta|preservada)\b/,
+    /\b(aivd|abvd|actividades instrumentales|actividades basicas)\s+(?:(?:estan|siguen|permanecen)\s+)?(conservadas|intactas|independientes|preservadas)\b/,
+    /\b(no necesita|no requiere)\s+(ayuda|supervision)\b/,
+    /\b(no presenta|no hay|sin)\s+(dependencia funcional|deterioro funcional|perdida de independencia)\b/
+  ]),
+  informante: reglasCompartidas.informante,
+  evaluacion_cognitiva: reglas([
+    /\bmoca\s*(?:es de|es|de|:|=|con|fue|obtuvo)?\s*10\s*(\/|de)\s*30\b/,
+    /\b10\s*(\/|de)\s*30\s*(en|del|de)\s*(el\s+)?moca\b/,
+    /\b(restriccion (?:a|de|en la) difusion|hiperintensidad(?:es)? en dwi|descenso de adc|cinta cortical|ribete cortical|complejos periodicos|ondas agudas periodicas)\b/,
+    /\b(resonancia|neuroimagen|rm)\b.{0,100}\b(caudados|dwi|adc|restriccion|hiperintensidad)\b/
+  ], [
+    /\bmoca\s*(?:es de|es|de|:|=|con|fue|obtuvo)?\s*(?!10\b)\d+\s*(\/|de)\s*30\b/,
+    /\b(moca|resonancia|neuroimagen|electroencefalograma|eeg)\s+(?:es\s+|fue\s+)?(normal|intact[oa]|sin alteraciones)\b/,
+    /\brt[ -]?quic\s+(?:es\s+|fue\s+|resulto\s+)?(positivo|negativo|confirmatorio)\b/,
+    /\b(?<!no )(?<!sin )(confirmad[oa]|demostrad[oa])\s+(por|mediante)\s+rt[ -]?quic\b/
+  ]),
+  diagnostico_diferencial: reglas([
+    /\b(considerar|descartar|diferenciar|evaluar|investigar|explorar)\b.{0,100}\b(vih|infecciones? oportunistas?|encefalitis|autoinmune|delirium|metabolic[oa]s?|toxicas?|tratables|reversibles|epilep|alzheimer)\w*\b/,
+    /\b(vih|hand)\b.{0,80}\b(diagnostico diferencial|menos probable|no explica|no justifica|bien controlado)\b/,
+    /\b(carga viral indetectable|supresion virologica|cd4)\b.{0,100}\b(no explica|menos probable|no excluye|cronologia|18 anos|dieciocho anos)\b/,
+    /\b(causas|etiologias)\s+(potencialmente\s+)?(tratables|reversibles)\b/
+  ], [
+    /\b(?:demencia|deterioro cognitivo)\s+(?:es\s+)?(?:exclusivamente|unicamente|sin duda)\s+(?:por|debido al|atribuible al)\s+vih\b/,
+    /\b(?:demencia por vih|demencia asociada a vih|hand)\s+(?:esta\s+)?confirmad[oa]\b/,
+    /\b(?:el\s+)?vih\s+(?:es\s+)?(?:la unica causa|la causa definitiva)\b/,
+    /\b(?:no es necesario|no requiere)\s+(descartar|considerar|evaluar)\s+(otras causas|diagnosticos diferenciales|causas tratables)\b/,
+    /\brt[ -]?quic\s+(?:es\s+|fue\s+|resulto\s+)?(positivo|negativo|confirmatorio)\b/,
+    /\b(?<!no )(?<!sin )(confirmad[oa]|demostrad[oa])\s+(por|mediante)\s+rt[ -]?quic\b/
+  ])
+};
+
 const reglasPorCaso = {
   'caso-01': reglasElena,
   'caso-02': reglasMaria,
   'caso-03': reglasRoberto,
   'caso-04': reglasJorge,
-  'caso-05': reglasArturo
+  'caso-05': reglasArturo,
+  'caso-06': reglasCarmen
 };
 
 /*
