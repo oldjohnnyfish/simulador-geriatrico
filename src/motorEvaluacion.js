@@ -3,12 +3,13 @@ import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de evaluación clínica - Versión 9
+ * Motor de evaluación clínica - Versión 10
  *
  * Caso 01: Elena Martínez
  * Caso 02: María Hernández
  * Caso 03: Roberto Salgado
  * Caso 04: Jorge Villaseñor
+ * Caso 05: Arturo Mendoza
  *
  * Evaluación local sin servicios externos.
  * Reglas específicas por caso.
@@ -502,6 +503,69 @@ const reglasJorge = {
   )
 };
 
+/* CASO 05: ARTURO MENDOZA - variante conductual probable */
+const reglasArturo = {
+  inicio_evolucion: reglas([
+    /\b(inicio|comienzo|aparicion|evolucion|deterioro|cambios)\b.{0,45}\b(insidios[oa]|gradual|progresiv[oa]s?)\b/,
+    /\b(tres|3)\s+anos\b/,
+    /\b36 meses\b/,
+    /\b(poco a poco|progresivamente)\b/
+  ], [
+    /\b(inicio|comienzo|aparicion)\s+(brusc[oa]|subit[oa]|agud[oa]|repentin[oa])\b/,
+    /\b(sin|no hay|no presenta)\s+(progresion|deterioro progresivo)\b/,
+    /\b(evolucion|curso)\s+(agud[oa]|estacionari[oa])\b/
+  ]),
+  alteracion_cognitiva: reglas([
+    /\b(desinhibicion|impulsividad|compras impulsivas|comentarios sexuales inapropiados|apatia|perdida de iniciativa|perdida de empatia|falta de empatia|hiperoralidad|compulsiones|estereotipias|rutinas rigidas|conductas repetitivas|conductas compulsivas|disfuncion ejecutiva|deficit ejecutivo)\b/,
+    /\b(alteraciones|dificultades|deficit|deterioro)\b.{0,35}\b(funciones ejecutivas|cognicion social|planificacion|inhibicion)\b/
+  ], [
+    /\b(sin|no hay|no presenta|no tiene|niega|ausencia de)\s+(desinhibicion|apatia|hiperoralidad|compulsiones|perdida de empatia|disfuncion ejecutiva|cambios conductuales|alteraciones cognitivas)\b/,
+    /\b(funciones ejecutivas|cognicion social|conducta|personalidad)\s+(normales?|intact[oa]s?|sin alteraciones)\b/,
+    /\b(predominio|alteracion predominante)\s+(amnestic[oa]|de memoria episodica)\b/
+  ]),
+  funcionalidad: reglas([
+    /\b(perdida de|perdio|ha perdido)\s+(su\s+|la\s+)?(independencia|autonomia)\b/,
+    /\b(dependencia instrumental|dependencia funcional|deterioro funcional|compromiso funcional)\b/,
+    /\b(dependencia|ayuda|supervision|apoyo)\b.{0,65}\b(aivd|actividades instrumentales|finanzas|medicamentos|compras|tareas complejas)\b/,
+    /\b(aivd|actividades instrumentales|finanzas|medicamentos)\b.{0,45}\b(afectadas|alteradas|dependencia|supervision|ayuda)\b/,
+    /\bya no puede\s+(administrar|manejar|organizar)\b/
+  ], [
+    /\b(plena independencia|independencia completa|autonomia completa)\b/,
+    /\b(independencia|autonomia|funcionalidad)\s+(completamente\s+)?(conservada|intacta|preservada)\b(?!\s+(en|para)\s+(las\s+)?(actividades basicas|abvd))/,
+    /\b(sin|no presenta|no hay)\s+(dependencia instrumental|dependencia funcional|deterioro funcional|perdida de independencia)\b/,
+    /\b(aivd|actividades instrumentales)\s+(conservadas|intactas|independientes)\b/,
+    /\bno (necesita|requiere)\s+(ayuda|supervision)\b.{0,40}\b(finanzas|medicamentos|aivd|actividades instrumentales)\b/
+  ]),
+  informante: reglas([
+    /\b(esposa|familiar|informante|cuidadora)\s+(confirma|corrobora|refiere|reporta|describe|nota|observa|explica|documenta|aporta)\b/,
+    /\b(segun|de acuerdo con|informacion de|testimonio de|relato de|corroborad[oa]s? por)\s+(su\s+|la\s+)?(esposa|familiar|informante|cuidadora)\b/,
+    /\bheteroanamnesis\b/
+  ], [
+    /\b(esposa|familiar|informante)\s+(niega|descarta)\s+(los\s+)?(cambios|problemas|sintomas)\s+(cognitivos|conductuales)\b/,
+    /\b(sin|no hay)\s+(informante|informacion familiar|corroboracion familiar)\b/
+  ]),
+  evaluacion_cognitiva: reglas([
+    /\bmoca\s*(es de|es|de|:|=|con|fue|obtuvo)?\s*23\s*(\/|de)\s*30\b/,
+    /\b23\s*(\/|de)\s*30\s*(en|del|de)\s*(el\s+)?moca\b/,
+    /\bmoca\b.{0,70}\b(alterad[oa]|baj[oa]|deficit|ejecutiv[oa])\b/,
+    /\batrofia\b.{0,65}\b(frontotemporal|orbitofrontal|frontal|temporal anterior)\b/
+  ], [
+    /\bmoca\s+(es\s+|fue\s+)?(normal|intacto|sin alteraciones)\b/,
+    /\bmoca\s*(es de|es|de|:|=|con|fue|obtuvo)?\s*(?!23\b)\d+\s*(\/|de)\s*30\b/,
+    /\b(resonancia|neuroimagen)\s+(es\s+)?(normal|sin alteraciones|sin atrofia)\b/,
+    /\b(sin|no hay|ausencia de)\s+atrofia\s+(frontotemporal|frontal|orbitofrontal)\b/
+  ]),
+  diagnostico_diferencial: reglas([
+    /\b(considerar|descartar|diferenciar|evaluar|investigar|explorar)\b.{0,100}\b(depresion|bipolar|mania|psiquiatric[oa]s?|alzheimer|vascular|lewy|delirium|b12|tsh)\b/,
+    /\b(sin|no hay|ausencia de|niega)\s+(antecedentes de\s+)?(mania|episodios maniacos|depresion mayor|psicosis)\b/,
+    /\b(no episodic[oa]|curso no episodico|sin episodios maniacos)\b/
+  ], [
+    /\b(trastorno bipolar|mania|depresion mayor|alzheimer)\s+(confirmad[oa]|demostrad[oa])\b/,
+    /\b(no es necesario|no requiere)\s+(descartar|considerar|evaluar)\s+(otras causas|diagnosticos diferenciales)\b/,
+    /\b(confirmad[oa]|demostrad[oa])\s+(por|mediante)\s+(neuropatologia|biopsia|biomarcadores)\b/
+  ])
+};
+
 /*
  * REGISTRO DE REGLAS POR CASO
  */
@@ -510,7 +574,8 @@ const reglasPorCaso = {
   'caso-01': reglasElena,
   'caso-02': reglasMaria,
   'caso-03': reglasRoberto,
-  'caso-04': reglasJorge
+  'caso-04': reglasJorge,
+  'caso-05': reglasArturo
 };
 
 /*
