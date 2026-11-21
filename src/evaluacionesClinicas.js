@@ -1,13 +1,14 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Evaluaciones diagnósticas - Versión 5
+ * Evaluaciones diagnósticas - Versión 6
  *
  * Casos:
  * 01 - Elena Martínez
  * 02 - María Hernández
  * 03 - Roberto Salgado
  * 04 - Jorge Villaseñor
+ * 05 - Arturo Mendoza
  *
  * Catálogos diagnósticos compartidos.
  * Evaluación local, sin servicios externos.
@@ -766,6 +767,151 @@ export const evaluacionesClinicas = {
         'Incorporar la información de la esposa y el MoCA de 18/30.',
         'Diferenciar demencia con cuerpos de Lewy de demencia asociada a enfermedad de Parkinson y enfermedad de Alzheimer.',
         'Evitar afirmar confirmación polisomnográfica del trastorno de conducta del sueño REM cuando no se ha realizado el estudio.'
+      ]
+    }
+  },
+
+  // CASO 05: ARTURO MENDOZA
+  'caso-05': {
+    "pacienteId": "caso-05",
+    "configuracion": {
+      "retroalimentacion": "al_finalizar",
+      "puntuacionMaxima": 100
+    },
+    "diagnosticoSindromatico": {
+      "puntuacionMaxima": 30,
+      "pregunta": "¿Cuál es el diagnóstico sindromático más probable?",
+      "opciones": opcionesSindromaticas,
+      "respuestaCorrecta": "demencia",
+      "explicacion": "Arturo presenta deterioro cognitivo y conductual progresivo que compromete su independencia instrumental. Aunque conserva las actividades básicas y parte de la memoria, la necesidad de supervisión para finanzas y otras tareas complejas permite establecer un trastorno neurocognitivo mayor."
+    },
+    "diagnosticoEtiologico": {
+      "puntuacionMaxima": 20,
+      "pregunta": "¿Cuál es la interpretación etiológica más apropiada?",
+      "opciones": opcionesEtiologicas,
+      "respuestaCorrecta": "frontotemporal",
+      "explicacion": "El inicio conductual progresivo, la desinhibición, apatía, pérdida de empatía, conductas repetitivas, hiperoralidad y perfil disejecutivo con preservación relativa de memoria episódica y habilidades visuoespaciales apoyan la variante conductual de demencia frontotemporal. La pérdida funcional y la atrofia frontal y temporal anterior permiten clasificarla clínicamente como probable, sin confirmación neuropatológica."
+    },
+    "justificacionClinica": {
+      "puntuacionMaxima": 50,
+      "pregunta": "Justifique su diagnóstico utilizando los hallazgos de la entrevista, la exploración y los estudios complementarios.",
+      "criterios": [
+        {
+          "id": "inicio_evolucion",
+          "nombre": "Inicio conductual y evolución progresiva",
+          "puntos": 8,
+          "palabrasClave": [
+            "tres anos",
+            "3 anos",
+            "gradual",
+            "insidioso",
+            "progresivo",
+            "progresiva",
+            "inicio conductual"
+          ],
+          "retroalimentacion": "Los cambios comenzaron hace tres años con desinhibición, seguida de pérdida de empatía, apatía, rutinas rígidas e hiperoralidad, con progresión gradual."
+        },
+        {
+          "id": "alteracion_cognitiva",
+          "nombre": "Perfil cognitivo y manifestaciones conductuales",
+          "puntos": 8,
+          "palabrasClave": [
+            "desinhibicion",
+            "impulsividad",
+            "apatia",
+            "perdida de empatia",
+            "compulsiones",
+            "estereotipias",
+            "hiperoralidad",
+            "funciones ejecutivas",
+            "disfuncion ejecutiva",
+            "cognicion social",
+            "memoria relativamente conservada"
+          ],
+          "retroalimentacion": "Se identifican desinhibición, apatía, pérdida de empatía, conductas repetitivas, hiperoralidad y perfil disejecutivo con preservación relativa de memoria episódica y habilidades visuoespaciales. Al menos tres de estos seis dominios clínicos apoyan la variante conductual posible."
+        },
+        {
+          "id": "funcionalidad",
+          "nombre": "Pérdida de independencia instrumental",
+          "puntos": 12,
+          "palabrasClave": [
+            "dependencia",
+            "perdida de independencia",
+            "perdida de autonomia",
+            "aivd",
+            "actividades instrumentales",
+            "finanzas",
+            "compras",
+            "supervision",
+            "necesita ayuda"
+          ],
+          "retroalimentacion": "La supervisión de finanzas, compras, medicamentos y tareas complejas por alteración cognitiva y conductual demuestra pérdida de independencia instrumental, pese a conservar las actividades básicas."
+        },
+        {
+          "id": "informante",
+          "nombre": "Aporte de la esposa y conciencia de enfermedad",
+          "puntos": 6,
+          "palabrasClave": [
+            "esposa",
+            "informante",
+            "familiar",
+            "heteroanamnesis",
+            "anosognosia",
+            "minimiza",
+            "corrobora"
+          ],
+          "retroalimentacion": "La esposa documenta los cambios respecto a la personalidad previa y sus consecuencias funcionales. Arturo tiene escasa conciencia de sus dificultades, por lo que su relato aislado es insuficiente."
+        },
+        {
+          "id": "evaluacion_cognitiva",
+          "nombre": "Interpretación cognitiva y neuroimagen",
+          "puntos": 8,
+          "palabrasClave": [
+            "moca",
+            "23/30",
+            "23 de 30",
+            "perfil disejecutivo",
+            "flexibilidad cognitiva",
+            "fluidez verbal",
+            "atrofia frontal",
+            "orbitofrontal",
+            "temporal anterior",
+            "resonancia"
+          ],
+          "retroalimentacion": "El MoCA de 23/30 muestra dificultades ejecutivas con memoria y habilidades visuoespaciales relativamente conservadas. Las tareas clínicas adicionales muestran afectación de cognición social. La atrofia frontal y temporal anterior, junto con el deterioro funcional y los criterios clínicos, apoya la variante conductual probable. El MoCA aislado no establece el diagnóstico."
+        },
+        {
+          "id": "diagnostico_diferencial",
+          "nombre": "Diagnóstico diferencial y límites de evidencia",
+          "puntos": 8,
+          "palabrasClave": [
+            "depresion",
+            "trastorno bipolar",
+            "mania",
+            "alzheimer",
+            "psiquiatrico",
+            "diagnostico diferencial",
+            "b12",
+            "tsh",
+            "probable",
+            "neuropatologica"
+          ],
+          "retroalimentacion": "La progresión sostenida y la ausencia de episodios afectivos separados por recuperación favorecen una etiología neurodegenerativa frente a trastorno bipolar o depresión. Debe considerarse Alzheimer de presentación conductual. TSH y B12 normales no excluyen todas las causas alternativas. La evidencia permite un diagnóstico clínico probable, no confirmación neuropatológica."
+        }
+      ],
+      "advertencia": "La evaluación automática de texto libre es orientativa. La detección de palabras clave no garantiza razonamiento correcto ni sustituye la revisión docente."
+    },
+    "retroalimentacionFinal": {
+      "titulo": "Evaluación de razonamiento clínico",
+      "mensaje": "Arturo presenta un trastorno neurocognitivo mayor compatible con demencia frontotemporal de variante conductual probable. La integración de cambios conductuales tempranos, perfil disejecutivo, pérdida de independencia instrumental e imagen compatible es fundamental.",
+      "recomendaciones": [
+        "Reconstruir el inicio y la progresión de los cambios conductuales.",
+        "Identificar los seis dominios clínicos de la variante conductual.",
+        "Documentar la pérdida de independencia instrumental.",
+        "Integrar el relato de la esposa y la escasa conciencia de enfermedad.",
+        "Interpretar el MoCA de 23/30 según escolaridad y contexto, junto con la evaluación ejecutiva y social.",
+        "Relacionar la atrofia frontal y temporal anterior con el síndrome clínico.",
+        "Considerar diagnósticos psiquiátricos y Alzheimer de presentación conductual, sin afirmar confirmación neuropatológica."
       ]
     }
   }
