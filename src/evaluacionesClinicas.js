@@ -1,7 +1,7 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Evaluaciones diagnósticas - Versión 6
+ * Evaluaciones diagnósticas - Versión 7
  *
  * Casos:
  * 01 - Elena Martínez
@@ -9,6 +9,7 @@
  * 03 - Roberto Salgado
  * 04 - Jorge Villaseñor
  * 05 - Arturo Mendoza
+ * 06 - Carmen Ríos
  *
  * Catálogos diagnósticos compartidos.
  * Evaluación local, sin servicios externos.
@@ -912,6 +913,145 @@ export const evaluacionesClinicas = {
         "Interpretar el MoCA de 23/30 según escolaridad y contexto, junto con la evaluación ejecutiva y social.",
         "Relacionar la atrofia frontal y temporal anterior con el síndrome clínico.",
         "Considerar diagnósticos psiquiátricos y Alzheimer de presentación conductual, sin afirmar confirmación neuropatológica."
+      ]
+    }
+  },
+
+  // CASO 06: CARMEN RÍOS
+  'caso-06': {
+    "pacienteId": "caso-06",
+    "configuracion": {
+      "retroalimentacion": "al_finalizar",
+      "puntuacionMaxima": 100
+    },
+    "diagnosticoSindromatico": {
+      "puntuacionMaxima": 30,
+      "pregunta": "¿Cuál es el diagnóstico sindromático más probable?",
+      "opciones": opcionesSindromaticas,
+      "respuestaCorrecta": "demencia",
+      "explicacion": "Carmen presenta deterioro cognitivo multidominio con pérdida acelerada de autonomía instrumental y básica, compatible con trastorno neurocognitivo mayor."
+    },
+    "diagnosticoEtiologico": {
+      "puntuacionMaxima": 20,
+      "pregunta": "¿Cuál es la interpretación etiológica más apropiada?",
+      "opciones": opcionesEtiologicas,
+      "respuestaCorrecta": "demencia_rapidamente_progresiva",
+      "explicacion": "La evolución de cuatro meses, las mioclonías, la ataxia, la restricción de difusión cortical y caudada y los complejos periódicos en EEG apoyan una demencia rápidamente progresiva compatible con enfermedad de Creutzfeldt-Jakob esporádica probable, si no se identifica una explicación alternativa. El RT-QuIC está pendiente. Deben investigarse urgentemente causas tratables."
+    },
+    "justificacionClinica": {
+      "puntuacionMaxima": 50,
+      "pregunta": "Justifique su diagnóstico utilizando los hallazgos de la entrevista, la exploración y los estudios complementarios.",
+      "criterios": [
+        {
+          "id": "inicio_evolucion",
+          "nombre": "Temporalidad y velocidad de progresión",
+          "puntos": 8,
+          "palabrasClave": [
+            "cuatro meses",
+            "4 meses",
+            "rapidamente progresiva",
+            "progresion acelerada"
+          ],
+          "retroalimentacion": "El deterioro cognitivo comenzó hace cuatro meses y progresó rápidamente, a diferencia del VIH diagnosticado hace 18 años. La cronología obliga a investigar otras etiologías."
+        },
+        {
+          "id": "alteracion_cognitiva",
+          "nombre": "Deterioro multidominio y manifestaciones neurológicas",
+          "puntos": 8,
+          "palabrasClave": [
+            "memoria",
+            "atencion",
+            "lenguaje",
+            "funciones ejecutivas",
+            "desorientacion",
+            "multidominio",
+            "mioclonias",
+            "ataxia",
+            "dismetria",
+            "hiperreflexia"
+          ],
+          "retroalimentacion": "La afectación de varios dominios cognitivos junto con mioclonías, ataxia y otros signos neurológicos orienta hacia una demencia rápidamente progresiva y exige evaluación urgente."
+        },
+        {
+          "id": "funcionalidad",
+          "nombre": "Pérdida acelerada de independencia",
+          "puntos": 12,
+          "palabrasClave": [
+            "dependencia",
+            "perdida de independencia",
+            "aivd",
+            "abvd",
+            "finanzas",
+            "medicamentos",
+            "bano",
+            "vestido",
+            "necesita ayuda"
+          ],
+          "retroalimentacion": "La pérdida de autonomía instrumental comenzó hace tres meses y posteriormente se comprometieron actividades básicas. La dependencia cognitiva permite establecer un trastorno neurocognitivo mayor."
+        },
+        {
+          "id": "informante",
+          "nombre": "Aporte de la hija como informante",
+          "puntos": 6,
+          "palabrasClave": [
+            "hija",
+            "informante",
+            "heteroanamnesis",
+            "familiar",
+            "corrobora"
+          ],
+          "retroalimentacion": "La hija permite reconstruir la cronología, documentar la independencia previa y corroborar el deterioro acelerado, cuando el relato de Carmen resulta limitado."
+        },
+        {
+          "id": "evaluacion_cognitiva",
+          "nombre": "Interpretación de estudios cognitivos y neurológicos",
+          "puntos": 8,
+          "palabrasClave": [
+            "moca",
+            "10/30",
+            "restriccion de difusion",
+            "dwi",
+            "adc",
+            "corteza",
+            "caudados",
+            "eeg",
+            "complejos periodicos",
+            "rt-quic"
+          ],
+          "retroalimentacion": "El MoCA de 10/30 apoya la alteración cognitiva objetiva. La restricción de difusión cortical y caudada y los complejos periódicos de ondas agudas en el EEG respaldan la sospecha de enfermedad priónica. El RT-QuIC está pendiente; no hay confirmación definitiva."
+        },
+        {
+          "id": "diagnostico_diferencial",
+          "nombre": "Diagnóstico diferencial, VIH y causas tratables",
+          "puntos": 8,
+          "palabrasClave": [
+            "vih",
+            "carga viral indetectable",
+            "cd4",
+            "infecciones oportunistas",
+            "encefalitis",
+            "autoinmune",
+            "metabolica",
+            "delirium",
+            "virus jc",
+            "causas tratables"
+          ],
+          "retroalimentacion": "El VIH de larga evolución, la supresión viral en plasma y LCR y los CD4 de 680 células/µL hacen menos convincente una atribución automática al VIH, sin excluir por sí solos afectación cognitiva asociada. Deben investigarse causas infecciosas, autoinmunes, tóxico-metabólicas y epilépticas potencialmente tratables."
+        }
+      ],
+      "advertencia": "La evaluación automática de texto libre es orientativa. La detección de palabras clave no garantiza razonamiento correcto ni sustituye la revisión docente."
+    },
+    "retroalimentacionFinal": {
+      "titulo": "Evaluación de razonamiento clínico",
+      "mensaje": "Carmen presenta un trastorno neurocognitivo mayor rápidamente progresivo, con sospecha clínica de enfermedad de Creutzfeldt-Jakob esporádica probable. La cronología, la dependencia, los signos neurológicos y los estudios complementarios orientan el diagnóstico. El VIH no debe convertirse en una explicación automática. Se requiere evaluación neurológica urgente y búsqueda de causas tratables.",
+      "recomendaciones": [
+        "Reconstruir por separado la cronología del VIH y del deterioro cognitivo.",
+        "Identificar el deterioro multidominio, las mioclonías y la ataxia.",
+        "Documentar la pérdida de autonomía instrumental y básica.",
+        "Integrar el relato de la hija y el estado funcional previo.",
+        "Interpretar MoCA, resonancia, EEG y estudios de LCR en conjunto.",
+        "Considerar afectación asociada al VIH y otras causas infecciosas, autoinmunes, metabólicas y epilépticas.",
+        "Reconocer la necesidad de evaluación urgente y evitar afirmar confirmación definitiva con RT-QuIC pendiente."
       ]
     }
   }
