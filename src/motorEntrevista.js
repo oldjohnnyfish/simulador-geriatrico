@@ -1,7 +1,7 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de entrevista - Versión 11
+ * Motor de entrevista - Versión 12
  *
  * Reconocimiento flexible de preguntas clínicas.
  * Seguimiento contextual de la conversación.
@@ -295,7 +295,26 @@ const temasArturo = [
   { id: 'apatia', patrones: [/\b(apatia|apatic[oa]|iniciativa|falta de motivacion|perdida de motivacion|dejo de iniciar|sin motivacion|no tiene ganas de hacer nada)\b/] }
 ];
 
+// Temas exclusivos de Carmen; prioridad sobre los temas generales.
+const temasCarmen = [
+  { id: 'infeccionesOportunistas', patrones: [/\b(infecciones? oportunistas?|toxoplasmosis|criptococosis|leucoencefalopatia multifocal)\b/] },
+  { id: 'controlVih', patrones: [/\b(carga viral|cd4|linfocitos|control virologico|indetectable|vih controlado)\b/] },
+  { id: 'medicamentos', patrones: [/\b(antirretrovirales?|adherencia|bictegravir|emtricitabina|tenofovir)\b/, /\b(tratamiento|medicamentos?|pastillas?)\b.*\b(vih|sida)\b/, /\b(vih|sida)\b.*\b(tratamiento|medicamentos?|pastillas?)\b/] },
+  { id: 'mioclonias', patrones: [/\b(mioclonias?|sacudidas?|movimientos involuntarios|espasmos?|brincos musculares)\b/] },
+  { id: 'ataxia', patrones: [/\b(ataxia|coordinacion|equilibrio|inestabilidad|dismetria|torpeza motora)\b/] },
+  { id: 'cognicionPrevia', patrones: [/\b(antes|previamente|previa|previo)\b.*\b(memoria|cognicion|cognitivos?|independiente|viv[ia]+ sola|funcionalidad)\b/, /\b(memoria|cognitivos?|independiente|funcionalidad)\b.*\b(antes|previamente|previa|previo)\b/, /\b(estado basal|funcionamiento previo|estado funcional previo)\b/] },
+  { id: 'sintomasInfecciosos', patrones: [/\b(fiebre|cefalea|dolor de cabeza|rigidez de nuca|sintomas infecciosos)\b/] },
+  { id: 'convulsiones', patrones: [/\b(convulsiones?|crisis epilepticas?|epilepsia|perdida de conciencia)\b/] },
+  { id: 'vih', patrones: [/\b(vih|sida|virus de inmunodeficiencia humana)\b/] },
+  { id: 'cronologia', patrones: [/\b(rapidez|velocidad de progresion|que tan rapido|deterioro cognitivo|sintomas cognitivos|cambios cognitivos|empeora cada semana)\b/] }
+];
+
 function identificarTema(pregunta, caso) {
+  if (caso?.id === 'caso-06') {
+    const especifico = temasCarmen.find(t => coincide(pregunta, t.patrones));
+    if (especifico && caso.entrevista?.[especifico.id]) return especifico.id;
+  }
+
   if (caso?.id === 'caso-05') {
     const especifico = temasArturo.find(tema => coincide(pregunta, tema.patrones));
     if (especifico && caso.entrevista?.[especifico.id]) return especifico.id;
@@ -481,6 +500,25 @@ export function responderEntrevista({
     if (temasArturo.some(t => t.id === destino) &&
         (coincide(pregunta, patronesCronologia.tiempo) || coincide(pregunta, patronesCronologia.inicio) || /\b(cuando comenzo|cuando aparecio|desde cuando)\b/.test(pregunta))) {
       const respuesta = respuestaDe(caso, destino, canal);
+      if (respuesta) return resultado(respuesta, destino, true);
+    }
+  }
+
+  // En Carmen, la temporalidad depende del tema explícito o del último tema.
+  if (caso.id === 'caso-06' &&
+      !coincide(pregunta, patronesCronologia.primerSintoma) &&
+      !coincide(pregunta, patronesCronologia.primerasLimitaciones)) {
+    const explicito = identificarTema(pregunta, caso);
+    const temporal = coincide(pregunta, patronesCronologia.tiempo) ||
+      coincide(pregunta, patronesCronologia.inicio) ||
+      coincide(pregunta, patronesCronologia.evolucion) ||
+      /\b(cuando comenzo|cuando aparecio|cuando le diagnosticaron|cuando fue diagnosticada|desde hace cuanto|hace cuantos anos|hace cuantos meses)\b/.test(pregunta);
+    const contextual = /^(desde cuando|hace cuanto|desde hace cuanto|cuanto tiempo|cuanto tiempo lleva|cuando empezo|cuando comenzo|cuando aparecio|cuando inicio|cuando le diagnosticaron|como ha evolucionado|como ha progresado|como ha empeorado)$/.test(pregunta);
+    const destino = explicito || (contextual ? ultimoTema : null);
+    if (temporal && destino && !['motivo','saludo','despedida'].includes(destino)) {
+      const respuesta = respuestaDe(caso, destino, canal, 'evolucion') ||
+        (destino === 'cronologiaVih' ? respuestaDe(caso, 'vih', canal, 'evolucion') : null) ||
+        respuestaDe(caso, destino, canal);
       if (respuesta) return resultado(respuesta, destino, true);
     }
   }
