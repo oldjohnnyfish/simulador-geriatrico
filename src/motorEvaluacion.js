@@ -3,7 +3,7 @@ import { obtenerEvaluacionClinica } from './evaluacionesClinicas.js';
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de evaluación clínica - Versión 10
+ * Motor de evaluación clínica - Versión 11
  *
  * Caso 01: Elena Martínez
  * Caso 02: María Hernández
@@ -533,7 +533,8 @@ const reglasArturo = {
     /\b(plena independencia|independencia completa|autonomia completa)\b/,
     /\b(independencia|autonomia|funcionalidad)\s+(completamente\s+)?(conservada|intacta|preservada)\b(?!\s+(en|para)\s+(las\s+)?(actividades basicas|abvd))/,
     /\b(sin|no presenta|no hay)\s+(dependencia instrumental|dependencia funcional|deterioro funcional|perdida de independencia)\b/,
-    /\b(aivd|actividades instrumentales)\s+(conservadas|intactas|independientes)\b/,
+    /\b(aivd|actividades instrumentales)\s+(?:(?:estan|se encuentran|permanecen|siguen)\s+)?(conservadas|intactas|independientes|preservadas)\b/,
+    /\b(conserva|mantiene|preserva)\s+(?:toda\s+|completamente\s+)?(?:su\s+|la\s+)?(independencia|autonomia)\s+(?:funcional|instrumental|total|completa|plena)\b(?!\s+(?:en|para)\s+(?:las\s+)?(?:actividades basicas|abvd))/ ,
     /\bno (necesita|requiere)\s+(ayuda|supervision)\b.{0,40}\b(finanzas|medicamentos|aivd|actividades instrumentales)\b/
   ]),
   informante: reglas([
