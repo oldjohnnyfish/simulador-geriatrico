@@ -1,7 +1,7 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Fichas clínicas ficticias - Versión 6
+ * Fichas clínicas ficticias - Versión 7
  * Uso exclusivamente educativo.
  */
 
@@ -1221,6 +1221,420 @@ export const casosClinicos = {
       'Documentar dependencia instrumental para establecer un síndrome demencial.',
       'Distinguir la demencia con cuerpos de Lewy de enfermedad de Parkinson con demencia, Alzheimer, delirium y causas farmacológicas.',
       'Reconocer que la polisomnografía puede confirmar el trastorno de conducta del sueño REM y que la evaluación clínica no constituye confirmación neuropatológica.'
+    ]
+  },
+
+  // CASO 05: ARTURO MENDOZA
+  'caso-05': {
+    "id": "caso-05",
+    "identidad": {
+      "nombre": "Arturo Mendoza",
+      "edad": 67,
+      "escolaridad": 16,
+      "ocupacion": "Contador jubilado"
+    },
+    "presentacion": "Hombre de 67 años que acude acompañado de su esposa por cambios progresivos de personalidad, comportamiento y desempeño cotidiano.",
+    "informacionReservada": {
+      "diagnostico": "Trastorno neurocognitivo mayor compatible con demencia frontotemporal, variante conductual probable",
+      "evolucionMeses": 36,
+      "curso": "Insidioso y progresivo, con predominio conductual temprano",
+      "independenciaFuncional": false
+    },
+    "entrevista": {
+      "motivo": {
+        "paciente": "Mi esposa insiste en que venga. Yo estoy bien, solo hago lo que quiero.",
+        "familiar": "Soy su esposa. Desde hace tres años ha cambiado mucho su manera de comportarse y ya no puede organizar la casa como antes."
+      },
+      "cronologia": {
+        "paciente": "No recuerdo haber cambiado. Desde que me jubilé tengo más libertad.",
+        "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+      },
+      "memoria": {
+        "paciente": "Recuerdo lo que hice ayer y las conversaciones con mi familia.",
+        "familiar": "Recuerda acontecimientos recientes bastante bien. Los primeros cambios fueron de conducta, no olvidos repetitivos."
+      },
+      "atencion": {
+        "paciente": "Me aburro si una tarea tarda mucho.",
+        "familiar": "Se distrae con facilidad y actúa antes de escuchar todas las instrucciones, pero no tiene fluctuaciones marcadas de alerta."
+      },
+      "funcionesEjecutivas": {
+        "paciente": "Las cuentas son fáciles, aunque mi esposa prefiere hacerlas.",
+        "familiar": "Antes era contador. Ahora no logra planificar pagos, organizar tareas de varios pasos ni corregir sus errores."
+      },
+      "visuoespacial": {
+        "paciente": "Encuentro bien el camino y reconozco los lugares.",
+        "familiar": "No hemos observado dificultades importantes para orientarse o reconocer objetos."
+      },
+      "funcionalidad": {
+        "paciente": "Me baño, me visto y como sin ayuda. Mi esposa se ocupa de las cuentas.",
+        "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+      },
+      "finanzas": {
+        "paciente": "Compré algunas cosas que me gustaban. No veo el problema.",
+        "familiar": "Hizo compras costosas innecesarias y pagó facturas duplicadas. Ahora administro yo el dinero."
+      },
+      "medicamentos": {
+        "paciente": "Mi esposa me recuerda las pastillas.",
+        "familiar": "Necesita que organice y supervise las tomas porque abandona las tareas antes de terminarlas."
+      },
+      "antecedentes": {
+        "paciente": "Tengo hipertensión. No he tenido derrames ni enfermedades psiquiátricas.",
+        "familiar": "Hipertensión controlada. Sin ictus, traumatismo importante, consumo problemático de sustancias ni antecedentes de episodios maníacos o depresivos mayores. No hubo cambios de medicación al inicio del cuadro."
+      },
+      "orientacion": {
+        "paciente": "Sé dónde estamos y qué día es.",
+        "familiar": "Generalmente está orientado en tiempo y espacio."
+      },
+      "animo": {
+        "paciente": "No estoy triste. Prefiero quedarme sentado viendo televisión.",
+        "familiar": "Ha perdido iniciativa desde hace dos años, pero no expresa tristeza persistente, culpa ni desesperanza."
+      },
+      "audicion": {
+        "paciente": "Escucho bien.",
+        "familiar": "No hemos notado dificultades auditivas importantes."
+      },
+      "lenguaje": {
+        "paciente": "Puedo hablar y entender lo que me dicen.",
+        "familiar": "Habla con fluidez y comprende conversaciones, aunque hace comentarios socialmente inapropiados."
+      },
+      "escolaridad": {
+        "paciente": "Estudié dieciséis años y trabajé como contador.",
+        "familiar": "Tiene dieciséis años de escolaridad y está jubilado."
+      },
+      "sueno": {
+        "paciente": "Duermo siete u ocho horas.",
+        "familiar": "No hay disminución sostenida de la necesidad de dormir ni actuación de sueños."
+      },
+      "caidas": {
+        "paciente": "No me he caído este año.",
+        "familiar": "No ha tenido caídas recientes."
+      },
+      "nutricion": {
+        "paciente": "Me gustan mucho los dulces. Como cuando quiero.",
+        "familiar": "Desde hace un año busca dulces repetidamente, come sin esperar horarios y toma comida de platos ajenos. Ha aumentado cuatro kilos."
+      },
+      "movilidad": {
+        "paciente": "Camino sin ayuda.",
+        "familiar": "Camina de manera independiente, sin rigidez ni lentitud motora llamativa."
+      },
+      "fragilidad": {
+        "paciente": "Tengo fuerza y puedo salir a caminar.",
+        "familiar": "No ha perdido fuerza de forma evidente, aunque realiza menos actividad por falta de iniciativa."
+      },
+      "redApoyo": {
+        "paciente": "Vivo con mi esposa.",
+        "familiar": "Soy su esposa y cuidadora principal. Nuestros hijos ayudan con compras y trámites."
+      },
+      "sintomasDepresivos": {
+        "paciente": "No estoy triste ni me siento culpable.",
+        "familiar": "No hay tristeza persistente, desesperanza ni ideas de muerte. La falta de iniciativa apareció después de los cambios de personalidad."
+      },
+      "alucinaciones": {
+        "paciente": "No veo ni escucho cosas extrañas.",
+        "familiar": "No ha presentado alucinaciones visuales ni auditivas."
+      },
+      "fluctuaciones": {
+        "paciente": "No tengo episodios de desconexión.",
+        "familiar": "Los cambios son persistentes, sin episodios de somnolencia o confusión que se resuelvan en horas."
+      },
+      "conducta": {
+        "paciente": "La gente se ofende demasiado. No creo estar haciendo nada malo.",
+        "familiar": "Hace tres años empezó a hacer bromas ofensivas a desconocidos y compras impulsivas. Después perdió empatía e iniciativa, adoptó rutinas repetitivas y cambió sus hábitos alimentarios."
+      },
+      "antecedentesFamiliares": {
+        "paciente": "No conozco familiares con demencia.",
+        "familiar": "No conocemos antecedentes familiares de demencia temprana ni enfermedad de neurona motora."
+      },
+      "desinhibicion": {
+        "paciente": "Solo digo lo que pienso y compro lo que me gusta.",
+        "familiar": "Hace tres años comenzó a hacer comentarios sexuales inapropiados y a gastar dinero sin considerar las consecuencias."
+      },
+      "empatia": {
+        "paciente": "Cada quien debe resolver sus problemas.",
+        "familiar": "Hace dos años y medio dejó de consolar a familiares. Cuando nuestra hija enfermó, mostró indiferencia, algo muy distinto a su personalidad previa."
+      },
+      "apatia": {
+        "paciente": "No tengo ganas de organizar salidas, prefiero estar sentado.",
+        "familiar": "Hace dos años dejó de iniciar sus pasatiempos y actividades domésticas. Si lo invitamos, a veces participa, pero rara vez toma la iniciativa."
+      },
+      "compulsiones": {
+        "paciente": "Me gusta caminar siempre por la misma ruta y ordenar mis cosas.",
+        "familiar": "Desde hace dieciocho meses recorre la misma ruta, ordena objetos repetidamente y se irrita si cambiamos sus rutinas."
+      },
+      "hiperoralidad": {
+        "paciente": "Me gustan mucho los dulces. Como cuando quiero.",
+        "familiar": "Desde hace un año busca dulces repetidamente, come sin esperar horarios y toma comida de platos ajenos. Ha aumentado cuatro kilos."
+      },
+      "cognicionSocial": {
+        "paciente": "No entiendo por qué se molestan cuando hago bromas.",
+        "familiar": "Le cuesta interpretar el malestar ajeno y ajustar su comportamiento al contexto social."
+      },
+      "concienciaEnfermedad": {
+        "paciente": "No tengo ningún problema. Mi esposa exagera.",
+        "familiar": "No reconoce los cambios ni el riesgo de sus decisiones, incluso cuando le mostramos sus errores."
+      },
+      "antecedentesPsiquiatricos": {
+        "paciente": "Nunca he tenido tratamiento psiquiátrico.",
+        "familiar": "No hay antecedentes de manía, psicosis ni depresión mayor. Los cambios actuales son progresivos, no episodios separados por recuperación del estado habitual."
+      }
+    },
+    "seguimientos": {
+      "cronologia": {
+        "ejemplo": {
+          "paciente": "No recuerdo haber cambiado. Desde que me jubilé tengo más libertad.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "conducta": {
+        "ejemplo": {
+          "paciente": "La gente se ofende demasiado. No creo estar haciendo nada malo.",
+          "familiar": "Hace tres años empezó a hacer bromas ofensivas a desconocidos y compras impulsivas. Después perdió empatía e iniciativa, adoptó rutinas repetitivas y cambió sus hábitos alimentarios."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        },
+        "frecuencia": {
+          "paciente": "No llevo la cuenta.",
+          "familiar": "Los cambios de comportamiento son cotidianos y persistentes."
+        }
+      },
+      "funcionesEjecutivas": {
+        "ejemplo": {
+          "paciente": "Las cuentas son fáciles, aunque mi esposa prefiere hacerlas.",
+          "familiar": "Antes era contador. Ahora no logra planificar pagos, organizar tareas de varios pasos ni corregir sus errores."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "funcionalidad": {
+        "ejemplo": {
+          "paciente": "Me baño, me visto y como sin ayuda. Mi esposa se ocupa de las cuentas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "desinhibicion": {
+        "ejemplo": {
+          "paciente": "Solo digo lo que pienso y compro lo que me gusta.",
+          "familiar": "Hace tres años comenzó a hacer comentarios sexuales inapropiados y a gastar dinero sin considerar las consecuencias."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "empatia": {
+        "ejemplo": {
+          "paciente": "Cada quien debe resolver sus problemas.",
+          "familiar": "Hace dos años y medio dejó de consolar a familiares. Cuando nuestra hija enfermó, mostró indiferencia, algo muy distinto a su personalidad previa."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "apatia": {
+        "ejemplo": {
+          "paciente": "No tengo ganas de organizar salidas, prefiero estar sentado.",
+          "familiar": "Hace dos años dejó de iniciar sus pasatiempos y actividades domésticas. Si lo invitamos, a veces participa, pero rara vez toma la iniciativa."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "compulsiones": {
+        "ejemplo": {
+          "paciente": "Me gusta caminar siempre por la misma ruta y ordenar mis cosas.",
+          "familiar": "Desde hace dieciocho meses recorre la misma ruta, ordena objetos repetidamente y se irrita si cambiamos sus rutinas."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        },
+        "frecuencia": {
+          "paciente": "Lo hago todos los días.",
+          "familiar": "Repite las rutinas diariamente."
+        }
+      },
+      "hiperoralidad": {
+        "ejemplo": {
+          "paciente": "Me gustan mucho los dulces. Como cuando quiero.",
+          "familiar": "Desde hace un año busca dulces repetidamente, come sin esperar horarios y toma comida de platos ajenos. Ha aumentado cuatro kilos."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        },
+        "frecuencia": {
+          "paciente": "Como dulces cuando se me antojan.",
+          "familiar": "Busca dulces varias veces al día."
+        }
+      },
+      "cognicionSocial": {
+        "ejemplo": {
+          "paciente": "No entiendo por qué se molestan cuando hago bromas.",
+          "familiar": "Le cuesta interpretar el malestar ajeno y ajustar su comportamiento al contexto social."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "concienciaEnfermedad": {
+        "ejemplo": {
+          "paciente": "No tengo ningún problema. Mi esposa exagera.",
+          "familiar": "No reconoce los cambios ni el riesgo de sus decisiones, incluso cuando le mostramos sus errores."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "antecedentesPsiquiatricos": {
+        "ejemplo": {
+          "paciente": "Nunca he tenido tratamiento psiquiátrico.",
+          "familiar": "No hay antecedentes de manía, psicosis ni depresión mayor. Los cambios actuales son progresivos, no episodios separados por recuperación del estado habitual."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "nutricion": {
+        "ejemplo": {
+          "paciente": "Me gustan mucho los dulces. Como cuando quiero.",
+          "familiar": "Desde hace un año busca dulces repetidamente, come sin esperar horarios y toma comida de platos ajenos. Ha aumentado cuatro kilos."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "animo": {
+        "ejemplo": {
+          "paciente": "No estoy triste. Prefiero quedarme sentado viendo televisión.",
+          "familiar": "Ha perdido iniciativa desde hace dos años, pero no expresa tristeza persistente, culpa ni desesperanza."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      },
+      "memoria": {
+        "ejemplo": {
+          "paciente": "Recuerdo lo que hice ayer y las conversaciones con mi familia.",
+          "familiar": "Recuerda acontecimientos recientes bastante bien. Los primeros cambios fueron de conducta, no olvidos repetitivos."
+        },
+        "evolucion": {
+          "paciente": "No creo que haya empeorado.",
+          "familiar": "Hace tres años empezó con comentarios inapropiados y compras impulsivas. Seis meses después dejó de mostrar interés por los sentimientos ajenos. Hace dos años perdió iniciativa, hace dieciocho meses aparecieron rutinas rígidas y hace un año empezó a comer dulces en exceso. Todo ha progresado lentamente."
+        },
+        "repercusion": {
+          "paciente": "Mi esposa se encarga de muchas cosas.",
+          "familiar": "Es independiente para baño, vestido, alimentación y uso del sanitario. Necesita supervisión para finanzas, compras, medicamentos y actividades complejas por sus decisiones impulsivas y desorganización."
+        }
+      }
+    },
+    "exploracion": {
+      "signosVitales": {
+        "presionArterial": "130/78 mmHg",
+        "frecuenciaCardiaca": "72 lpm",
+        "temperatura": "36.5 °C",
+        "saturacionOxigeno": "98%"
+      },
+      "neurologica": "Alerta y orientado, con escasa conciencia de sus dificultades, comentarios inapropiados y respuestas impulsivas. Sin focalización, parkinsonismo ni signos clínicos de enfermedad de neurona motora.",
+      "marcha": "Marcha independiente, sin alteraciones relevantes.",
+      "pruebasCognitivas": {
+        "moca": {
+          "puntuacion": 23,
+          "maximo": 30,
+          "observacion": "Dificultades predominantes en flexibilidad cognitiva, inhibición, planificación y fluidez verbal. Memoria episódica y habilidades visuoespaciales relativamente conservadas. En tareas clínicas adicionales se observa dificultad para interpretar emociones y normas sociales. Interpretar según escolaridad y contexto funcional."
+        }
+      }
+    },
+    "estudios": {
+      "biometriaHematica": "Sin alteraciones clínicamente relevantes.",
+      "quimicaSanguinea": "Glucosa y función renal sin alteraciones relevantes.",
+      "tsh": "2.1 mUI/L",
+      "vitaminaB12": "460 pg/mL",
+      "resonancia": "Atrofia de predominio frontal orbitofrontal y temporal anterior bilateral, sin lesiones vasculares extensas ni lesión aguda. Hallazgos compatibles con el patrón clínico, sin confirmación neuropatológica."
+    },
+    "objetivosEducativos": [
+      "Reconstruir el inicio conductual y la progresión temporal.",
+      "Identificar desinhibición, apatía, pérdida de empatía, conductas repetitivas e hiperoralidad.",
+      "Reconocer el perfil disejecutivo con preservación relativa de memoria episódica y habilidades visuoespaciales.",
+      "Documentar pérdida de independencia instrumental pese a preservación de actividades básicas.",
+      "Contrastar el relato del paciente con el de la esposa y explorar conciencia de enfermedad.",
+      "Interpretar el MoCA sin utilizarlo como criterio diagnóstico aislado.",
+      "Relacionar la atrofia frontal y temporal anterior con el síndrome clínico.",
+      "Diferenciar de depresión, trastorno bipolar y Alzheimer de presentación conductual; distinguir diagnóstico probable de confirmación etiológica definitiva."
     ]
   }
 };
