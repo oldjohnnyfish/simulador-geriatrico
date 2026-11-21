@@ -1,7 +1,7 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Fichas clínicas ficticias - Versión 7
+ * Fichas clínicas ficticias - Versión 8
  * Uso exclusivamente educativo.
  */
 
@@ -1635,6 +1635,279 @@ export const casosClinicos = {
       "Interpretar el MoCA sin utilizarlo como criterio diagnóstico aislado.",
       "Relacionar la atrofia frontal y temporal anterior con el síndrome clínico.",
       "Diferenciar de depresión, trastorno bipolar y Alzheimer de presentación conductual; distinguir diagnóstico probable de confirmación etiológica definitiva."
+    ]
+  },
+
+  // CASO 06: CARMEN RÍOS
+  'caso-06': {
+    "id": "caso-06",
+    "identidad": {
+      "nombre": "Carmen Ríos",
+      "edad": 71,
+      "escolaridad": 12,
+      "ocupacion": "Maestra jubilada",
+      "estadoCivil": "Viuda"
+    },
+    "presentacion": "Mujer de 71 años que acude acompañada de su hija por dificultades de memoria y cambios en sus actividades cotidianas.",
+    "informacionReservada": {
+      "diagnostico": "Trastorno neurocognitivo mayor rápidamente progresivo, compatible con enfermedad de Creutzfeldt-Jakob esporádica probable",
+      "evolucionMeses": 4,
+      "curso": "Progresivo acelerado",
+      "independenciaFuncional": false
+    },
+    "entrevista": {
+      "motivo": {
+        "paciente": "Últimamente se me olvidan algunas cosas.",
+        "familiar": "Soy su hija. Ha cambiado mucho y no sé si tenga que ver con su enfermedad."
+      },
+      "cronologia": {
+        "paciente": "No recuerdo bien cuándo empezó.",
+        "familiar": "Hace cuatro meses comenzaron los olvidos y la ansiedad; hace tres meses perdió independencia instrumental, hace dos meses empezó a caminar mal y hace un mes aparecieron sacudidas y dependencia para bañarse y vestirse. Cada semana empeora."
+      },
+      "memoria": {
+        "paciente": "Olvido lo que me dicen.",
+        "familiar": "Olvida conversaciones recientes y repite preguntas."
+      },
+      "atencion": {
+        "paciente": "Me cuesta seguir lo que me dicen.",
+        "familiar": "Pierde el hilo de conversaciones y no logra seguir instrucciones largas."
+      },
+      "funcionesEjecutivas": {
+        "paciente": "Ya no sé hacer las cuentas.",
+        "familiar": "No logra organizar pagos ni tareas de varios pasos."
+      },
+      "visuoespacial": {
+        "paciente": "A veces no encuentro las cosas.",
+        "familiar": "Se confunde al localizar objetos y orientarse en casa."
+      },
+      "funcionalidad": {
+        "paciente": "Mi hija me ayuda a vestirme.",
+        "familiar": "Antes era independiente. Ahora necesita ayuda para finanzas, medicamentos, compras, baño y vestido por dificultades cognitivas y motoras."
+      },
+      "finanzas": {
+        "paciente": "Mi hija paga todo.",
+        "familiar": "Hace tres meses empezó a equivocarse con los pagos."
+      },
+      "medicamentos": {
+        "paciente": "Tomo pastillas todos los días.",
+        "familiar": "Toma bictegravir, emtricitabina y tenofovir alafenamida. Desde hace tres meses superviso sus tomas; no ha interrumpido el tratamiento."
+      },
+      "antecedentes": {
+        "paciente": "Tengo VIH y tomo tratamiento.",
+        "familiar": "Tiene VIH en tratamiento. No conocemos ictus, traumatismos importantes ni consumo problemático de sustancias."
+      },
+      "orientacion": {
+        "paciente": "No sé qué día es.",
+        "familiar": "Se desorienta en tiempo y espacio desde hace tres meses."
+      },
+      "animo": {
+        "paciente": "Me siento preocupada.",
+        "familiar": "La ansiedad apareció junto con los primeros olvidos."
+      },
+      "audicion": {
+        "paciente": "Escucho bien.",
+        "familiar": "No hemos observado problemas auditivos importantes."
+      },
+      "lenguaje": {
+        "paciente": "Me cuesta encontrar palabras.",
+        "familiar": "Desde hace tres meses le cuesta denominar objetos y habla cada vez menos."
+      },
+      "escolaridad": {
+        "paciente": "Fui maestra.",
+        "familiar": "Tiene doce años de escolaridad y fue maestra."
+      },
+      "sueno": {
+        "paciente": "A veces duermo mal.",
+        "familiar": "No ha presentado actuación de sueños ni cambios bruscos de alerta."
+      },
+      "caidas": {
+        "paciente": "Me he caído.",
+        "familiar": "Ha tenido dos caídas desde que comenzó la inestabilidad hace dos meses, sin traumatismo importante."
+      },
+      "nutricion": {
+        "paciente": "Mi hija prepara la comida.",
+        "familiar": "Necesita supervisión al comer; no conocemos pérdida importante de peso previa al cuadro."
+      },
+      "movilidad": {
+        "paciente": "Me cuesta caminar.",
+        "familiar": "Camina con mucha inestabilidad y necesita apoyo."
+      },
+      "fragilidad": {
+        "paciente": "Ya no salgo sola.",
+        "familiar": "Ha reducido marcadamente sus actividades desde el deterioro reciente."
+      },
+      "redApoyo": {
+        "paciente": "Mi hija está conmigo.",
+        "familiar": "Soy su hija. Antes vivía sola; ahora la acompaño permanentemente."
+      },
+      "sintomasDepresivos": {
+        "paciente": "Estoy preocupada.",
+        "familiar": "No hubo tristeza persistente ni episodio depresivo antes del deterioro."
+      },
+      "alucinaciones": {
+        "paciente": "No.",
+        "familiar": "No hemos observado alucinaciones."
+      },
+      "fluctuaciones": {
+        "paciente": "No sé.",
+        "familiar": "El deterioro es sostenido; no recupera su funcionamiento previo durante el día."
+      },
+      "conducta": {
+        "paciente": "Me siento confundida.",
+        "familiar": "Se ha vuelto ansiosa y menos participativa desde el inicio del cuadro."
+      },
+      "antecedentesFamiliares": {
+        "paciente": "No recuerdo.",
+        "familiar": "No conocemos antecedentes de demencia rápidamente progresiva ni enfermedades priónicas."
+      },
+      "vih": {
+        "paciente": "Tengo VIH y tomo mis pastillas.",
+        "familiar": "Tiene infección por VIH en tratamiento continuo."
+      },
+      "cronologiaVih": {
+        "paciente": "Hace muchos años.",
+        "familiar": "Fue diagnosticada hace dieciocho años."
+      },
+      "controlVih": {
+        "paciente": "Me dicen que está controlado.",
+        "familiar": "La carga viral lleva diez años indetectable; los CD4 actuales son 680 células/µL."
+      },
+      "infeccionesOportunistas": {
+        "paciente": "Nunca me han dicho que tenga alguna.",
+        "familiar": "No ha tenido infecciones oportunistas conocidas."
+      },
+      "mioclonias": {
+        "paciente": "A veces me dan sacudidas.",
+        "familiar": "Tiene sacudidas breves en brazos y piernas, a veces provocadas por ruidos o contacto."
+      },
+      "ataxia": {
+        "paciente": "Camino como mareada.",
+        "familiar": "Pierde el equilibrio y tiene torpeza al alcanzar objetos."
+      },
+      "cognicionPrevia": {
+        "paciente": "Antes hacía todo sola.",
+        "familiar": "Hasta hace cuatro meses vivía sola, administraba su dinero y no tenía problemas cognitivos conocidos."
+      },
+      "sintomasInfecciosos": {
+        "paciente": "No tengo fiebre.",
+        "familiar": "No ha presentado fiebre, cefalea persistente ni rigidez de nuca."
+      },
+      "convulsiones": {
+        "paciente": "No recuerdo.",
+        "familiar": "No hemos observado crisis convulsivas sostenidas ni pérdida episódica de conciencia."
+      }
+    },
+    "seguimientos": {
+      "vih": {
+        "evolucion": {
+          "paciente": "Hace dieciocho años.",
+          "familiar": "El diagnóstico de VIH fue hace dieciocho años, mucho antes de los cambios cognitivos."
+        }
+      },
+      "antecedentes": {
+        "evolucion": {
+          "paciente": "Tengo VIH desde hace muchos años.",
+          "familiar": "El VIH fue diagnosticado hace dieciocho años."
+        }
+      },
+      "memoria": {
+        "evolucion": {
+          "paciente": "Hace unos meses.",
+          "familiar": "Los olvidos comenzaron hace cuatro meses; antes no tenía problemas cognitivos."
+        },
+        "ejemplo": {
+          "paciente": "Olvido lo que acabo de escuchar.",
+          "familiar": "Repite preguntas minutos después de recibir la respuesta."
+        }
+      },
+      "movilidad": {
+        "evolucion": {
+          "paciente": "Hace unos meses.",
+          "familiar": "La inestabilidad comenzó hace dos meses."
+        },
+        "ejemplo": {
+          "paciente": "Necesito que me sostengan.",
+          "familiar": "Camina con base amplia y pierde el equilibrio."
+        }
+      },
+      "ataxia": {
+        "evolucion": {
+          "paciente": "Hace unos meses.",
+          "familiar": "La torpeza y la inestabilidad comenzaron hace dos meses."
+        }
+      },
+      "mioclonias": {
+        "evolucion": {
+          "paciente": "No recuerdo bien.",
+          "familiar": "Las sacudidas aparecieron hace un mes."
+        },
+        "ejemplo": {
+          "paciente": "Se me mueve el brazo de repente.",
+          "familiar": "Las sacudidas son breves, multifocales y pueden aparecer ante un ruido."
+        }
+      },
+      "funcionalidad": {
+        "evolucion": {
+          "paciente": "Antes hacía todo sola.",
+          "familiar": "Hace tres meses perdió independencia instrumental y hace un mes necesitó ayuda para baño y vestido."
+        },
+        "ejemplo": {
+          "paciente": "Me ayudan a vestirme.",
+          "familiar": "Necesita guía para ordenar la ropa y apoyo físico por la inestabilidad."
+        }
+      },
+      "cronologia": {
+        "evolucion": {
+          "paciente": "No recuerdo bien.",
+          "familiar": "Todo el deterioro ocurrió en cuatro meses y continúa empeorando cada semana."
+        }
+      },
+      "controlVih": {
+        "evolucion": {
+          "paciente": "Desde hace años.",
+          "familiar": "La carga viral permanece indetectable desde hace diez años."
+        }
+      }
+    },
+    "exploracion": {
+      "signosVitales": {
+        "presionArterial": "128/76 mmHg",
+        "frecuenciaCardiaca": "76 lpm",
+        "temperatura": "36.5 °C",
+        "saturacionOxigeno": "97%"
+      },
+      "neurologica": "Despierta, contacto limitado, desorientación temporal y espacial, dificultad para denominar, dismetría bilateral, mioclonías multifocales inducidas por estímulos e hiperreflexia. Sin déficit focal de fuerza ni signos meníngeos.",
+      "marcha": "Marcha atáxica de base amplia, requiere asistencia.",
+      "pruebasCognitivas": {
+        "moca": {
+          "puntuacion": 10,
+          "maximo": 30,
+          "observacion": "Alteraciones multidominio en atención, memoria, funciones ejecutivas, lenguaje y orientación. Interpretar considerando las limitaciones motoras y el contexto clínico."
+        }
+      }
+    },
+    "estudios": {
+      "biometriaHematica": "Sin alteraciones significativas.",
+      "quimicaSanguinea": "Electrolitos, glucosa y función renal y hepática sin alteraciones relevantes.",
+      "tsh": "2.3 mUI/L",
+      "vitaminaB12": "480 pg/mL",
+      "resonancia": "Hiperintensidad en DWI con descenso de ADC en corteza cerebral y ambos núcleos caudados, sin lesión expansiva.",
+      "electroencefalograma": "Complejos periódicos de ondas agudas.",
+      "cd4": "680 células/µL",
+      "cargaViralVih": "Indetectable en plasma.",
+      "liquidoCefalorraquideo": "Sin pleocitosis. Carga viral VIH indetectable; PCR para virus JC negativa; antígeno criptocócico negativo; VDRL no reactivo.",
+      "rtQuic": "Pendiente.",
+      "vdrl": "No reactivo en suero."
+    },
+    "objetivosEducativos": [
+      "Reconstruir por separado la cronología del VIH y del deterioro cognitivo.",
+      "Reconocer la progresión acelerada en cuatro meses y los signos neurológicos de alarma.",
+      "Documentar pérdida de independencia instrumental y básica.",
+      "Corroborar la evolución con la hija.",
+      "Interpretar MoCA, resonancia, EEG y estudios de VIH y LCR.",
+      "Considerar causas infecciosas, autoinmunes, metabólicas y epilépticas potencialmente tratables.",
+      "Evitar atribuir automáticamente el deterioro al VIH; el control virológico no excluye por sí solo afectación cognitiva asociada.",
+      "Reconocer la sospecha de enfermedad priónica probable y necesidad de evaluación neurológica urgente, sin afirmar confirmación definitiva."
     ]
   }
 };
