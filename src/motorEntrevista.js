@@ -1,7 +1,7 @@
 
 /*
  * Simulador de Consulta Geriátrica
- * Motor de entrevista - Versión 10
+ * Motor de entrevista - Versión 11
  *
  * Reconocimiento flexible de preguntas clínicas.
  * Seguimiento contextual de la conversación.
@@ -284,7 +284,23 @@ const seguimientos = [
   }
 ];
 
-function identificarTema(pregunta) {
+const temasArturo = [
+  { id: 'antecedentesPsiquiatricos', patrones: [/\b(antecedentes psiquiatricos|historia psiquiatrica|trastorno bipolar|bipolaridad|mania|maniaco|psicosis|depresion mayor|tratamiento psiquiatrico)\b/] },
+  { id: 'concienciaEnfermedad', patrones: [/\b(anosognosia|conciencia de enfermedad|conciencia de sus problemas|reconoce sus cambios|reconoce los cambios|reconoce su enfermedad|reconoce sus errores|se da cuenta de sus cambios|cree que tiene un problema|minimiza sus problemas)\b/] },
+  { id: 'empatia', patrones: [/\b(empatia|indiferencia|indiferente|insensible|sensibilidad emocional|sentimientos ajenos|sentimientos de los demas|consuela|consolar|preocupa por los demas)\b/] },
+  { id: 'cognicionSocial', patrones: [/\b(cognicion social|interpretar emociones|reconocer emociones|comprender emociones|contexto social|entiende las emociones|interpreta las emociones|reconoce las emociones)\b/] },
+  { id: 'desinhibicion', patrones: [/\b(desinhibicion|desinhibido|impulsividad|impulsivo|impulsivas|impulsivos|comentarios inapropiados|comentarios sexuales|bromas ofensivas|normas sociales|conductas inapropiadas|sin filtro|sin considerar las consecuencias)\b/] },
+  { id: 'compulsiones', patrones: [/\b(compulsiones?|compulsiv[oa]s?|rituales?|estereotipias?|estereotipad[oa]s?|rutinas rigidas|conductas repetitivas|comportamientos repetitivos|repite rutinas|misma ruta|ordena objetos)\b/] },
+  { id: 'hiperoralidad', patrones: [/\b(hiperoralidad|dulces|golosinas|preferencias alimentarias|habitos alimentarios|come en exceso|comer en exceso|atracones|come compulsivamente|cambios alimentarios|come mas)\b/] },
+  { id: 'apatia', patrones: [/\b(apatia|apatic[oa]|iniciativa|falta de motivacion|perdida de motivacion|dejo de iniciar|sin motivacion|no tiene ganas de hacer nada)\b/] }
+];
+
+function identificarTema(pregunta, caso) {
+  if (caso?.id === 'caso-05') {
+    const especifico = temasArturo.find(tema => coincide(pregunta, tema.patrones));
+    if (especifico && caso.entrevista?.[especifico.id]) return especifico.id;
+  }
+
   return temas.find((tema) =>
     coincide(pregunta, tema.patrones)
   )?.id || null;
@@ -350,7 +366,7 @@ function responderCronologia(caso, canal, pregunta) {
   if (
     coincide(pregunta, patronesCronologia.evolucion)
   ) {
-    const tema = identificarTema(pregunta);
+    const tema = identificarTema(pregunta, caso);
 
     const temaEspecifico =
       tema &&
@@ -455,6 +471,20 @@ export function responderEntrevista({
     );
   }
 
+  // En Arturo, conservar el tema de una pregunta temporal específica.
+  if (caso.id === 'caso-05' &&
+      !coincide(pregunta, patronesCronologia.primerSintoma) &&
+      !coincide(pregunta, patronesCronologia.primerasLimitaciones)) {
+    const explicito = identificarTema(pregunta, caso);
+    const contextual = /^(desde cuando|hace cuanto|cuanto tiempo|cuando empezo|cuando comenzo)$/.test(pregunta);
+    const destino = explicito || (contextual ? ultimoTema : null);
+    if (temasArturo.some(t => t.id === destino) &&
+        (coincide(pregunta, patronesCronologia.tiempo) || coincide(pregunta, patronesCronologia.inicio) || /\b(cuando comenzo|cuando aparecio|desde cuando)\b/.test(pregunta))) {
+      const respuesta = respuestaDe(caso, destino, canal);
+      if (respuesta) return resultado(respuesta, destino, true);
+    }
+  }
+
   const cronologia =
     responderCronologia(caso, canal, pregunta);
 
@@ -462,7 +492,7 @@ export function responderEntrevista({
     return cronologia;
   }
 
-  const temaExplicito = identificarTema(pregunta);
+  const temaExplicito = identificarTema(pregunta, caso);
   const tipoSeguimiento = identificarSeguimiento(pregunta);
 
   if (tipoSeguimiento) {
